@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pre-booking Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: linear-gradient(120deg, #f0f4f8, #d9e4f5);
+    }
+    .form-card {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    h2 {
+      font-weight: 600;
+      color: #0d6efd;
+    }
+    label {
+      font-weight: 500;
+    }
+    .btn-primary {
+      font-size: 1.1rem;
+      font-weight: 500;
+      padding: 10px;
+      border-radius: 10px;
+    }
+    .otp-status {
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+    .upi-section img {
+      border: 2px solid #ccc;
+      padding: 5px;
+      border-radius: 10px;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-5">
+    <div class="form-card">
+      <h2 class="text-center mb-3">🚗 Pre-Book Your Service</h2>
+      <p class="text-center text-muted mb-4">Fill in the details below to confirm your booking</p>
+
+      <form id="prebookingForm">
+        <!-- Personal Info -->
+        <div class="mb-3">
+          <label>Name:</label>
+          <input type="text" class="form-control" name="name" placeholder="Enter your full name" required />
+        </div>
+
+        <div class="mb-3">
+          <label>Contact Number:</label>
+          <input type="tel" class="form-control" name="contact" placeholder="Eg: 9876543210" required />
+        </div>
+
+        <div class="mb-3">
+          <label>Email:</label>
+          <div class="input-group">
+            <input type="email" class="form-control" name="email" placeholder="Enter your email" required />
+            <button type="button" class="btn btn-outline-secondary" onclick="sendOTP()">Send OTP</button>
+          </div>
+          <div class="otp-status text-success d-none" id="otpSuccess">✅ OTP sent successfully!</div>
+          <div class="otp-status text-danger d-none" id="otpError">❌ Failed to send OTP.</div>
+        </div>
+
+        <div class="mb-3">
+          <label>Enter OTP:</label>
+          <div class="input-group">
+            <input type="text" class="form-control" name="otp" placeholder="Enter the OTP" required />
+            <button type="button" class="btn btn-outline-success" onclick="verifyOTP()">Verify OTP</button>
+          </div>
+          <div class="otp-status text-success d-none" id="otpVerified">✅ OTP verified successfully!</div>
+          <div class="otp-status text-danger d-none" id="otpInvalid">❌ Invalid or expired OTP.</div>
+        </div>
+
+        <!-- Location -->
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label>Area:</label>
+            <input type="text" class="form-control" name="area" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label>District:</label>
+            <input type="text" class="form-control" name="district" required />
+          </div>
+          <div class="col-md-4 mb-3">
+            <label>Taluk:</label>
+            <input type="text" class="form-control" name="taluk" required />
+          </div>
+        </div>
+
+        <!-- Booking -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>Preferred Date:</label>
+            <input type="date" class="form-control" name="preferred_date" required />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>Preferred Time:</label>
+            <input type="time" class="form-control" name="time" required />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label>Select Service(s):</label>
+          <select class="form-select" name="services" multiple required>
+            <option>Greasing</option>
+            <option>Painting</option>
+            <option>Puncturing</option>
+            <option>Tyre Issues</option>
+          </select>
+          <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple</small>
+        </div>
+
+        <!-- Vehicle -->
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>Vehicle Type:</label>
+            <select class="form-select" name="vehicle_type" required>
+              <option value="">Select Vehicle Type</option>
+              <option value="2-wheeler">2-Wheeler</option>
+              <option value="4-wheeler">4-Wheeler</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>Vehicle Details:</label>
+            <input type="text" class="form-control" name="vehicle_details" placeholder="Eg: Honda Activa, Swift" required />
+          </div>
+        </div>
+
+        <!-- Payment -->
+
+        <div class="alert alert-info mt-3">
+        <strong>Platform Fee:</strong> ₹20<br>
+        This fee is charged after your service is completed. In case you do not attend on the scheduled date, the fee is non-refundable.
+        </div>
+        <div class="mb-3">
+          <label>Your UPI Number:</label>
+          <input type="text" class="form-control" name="upi_number" placeholder="Eg: 9876543210@upi" required />
+        </div>
+
+        <div class="mb-3 upi-section text-center">
+          <label class="d-block">Scan UPI QR (₹20):</label>
+         <img src="{{ url_for('static', filename='WhatsApp Image 2025-08-09 at 09.59.27.jpeg') }}" alt="UPI QR" style="max-width:200px;">
+        </div>
+
+        <div class="mb-3">
+          <label>UPI Reference ID:</label>
+          <input type="text" class="form-control" name="upi_ref" placeholder="Eg: 1234567890@okicici" pattern="^[a-zA-Z0-9]{10,20}$" required />
+          <small class="text-muted">Enter the reference ID from your payment confirmation.</small>
+        </div>
+        <!-- Platform Fee Notice -->
+    
+
+
+
+        <button type="submit" class="btn btn-primary w-100">Submit Pre-Booking</button>
+      </form>
+    </div>
+  </div>
+<script>
+  let otpVerified = false;
+  let otpSent = false;
+
+  function sendOTP() {
+    const email = document.querySelector('input[name="email"]').value.trim();
+    if (!email) {
+      alert("Please enter your email first.");
+      return;
+    }
+
+    fetch('/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        otpSent = true;
+        document.getElementById("otpSuccess").classList.remove("d-none");
+        document.getElementById("otpError").classList.add("d-none");
+      } else {
+        otpSent = false;
+        document.getElementById("otpError").classList.remove("d-none");
+        document.getElementById("otpSuccess").classList.add("d-none");
+      }
+    });
+  }
+
+  function verifyOTP() {
+    if (!otpSent) {
+      alert("Please send OTP first.");
+      return;
+    }
+
+    const email = document.querySelector('input[name="email"]').value.trim();
+    const otp = document.querySelector('input[name="otp"]').value.trim();
+    if (!otp) {
+      alert("Please enter the OTP.");
+      return;
+    }
+
+    fetch('/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        otpVerified = true;
+        document.getElementById("otpVerified").classList.remove("d-none");
+        document.getElementById("otpInvalid").classList.add("d-none");
+      } else {
+        otpVerified = false;
+        document.getElementById("otpInvalid").classList.remove("d-none");
+        document.getElementById("otpVerified").classList.add("d-none");
+      }
+    });
+  }
+
+  document.getElementById("prebookingForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (!otpSent) {
+      alert("Please send your OTP first.");
+      return;
+    }
+
+    if (!otpVerified) {
+      alert("Please verify your OTP before submitting.");
+      return;
+    }
+
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+
+    if (typeof data.services === "string") {
+      data.services = [data.services];
+    }
+    data.payment_info = { amount: 20, method: "UPI", ref: data.upi_ref };
+
+    fetch("/prebook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("🎉 Pre-booking successful! Booking ID: " + data.booking_id);
+        window.location.href = "/receipt/" + data.booking_id;
+      } else {
+        alert(data.error || "Booking failed");
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

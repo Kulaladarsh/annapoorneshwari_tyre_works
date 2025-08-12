@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ff7f50, #ff5722);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px;
+      overflow: hidden;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      border-radius: 20px;
+      width: 350px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      transform-style: preserve-3d;
+      animation: float 5s ease-in-out infinite;
+      color: #fff;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      font-size: 1.8rem;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      transition: transform 0.2s;
+    }
+
+    input:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #ff7f50, #ff5722);
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 87, 34, 0.4);
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #ff5722, #e64a19);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(255, 87, 34, 0.6);
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: rotateY(0deg) translateY(0px);
+      }
+      50% {
+        transform: rotateY(8deg) translateY(-10px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Admin Login</h2>
+    <form method="POST" action="{{ url_for('admin') }}">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required />
+      
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
+      
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</body>
+</html>

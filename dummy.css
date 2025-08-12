@@ -1,0 +1,130 @@
+# ==================== UPDATED RATING FUNCTIONS ====================
+
+def check_user_rating_exists(user_name, service_name):
+    """
+    Check if user has already rated a specific service.
+    Returns True if rating exists, False otherwise.
+    """
+    try:
+        # Case-insensitive search for user name
+        count = ratings_collection.count_documents({
+            "user_name": {"$regex": f"^{user_name}$", "$options": "i"},
+            "service_name": service_name
+        })
+        return count > 0
+    except Exception as e:
+        print(f"Error checking user rating exists: {e}")
+        return False
+
+def insert_rating(rating_data):
+    """
+    Insert a new rating with proper validation and duplicate prevention.
+    """
+    try:
+        # Check for duplicate rating before inserting
+        existing = ratings_collection.find_one({
+            "user_name": {"$regex": f"^{rating_data['user_name']}$", "$options": "i"},
+            "service_name": rating_data['service_name']
+        })
+        
+        if existing:
+            raise ValueError("User has already rated this service")
+        
+        # Set creation timestamp
+        rating_data['created_at'] = datetime.now()
+        
+        # Insert the rating
+        result = ratings_collection.insert_one(rating_data)
+        return result.inserted_id
+        
+    except Exception as e:
+        print(f"Error inserting rating: {e}")
+        raise
+
+def calculate_average_ratings():
+    """
+    Calculate average ratings for all services with proper error handling.
+    """
+    try:
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$service_name",
+                    "average": {"$avg": "$rating"},
+                    "count": {"$sum": 1}
+                }
+            }
+        ]
+        results = list(ratings_collection.aggregate(pipeline))
+        
+        avg_ratings = {}
+        for item in results:
+            service_name = item['_id']
+            avg_ratings[service_name] = {
+                'average': round(item['average'], 1),
+                'count': item['count']
+            }
+        
+        return avg_ratings
+        
+    except Exception as e:
+        print(f"Error calculating average ratings: {e}")
+        return {}
+
+def get_user_completed_bookings(user_email, user_name):
+    """
+    Get all completed bookings for a specific user.
+    Used to verify if user can rate services.
+    """
+    try:
+        bookings = list(prebookings_collection.find({
+            "email": user_email,
+            "name": {"$regex": f"^{user_name}$", "$options": "i"},
+            "status": "completed"
+        }))
+        return bookings
+    except Exception as e:
+        print(f"Error getting user completed bookings: {e}")
+        return []
+
+def get_user_rated_services(user_name):
+    """
+    Get list of services already rated by a user.
+    """
+    try:
+        ratings = list(ratings_collection.find({
+            "user_name": {"$regex": f"^{user_name}$", "$options": "i"}
+        }, {"service_name": 1, "_id": 0}))
+        
+        return [rating['service_name'] for rating in ratings]
+    except Exception as e:
+        print(f"Error getting user rated services: {e}")
+        return []
+
+def validate_user_can_rate_service(user_email, user_name, service_name):
+    """
+    Comprehensive validation to check if a user can rate a specific service.
+    Returns (can_rate: bool, reason: str)
+    """
+    try:
+        # Check if user has completed booking for this service
+        completed_booking = prebookings_collection.find_one({
+            "email": user_email,
+            "name": {"$regex": f"^{user_name}$", "$options": "i"},
+            "services": service_name,
+            "status": "completed"
+        })
+        
+        if not completed_booking:
+            return False, f"No completed booking found for '{service_name}'"
+        
+        # Check if user has already rated this service
+        existing_rating = check_user_rating_exists(user_name, service_name)
+        if existing_rating:
+            return False, f"You have already rated '{service_name}'"
+        
+        return True, "User can rate this service"
+        
+    except Exception as e:
+        print(f"Error validating user can rate service: {e}")
+        return False, "Validation error occurred"

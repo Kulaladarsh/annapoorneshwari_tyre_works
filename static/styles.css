@@ -1,0 +1,42 @@
+/* Custom styles for map responsiveness */
+.map-responsive {
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  position: relative;
+  height: 0;
+}
+
+.map-responsive iframe {
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  border-radius: 8px;
+}
+
+/* Additional custom styles can be added here */
+
+/* Additional custom styles for prebooking form */
+#prebookingForm .form-label {
+  font-weight: 600;
+}
+
+#prebookingForm .invalid-feedback {
+  display: block;
+}
+
+#upiPaymentSection {
+  border: 1px solid #dee2e6;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  #prebookingForm .form-control,
+  #prebookingForm .form-select {
+    font-size: 1rem;
+  }
+}
