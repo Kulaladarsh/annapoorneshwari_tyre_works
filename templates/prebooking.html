@@ -2,179 +2,615 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pre-booking Form</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background: linear-gradient(120deg, #f0f4f8, #d9e4f5);
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px 0;
     }
+
+    .main-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+
     .form-card {
-      max-width: 700px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
     }
-    h2 {
-      font-weight: 600;
-      color: #0d6efd;
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+      background-size: 200% 100%;
+      animation: gradientShift 3s ease infinite;
     }
-    label {
-      font-weight: 500;
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
-    .btn-primary {
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header-section h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .header-section p {
+      color: #6c757d;
       font-size: 1.1rem;
-      font-weight: 500;
-      padding: 10px;
-      border-radius: 10px;
+      font-weight: 400;
     }
+
+    .form-section {
+      margin-bottom: 30px;
+      padding: 25px;
+      background: rgba(248, 249, 250, 0.5);
+      border-radius: 15px;
+      border-left: 4px solid #667eea;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: #667eea;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      background: white;
+      transform: translateY(-2px);
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .input-group .btn {
+      border-radius: 0 12px 12px 0;
+      border: 2px solid #e9ecef;
+      border-left: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+      background: #667eea;
+      border-color: #667eea;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-success:hover {
+      background: #28a745;
+      border-color: #28a745;
+      transform: translateY(-1px);
+    }
+
     .otp-status {
       font-size: 0.9rem;
-      margin-top: 5px;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-weight: 500;
     }
-    .upi-section img {
-      border: 2px solid #ccc;
-      padding: 5px;
-      border-radius: 10px;
-      background: #fff;
+
+    .text-success {
+      background: rgba(40, 167, 69, 0.1);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .text-danger {
+      background: rgba(220, 53, 69, 0.1);
+      border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .payment-section {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+      border: 2px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .alert-info {
+      background: linear-gradient(135deg, rgba(13, 202, 240, 0.1), rgba(102, 126, 234, 0.1));
+      border: 1px solid rgba(13, 202, 240, 0.3);
+      border-radius: 12px;
+    }
+
+    .upi-qr-container {
+      text-align: center;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      margin: 20px 0;
+    }
+
+    .upi-qr-container img {
+      max-width: 200px;
+      height: auto;
+      border: 3px solid #667eea;
+      border-radius: 12px;
+      padding: 10px;
+      background: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 15px;
+      padding: 15px 40px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: white;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.7;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Success Animation Modal */
+    .success-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .success-modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .success-content {
+      background: white;
+      padding: 40px;
+      border-radius: 25px;
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      transform: scale(0.7) translateY(50px);
+      transition: all 0.3s ease;
+    }
+
+    .success-modal.show .success-content {
+      transform: scale(1) translateY(0);
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: bounceIn 0.6s ease;
+    }
+
+    .success-icon i {
+      color: white;
+      font-size: 2.5rem;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    .success-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #28a745;
+      margin-bottom: 10px;
+    }
+
+    .success-message {
+      color: #6c757d;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .booking-id {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .form-card {
+        padding: 25px;
+        border-radius: 20px;
+      }
+
+      .header-section h2 {
+        font-size: 2rem;
+      }
+
+      .form-section {
+        padding: 20px;
+      }
+    }
+
+    .fade-in {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Loading Animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(102, 126, 234, 0.9);
+      z-index: 9998;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .loading-overlay.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <div class="container py-5">
-    <div class="form-card">
-      <h2 class="text-center mb-3">🚗 Pre-Book Your Service</h2>
-      <p class="text-center text-muted mb-4">Fill in the details below to confirm your booking</p>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="success-modal" id="successModal">
+    <div class="success-content">
+      <div class="success-icon">
+        <i class="fas fa-check"></i>
+      </div>
+      <h3 class="success-title">Booking Successful!</h3>
+      <p class="success-message">Your pre-booking has been confirmed successfully.</p>
+      <div class="booking-id" id="bookingIdDisplay">
+        Booking ID: <span id="bookingId"></span>
+      </div>
+      <p class="text-muted">You will be redirected to your receipt shortly...</p>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="form-card fade-in">
+      <div class="header-section">
+        <h2><i class="fas fa-car"></i> Pre-Book Your Service</h2>
+        <p>Fill in the details below to confirm your booking with us</p>
+      </div>
 
       <form id="prebookingForm">
-        <!-- Personal Info -->
-        <div class="mb-3">
-          <label>Name:</label>
-          <input type="text" class="form-control" name="name" placeholder="Enter your full name" required />
-        </div>
+        <!-- Personal Information Section -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="fas fa-user"></i>
+            Personal Information
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" name="name" placeholder="Enter your full name" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Contact Number</label>
+              <input type="tel" class="form-control" name="contact" placeholder="9876543210" required />
+            </div>
+          </div>
 
-        <div class="mb-3">
-          <label>Contact Number:</label>
-          <input type="tel" class="form-control" name="contact" placeholder="Eg: 9876543210" required />
-        </div>
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <div class="input-group">
+              <input type="email" class="form-control" name="email" placeholder="Enter your email address" required />
+              <button type="button" class="btn btn-outline-secondary" onclick="sendOTP()">
+                <i class="fas fa-paper-plane"></i> Send OTP
+              </button>
+            </div>
+            <div class="otp-status text-success d-none" id="otpSuccess">
+              <i class="fas fa-check-circle"></i> OTP sent successfully to your email!
+            </div>
+            <div class="otp-status text-danger d-none" id="otpError">
+              <i class="fas fa-exclamation-circle"></i> Failed to send OTP. Please try again.
+            </div>
+          </div>
 
-        <div class="mb-3">
-          <label>Email:</label>
-          <div class="input-group">
-            <input type="email" class="form-control" name="email" placeholder="Enter your email" required />
-            <button type="button" class="btn btn-outline-secondary" onclick="sendOTP()">Send OTP</button>
-          </div>
-          <div class="otp-status text-success d-none" id="otpSuccess">✅ OTP sent successfully!</div>
-          <div class="otp-status text-danger d-none" id="otpError">❌ Failed to send OTP.</div>
-        </div>
-
-        <div class="mb-3">
-          <label>Enter OTP:</label>
-          <div class="input-group">
-            <input type="text" class="form-control" name="otp" placeholder="Enter the OTP" required />
-            <button type="button" class="btn btn-outline-success" onclick="verifyOTP()">Verify OTP</button>
-          </div>
-          <div class="otp-status text-success d-none" id="otpVerified">✅ OTP verified successfully!</div>
-          <div class="otp-status text-danger d-none" id="otpInvalid">❌ Invalid or expired OTP.</div>
-        </div>
-
-        <!-- Location -->
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label>Area:</label>
-            <input type="text" class="form-control" name="area" required />
-          </div>
-          <div class="col-md-4 mb-3">
-            <label>District:</label>
-            <input type="text" class="form-control" name="district" required />
-          </div>
-          <div class="col-md-4 mb-3">
-            <label>Taluk:</label>
-            <input type="text" class="form-control" name="taluk" required />
-          </div>
-        </div>
-
-        <!-- Booking -->
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label>Preferred Date:</label>
-            <input type="date" class="form-control" name="preferred_date" required />
-          </div>
-          <div class="col-md-6 mb-3">
-            <label>Preferred Time:</label>
-            <input type="time" class="form-control" name="time" required />
+          <div class="mb-3">
+            <label class="form-label">Enter OTP</label>
+            <div class="input-group">
+              <input type="text" class="form-control" name="otp" placeholder="Enter 6-digit OTP" required />
+              <button type="button" class="btn btn-outline-success" onclick="verifyOTP()">
+                <i class="fas fa-shield-alt"></i> Verify
+              </button>
+            </div>
+            <div class="otp-status text-success d-none" id="otpVerified">
+              <i class="fas fa-check-circle"></i> Email verified successfully!
+            </div>
+            <div class="otp-status text-danger d-none" id="otpInvalid">
+              <i class="fas fa-times-circle"></i> Invalid or expired OTP.
+            </div>
           </div>
         </div>
 
-        <div class="mb-3">
-          <label>Select Service(s):</label>
-          <select class="form-select" name="services" multiple required>
-            <option>Greasing</option>
-            <option>Painting</option>
-            <option>Puncturing</option>
-            <option>Tyre Issues</option>
-          </select>
-          <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple</small>
+        <!-- Location Section -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="fas fa-map-marker-alt"></i>
+            Service Location
+          </div>
+          
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Area</label>
+              <input type="text" class="form-control" name="area" placeholder="Your area" required />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">District</label>
+              <input type="text" class="form-control" name="district" placeholder="Your district" required />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Taluk</label>
+              <input type="text" class="form-control" name="taluk" placeholder="Your taluk" required />
+            </div>
+          </div>
         </div>
 
-        <!-- Vehicle -->
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label>Vehicle Type:</label>
-            <select class="form-select" name="vehicle_type" required>
-              <option value="">Select Vehicle Type</option>
-              <option value="2-wheeler">2-Wheeler</option>
-              <option value="4-wheeler">4-Wheeler</option>
-              <option value="Other">Other</option>
+        <!-- Booking Details Section -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="fas fa-calendar-alt"></i>
+            Booking Details
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Preferred Date</label>
+              <input type="date" class="form-control" name="preferred_date" required />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Preferred Time</label>
+              <input type="time" class="form-control" name="time" required />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Select Service(s)</label>
+            <select class="form-select" name="services" multiple required>
+              <option value="Greasing">Greasing</option>
+              <option value="Painting">Painting</option>
+              <option value="Puncturing">Puncturing</option>
+              <option value="Tyre Issues">Tyre Issues</option>
             </select>
+            <small class="text-muted">
+              <i class="fas fa-info-circle"></i> 
+              Hold Ctrl (Windows) or Cmd (Mac) to select multiple services
+            </small>
           </div>
-          <div class="col-md-6 mb-3">
-            <label>Vehicle Details:</label>
-            <input type="text" class="form-control" name="vehicle_details" placeholder="Eg: Honda Activa, Swift" required />
+        </div>
+
+        <!-- Vehicle Information Section -->
+        <div class="form-section">
+          <div class="section-title">
+            <i class="fas fa-motorcycle"></i>
+            Vehicle Information
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Vehicle Type</label>
+              <select class="form-select" name="vehicle_type" required>
+                <option value="">Select Vehicle Type</option>
+                <option value="2-wheeler">2-Wheeler</option>
+                <option value="4-wheeler">4-Wheeler</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Vehicle Details</label>
+              <input type="text" class="form-control" name="vehicle_details" placeholder="e.g., Honda Activa, Maruti Swift" required />
+            </div>
           </div>
         </div>
 
-        <!-- Payment -->
+        <!-- Payment Section -->
+        <div class="form-section payment-section">
+          <div class="section-title">
+            <i class="fas fa-credit-card"></i>
+            Payment Information
+          </div>
 
-        <div class="alert alert-info mt-3">
-        <strong>Platform Fee:</strong> ₹20<br>
-        This fee is charged after your service is completed. In case you do not attend on the scheduled date, the fee is non-refundable.
+          <div class="alert alert-info">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-info-circle me-2"></i>
+              <div>
+                <strong>Platform Fee: ₹20</strong><br>
+                <small>This fee is charged after service completion. Non-refundable if you don't attend the scheduled appointment.</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Your UPI ID</label>
+            <input type="text" class="form-control" name="upi_number" placeholder="e.g., 9876543210@paytm" required />
+          </div>
+
+          <div class="upi-qr-container">
+            <label class="form-label d-block">Scan QR Code to Pay ₹20</label>
+            <img src="static\WhatsApp Image 2025-08-09 at 09.59.27.jpeg" alt="UPI QR Code" />
+            <p class="mt-2 text-muted small">
+              <i class="fas fa-mobile-alt"></i> 
+              Scan with any UPI app like PhonePe, GPay, Paytm
+            </p>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">UPI Transaction Reference ID</label>
+            <input type="text" class="form-control" name="upi_ref" placeholder="e.g., 1234567890@okicici" pattern="^[a-zA-Z0-9]{10,20}$" required />
+            <small class="text-muted">
+              <i class="fas fa-receipt"></i> 
+              Enter the reference ID from your payment confirmation
+            </small>
+          </div>
         </div>
-        <div class="mb-3">
-          <label>Your UPI Number:</label>
-          <input type="text" class="form-control" name="upi_number" placeholder="Eg: 9876543210@upi" required />
+
+        <div class="text-center">
+          <button type="submit" class="btn submit-btn w-100">
+            <i class="fas fa-paper-plane me-2"></i>
+            Submit Pre-Booking
+          </button>
         </div>
-
-        <div class="mb-3 upi-section text-center">
-          <label class="d-block">Scan UPI QR (₹20):</label>
-         <img src="{{ url_for('static', filename='WhatsApp Image 2025-08-09 at 09.59.27.jpeg') }}" alt="UPI QR" style="max-width:200px;">
-        </div>
-
-        <div class="mb-3">
-          <label>UPI Reference ID:</label>
-          <input type="text" class="form-control" name="upi_ref" placeholder="Eg: 1234567890@okicici" pattern="^[a-zA-Z0-9]{10,20}$" required />
-          <small class="text-muted">Enter the reference ID from your payment confirmation.</small>
-        </div>
-        <!-- Platform Fee Notice -->
-    
-
-
-
-        <button type="submit" class="btn btn-primary w-100">Submit Pre-Booking</button>
       </form>
     </div>
   </div>
+
 <script>
   let otpVerified = false;
   let otpSent = false;
 
+  // Add fade-in animation on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelector('input[name="preferred_date"]').min = today;
+  });
+
   function sendOTP() {
     const email = document.querySelector('input[name="email"]').value.trim();
     if (!email) {
-      alert("Please enter your email first.");
+      showAlert("Please enter your email first.", "warning");
       return;
     }
+
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    button.disabled = true;
 
     fetch('/send-otp', {
       method: 'POST',
@@ -192,21 +628,35 @@
         document.getElementById("otpError").classList.remove("d-none");
         document.getElementById("otpSuccess").classList.add("d-none");
       }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById("otpError").classList.remove("d-none");
+      document.getElementById("otpSuccess").classList.add("d-none");
+    })
+    .finally(() => {
+      button.innerHTML = originalText;
+      button.disabled = false;
     });
   }
 
   function verifyOTP() {
     if (!otpSent) {
-      alert("Please send OTP first.");
+      showAlert("Please send OTP first.", "warning");
       return;
     }
 
     const email = document.querySelector('input[name="email"]').value.trim();
     const otp = document.querySelector('input[name="otp"]').value.trim();
     if (!otp) {
-      alert("Please enter the OTP.");
+      showAlert("Please enter the OTP.", "warning");
       return;
     }
+
+    const button = event.target;
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    button.disabled = true;
 
     fetch('/verify-otp', {
       method: 'POST',
@@ -224,29 +674,82 @@
         document.getElementById("otpInvalid").classList.remove("d-none");
         document.getElementById("otpVerified").classList.add("d-none");
       }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById("otpInvalid").classList.remove("d-none");
+      document.getElementById("otpVerified").classList.add("d-none");
+    })
+    .finally(() => {
+      button.innerHTML = originalText;
+      button.disabled = false;
     });
+  }
+
+  function showAlert(message, type) {
+    // Create temporary alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.top = '20px';
+    alertDiv.style.right = '20px';
+    alertDiv.style.zIndex = '10000';
+    alertDiv.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+    `;
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+      if (alertDiv.parentElement) {
+        alertDiv.remove();
+      }
+    }, 5000);
+  }
+
+  function showSuccessModal(bookingId) {
+    document.getElementById('bookingId').textContent = bookingId;
+    document.getElementById('successModal').classList.add('show');
+    
+    setTimeout(() => {
+      window.location.href = "/receipt/" + bookingId;
+    }, 3000);
+  }
+
+  function showLoadingOverlay() {
+    document.getElementById('loadingOverlay').classList.add('show');
+  }
+
+  function hideLoadingOverlay() {
+    document.getElementById('loadingOverlay').classList.remove('show');
   }
 
   document.getElementById("prebookingForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
     if (!otpSent) {
-      alert("Please send your OTP first.");
+      showAlert("Please send your OTP first.", "warning");
       return;
     }
 
     if (!otpVerified) {
-      alert("Please verify your OTP before submitting.");
+      showAlert("Please verify your OTP before submitting.", "warning");
       return;
     }
+
+    showLoadingOverlay();
 
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    if (typeof data.services === "string") {
-      data.services = [data.services];
-    }
-    data.payment_info = { amount: 20, method: "UPI", ref: data.upi_ref };
+    // Handle multiple services selection
+    const servicesSelect = document.querySelector('select[name="services"]');
+    data.services = Array.from(servicesSelect.selectedOptions).map(option => option.value);
+
+    data.payment_info = { 
+      amount: 20, 
+      method: "UPI", 
+      ref: data.upi_ref 
+    };
 
     fetch("/prebook", {
       method: "POST",
@@ -255,12 +758,24 @@
     })
     .then(res => res.json())
     .then(data => {
+      hideLoadingOverlay();
       if (data.success) {
-        alert("🎉 Pre-booking successful! Booking ID: " + data.booking_id);
-        window.location.href = "/receipt/" + data.booking_id;
+        showSuccessModal(data.booking_id);
       } else {
-        alert(data.error || "Booking failed");
+        showAlert(data.error || "Booking failed. Please try again.", "danger");
       }
+    })
+    .catch(error => {
+      hideLoadingOverlay();
+      console.error('Error:', error);
+      showAlert("Network error. Please check your connection and try again.", "danger");
+    });
+  });
+
+  // Add smooth scrolling for better UX
+  document.querySelectorAll('input, select, textarea').forEach(element => {
+    element.addEventListener('focus', function() {
+      this.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
 </script>

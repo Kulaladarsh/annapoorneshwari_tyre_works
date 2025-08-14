@@ -1,9 +1,21 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, abort, flash, make_response
+import os
+from dotenv import load_dotenv
+from flask import Flask
+from flask import Flask, render_template, request, url_for, session, jsonify, abort, flash, make_response, redirect
+
+# Load environment variables
+load_dotenv()
+
+# Create app and set secret key
+app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY") or "fallback-secret"
+
+# Now import everything else
 from bson.objectid import ObjectId
 from db import (
-    prebookings_collection,  # add at top with other imports
+    prebookings_collection,
     get_services,
-    increment_visit_count,  
+    increment_visit_count,
     calculate_average_ratings,
     insert_rating,
     insert_prebooking,
@@ -28,25 +40,24 @@ from db import (
     update_prebooking_status,
     export_bookings_to_excel,
     cleanup_expired_otps,
-    get_admin_dashboard_stats,  # Add this import
-    generate_receipt_pdf,       # Add this new function
-    initialize_admin  # ✅ Ensure admin is initialized
+    get_admin_dashboard_stats,
+    generate_receipt_pdf,
+    initialize_admin
 )
-from datetime import datetime
+
 import hashlib
-import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 import io
+from datetime import datetime
+import time, random, re
 
-app = Flask(__name__)
-SECRET_KEY = os.environ.get("SECRET_KEY")
+# Initialize admin after app and db are ready
+initialize_admin()
 
-
-initialize_admin()  # ✅ Ensure admin is created at startup
 
 @app.route('/')
 def home():
