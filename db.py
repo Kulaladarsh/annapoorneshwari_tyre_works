@@ -353,8 +353,47 @@ def get_admin_by_username(username):
         print(f"Error getting admin by username: {e}")
         return None
 
+# Add these functions to your existing db.py file
+
+def update_booking_service_amount(booking_id, service_amount):
+    """
+    Update the service amount for a booking.
+    Total amount = service_amount + 20 (booking fee)
+    """
+    try:
+        total_amount = float(service_amount) + 20  # Add ₹20 booking fee
+        
+        result = prebookings_collection.update_one(
+            {"_id": ObjectId(booking_id)},
+            {
+                "$set": {
+                    "service_amount": float(service_amount),
+                    "total_amount": total_amount,
+                    "amount_updated_at": datetime.now()
+                }
+            }
+        )
+        
+        if result.modified_count > 0:
+            # Update payment record if exists
+            payments_collection.update_one(
+                {"booking_id": prebookings_collection.find_one({"_id": ObjectId(booking_id)})["booking_id"]},
+                {
+                    "$set": {
+                        "service_amount": float(service_amount),
+                        "total_amount": total_amount,
+                        "updated_at": datetime.now()
+                    }
+                }
+            )
+            return True
+        return False
+    except Exception as e:
+        print(f"Error updating booking service amount: {e}")
+        return False
+
 def get_admin_dashboard_stats():
-    """Get enhanced statistics for admin dashboard including total service amount"""
+    """Enhanced dashboard stats with actual total amounts"""
     try:
         total_bookings = prebookings_collection.count_documents({})
         total_ratings = ratings_collection.count_documents({})
@@ -365,59 +404,31 @@ def get_admin_dashboard_stats():
             "created_at": {"$gte": today_start}
         })
         
-        # Get pending bookings
-        pending_bookings = prebookings_collection.count_documents({
-            "status": "pending"
-        })
+        # Get pending and completed bookings
+        pending_bookings = prebookings_collection.count_documents({"status": "pending"})
+        completed_bookings = prebookings_collection.count_documents({"status": "completed"})
         
-        # Get completed bookings
-        completed_bookings = prebookings_collection.count_documents({
-            "status": "completed"
-        })
+        # Calculate total revenue from completed bookings with actual amounts
+        completed_bookings_data = list(prebookings_collection.find(
+            {"status": "completed"},
+            {"total_amount": 1, "service_amount": 1}
+        ))
         
-        # Calculate total service amount from all completed bookings
-        # Each booking has a ₹20 service fee
-        total_service_amount = completed_bookings * 20
+        total_service_amount = sum(
+            booking.get('total_amount', booking.get('service_amount', 0) + 20) 
+            for booking in completed_bookings_data
+        )
         
-        # Get recent bookings
-        recent_bookings = list(prebookings_collection.find(
-            {}, {"_id": 1, "name": 1, "services": 1, "preferred_date": 1, "status": 1, "created_at": 1}
-        ).sort("created_at", -1).limit(5))
+        # If no amounts set, use default ₹20 per booking
+        if total_service_amount == 0 and completed_bookings > 0:
+            total_service_amount = completed_bookings * 20
         
-        # Get service popularity
-        service_pipeline = [
-            {"$unwind": "$services"},
-            {"$group": {"_id": "$services", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}}
-        ]
-        popular_services = list(prebookings_collection.aggregate(service_pipeline))
-
-        # Calculate overall average rating
+        # Calculate average rating
         avg_ratings = calculate_average_ratings()
         overall_avg = 0
         if avg_ratings:
             total_sum = sum(item['average'] for item in avg_ratings.values())
             overall_avg = round(total_sum / len(avg_ratings), 1)
-
-        # Get monthly revenue trend
-        monthly_revenue_pipeline = [
-            {
-                "$match": {"status": "completed"}
-            },
-            {
-                "$group": {
-                    "_id": {
-                        "year": {"$year": "$created_at"},
-                        "month": {"$month": "$created_at"}
-                    },
-                    "revenue": {"$sum": 20},  # ₹20 per completed booking
-                    "bookings": {"$sum": 1}
-                }
-            },
-            {"$sort": {"_id.year": -1, "_id.month": -1}},
-            {"$limit": 6}
-        ]
-        monthly_revenue = list(prebookings_collection.aggregate(monthly_revenue_pipeline))
 
         return {
             "total_bookings": total_bookings,
@@ -426,10 +437,7 @@ def get_admin_dashboard_stats():
             "pending_bookings": pending_bookings,
             "completed_bookings": completed_bookings,
             "total_service_amount": total_service_amount,
-            "recent_bookings": recent_bookings,
-            "popular_services": popular_services,
-            "average_rating": overall_avg,
-            "monthly_revenue": monthly_revenue
+            "average_rating": overall_avg
         }
     except Exception as e:
         print(f"Error getting dashboard stats: {e}")
@@ -440,24 +448,17 @@ def get_admin_dashboard_stats():
             "pending_bookings": 0,
             "completed_bookings": 0,
             "total_service_amount": 0,
-            "recent_bookings": [],
-            "popular_services": [],
-            "average_rating": 0,
-            "monthly_revenue": []
+            "average_rating": 0
         }
 
-# ==================== PDF RECEIPT GENERATION ====================
 def generate_receipt_pdf(booking_data, receipt_type="Service Receipt"):
-    """
-    Generate PDF receipt for booking with service details
-    """
+    """Enhanced PDF receipt with service amounts"""
     try:
         buffer = io.BytesIO()
         doc = SimpleDocTemplate(buffer, pagesize=letter, 
                               rightMargin=72, leftMargin=72, 
                               topMargin=72, bottomMargin=18)
         
-        # Container for the 'Flowable' objects
         elements = []
         styles = getSampleStyleSheet()
         
@@ -478,6 +479,11 @@ def generate_receipt_pdf(booking_data, receipt_type="Service Receipt"):
         """
         elements.append(Paragraph(company_info, styles['Normal']))
         elements.append(Spacer(1, 12))
+        
+        # Get amounts
+        service_amount = booking_data.get('service_amount', 0)
+        booking_fee = 20
+        total_amount = booking_data.get('total_amount', service_amount + booking_fee)
         
         # Receipt details
         receipt_data = [
@@ -504,16 +510,19 @@ def generate_receipt_pdf(booking_data, receipt_type="Service Receipt"):
         if services:
             receipt_data.append(['Services:', ', '.join(services)])
         
-        # Payment information
+        # Enhanced Payment information with itemized amounts
         receipt_data.extend([
             ['', ''],
             ['Payment Details', ''],
-            ['Service Fee:', '₹20.00'],
-            ['Payment Status:', 'Completed'],
+            ['Service Charges:', f'₹{service_amount:.2f}'],
+            ['Booking Fee:', f'₹{booking_fee:.2f}'],
+            ['', ''],
+            ['Total Amount:', f'₹{total_amount:.2f}'],
+            ['Payment Status:', 'Completed' if booking_data.get('status') == 'completed' else 'Paid (Booking Fee)'],
             ['Payment Method:', 'UPI'],
         ])
         
-        # Create table
+        # Create table with styling
         table = Table(receipt_data, colWidths=[2*inch, 4*inch])
         table.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
@@ -523,9 +532,13 @@ def generate_receipt_pdf(booking_data, receipt_type="Service Receipt"):
             ('FONTSIZE', (0, 0), (-1, 0), 12),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
             ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-            ('FONTNAME', (0, 1), (0, -1), 'Helvetica-Bold'),  # Make first column bold
+            ('FONTNAME', (0, 1), (0, -1), 'Helvetica-Bold'),
             ('GRID', (0, 0), (-1, -1), 1, colors.black),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            # Highlight total amount row
+            ('BACKGROUND', (0, -4), (-1, -4), colors.lightgrey),
+            ('FONTNAME', (0, -4), (-1, -4), 'Helvetica-Bold'),
+            ('FONTSIZE', (0, -4), (-1, -4), 14),
         ]))
         
         elements.append(table)
@@ -630,5 +643,6 @@ def get_total_visits():
         return next(total, {}).get("total", 0)
     except:
         return 0
+
 
 initialize_admin()

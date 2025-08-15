@@ -13,6 +13,7 @@ app.secret_key = os.environ.get("SECRET_KEY") or "fallback-secret"
 # Now import everything else
 from bson.objectid import ObjectId
 from db import (
+    update_booking_service_amount,
     prebookings_collection,
     get_services,
     increment_visit_count,
@@ -469,16 +470,65 @@ def rate_service():
             "error": "Internal server error. Please try again later."
         }), 500
 
-@app.route('/admin/complete-booking/<booking_id>', methods=['POST'])
-def complete_booking(booking_id):
+# Add these routes to your existing app.py file
+
+@app.route('/admin/update-service-amount/<booking_id>', methods=['POST'])
+def update_service_amount(booking_id):
     """
-    Admin route to mark a booking as completed.
-    Updates the booking status to "completed" and sends final receipt.
+    Admin route to update service amount for a booking.
+    Automatically adds ₹20 booking fee to calculate total.
     """
     if not session.get('admin_logged_in'):
         return jsonify({"success": False, "error": "Admin access required"}), 403
 
     try:
+        data = request.get_json()
+        service_amount = data.get('service_amount')
+        
+        if service_amount is None:
+            return jsonify({"success": False, "error": "Service amount is required"}), 400
+        
+        # Validate service amount
+        try:
+            service_amount = float(service_amount)
+            if service_amount < 0:
+                return jsonify({"success": False, "error": "Service amount cannot be negative"}), 400
+        except ValueError:
+            return jsonify({"success": False, "error": "Invalid service amount"}), 400
+        
+        # Import the update function from db.py
+        from db import update_booking_service_amount
+        
+        # Update the booking with service amount
+        success = update_booking_service_amount(booking_id, service_amount)
+        
+        if success:
+            total_amount = service_amount + 20  # Add ₹20 booking fee
+            return jsonify({
+                "success": True,
+                "message": f"Service amount updated successfully. Total: ₹{total_amount}",
+                "service_amount": service_amount,
+                "total_amount": total_amount
+            })
+        else:
+            return jsonify({"success": False, "error": "Failed to update service amount"}), 500
+            
+    except Exception as e:
+        print(f"Error updating service amount: {e}")
+        return jsonify({"success": False, "error": "Internal server error"}), 500
+
+@app.route('/admin/complete-booking/<booking_id>', methods=['POST'])
+def complete_booking(booking_id):
+    """
+    Enhanced complete booking route with service amount handling
+    """
+    if not session.get('admin_logged_in'):
+        return jsonify({"success": False, "error": "Admin access required"}), 403
+
+    try:
+        data = request.get_json() or {}
+        service_amount = data.get('service_amount', 0)
+        
         booking_oid = ObjectId(booking_id)
     except Exception:
         return jsonify({"success": False, "error": "Invalid booking ID"}), 400
@@ -489,11 +539,16 @@ def complete_booking(booking_id):
         if not booking:
             return jsonify({"success": False, "error": "Booking not found"}), 404
 
-        # Update booking status
+        # Calculate total amount
+        total_amount = float(service_amount) + 20 if service_amount else 20
+        
+        # Update booking status and amounts
         result = prebookings_collection.update_one(
             {"_id": booking_oid},
             {"$set": {
                 "status": "completed",
+                "service_amount": float(service_amount) if service_amount else 0,
+                "total_amount": total_amount,
                 "updated_at": datetime.now()
             }}
         )
@@ -501,12 +556,13 @@ def complete_booking(booking_id):
         if result.matched_count == 0:
             return jsonify({"success": False, "error": "Booking not found"}), 404
 
-        if result.modified_count == 0:
-            return jsonify({"success": False, "error": "Booking status already completed"}), 200
+        # Update booking data with amounts for receipt
+        booking['service_amount'] = float(service_amount) if service_amount else 0
+        booking['total_amount'] = total_amount
 
-        # Generate and send final service completion receipt
+        # Generate and send final service completion receipt with amounts
         try:
-            pdf_buffer = generate_receipt_pdf(booking, "Service Completed")
+            pdf_buffer = generate_receipt_pdf(booking, "Service Completed - Final Invoice")
             subject = f"Service Completion Receipt - {booking.get('booking_id')}"
             body = f"""Dear {booking.get('name')},
 
@@ -517,6 +573,11 @@ Service Details:
 - Services: {', '.join(booking.get('services', []))}
 - Date: {booking.get('preferred_date')}
 - Status: Completed
+
+Payment Summary:
+- Service Charges: ₹{service_amount if service_amount else 0}
+- Booking Fee: ₹20
+- Total Amount: ₹{total_amount}
 
 Thank you for choosing Annapoorneshwari Tyre & Painting Works!
 You can now rate our services on our website.
@@ -529,38 +590,20 @@ Annapoorneshwari Team"""
                 subject, 
                 body, 
                 pdf_buffer.getvalue(), 
-                f"service_completion_{booking.get('booking_id')}.pdf"
+                f"final_invoice_{booking.get('booking_id')}.pdf"
             )
-            print(f"✅ Service completion receipt sent to {booking.get('email')}")
+            print(f"✅ Final invoice sent to {booking.get('email')}")
         except Exception as e:
-            print(f"Error sending service completion email: {e}")
+            print(f"Error sending final invoice email: {e}")
 
         return jsonify({
             "success": True,
-            "message": "Booking marked as completed successfully"
+            "message": f"Booking completed. Total amount: ₹{total_amount}"
         })
 
     except Exception as e:
-        print(f"❌ Error completing booking: {e}")
+        print(f"Error completing booking: {e}")
         return jsonify({"success": False, "error": "Failed to update booking status"}), 500
-
-# ================= RECEIPT DOWNLOAD ROUTE =================
-@app.route('/download-receipt/<booking_id>')
-def download_receipt(booking_id):
-    """Download receipt as PDF"""
-    booking = get_prebooking_by_id(booking_id)
-    if not booking:
-        return "Booking not found", 404
-    
-    try:
-        pdf_buffer = generate_receipt_pdf(booking, "Service Receipt")
-        response = make_response(pdf_buffer.getvalue())
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename=receipt_{booking_id}.pdf'
-        return response
-    except Exception as e:
-        print(f"Error generating PDF receipt: {e}")
-        return "Error generating receipt", 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

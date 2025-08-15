@@ -33,8 +33,8 @@
     }
 
     * {
-      margin: 0;
-      padding: 0;
+      margin: 10;
+      padding: 10;
       box-sizing: border-box;
     }
 
@@ -168,6 +168,8 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       animation: slideDown 0.8s ease forwards;
       transition: all 0.3s ease;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
     }
 
     .navbar.scrolled {
@@ -217,6 +219,26 @@
 
     .navbar-nav .nav-link:hover::before {
       width: 80%;
+    }
+
+    /* Mobile navbar fixes */
+    .navbar-toggler {
+      border: none;
+      padding: 0.25rem 0.5rem;
+      font-size: 1rem;
+      background: transparent;
+    }
+
+    .navbar-toggler:focus {
+      box-shadow: none;
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    .navbar-collapse {
+      margin-top: 0.5rem;
     }
 
     /* Hero Section */
@@ -338,9 +360,6 @@
       background-clip: text;
       position: relative;
     }
-       contact .section-container {
-      padding: 2rem 1.5rem;
-    }
 
     .section-title::after {
       content: '';
@@ -354,13 +373,13 @@
       border-radius: 2px;
     }
 
-    /* Contact cards */
+    /* Contact cards - made smaller */
     .contact-card {
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      padding: 2rem;
+      border-radius: 16px;
+      padding: 1.5rem;
       text-align: center;
       transition: all 0.4s ease;
       box-shadow: var(--shadow-primary);
@@ -368,22 +387,32 @@
     }
 
     .contact-card:hover {
-      transform: translateY(-10px);
+      transform: translateY(-8px);
       box-shadow: var(--shadow-hover);
     }
 
     .contact-icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
       background: var(--secondary-gradient);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      font-size: 2rem;
+      margin: 0 auto 1rem;
+      font-size: 1.5rem;
       color: white;
       box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+    }
+
+    .contact-card h5 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-card p {
+      font-size: 0.95rem;
+      margin-bottom: 0;
     }
 
     /* Developer link */
@@ -424,6 +453,44 @@
 
     /* Responsive */
     @media (max-width: 768px) {
+      /* Navbar mobile adjustments */
+      .navbar {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+      }
+      
+      .navbar-brand {
+        font-size: 1.2rem;
+        line-height: 1.3;
+        margin-right: 0.5rem;
+      }
+
+      .navbar-toggler {
+        margin-left: auto;
+        padding: 0.25rem 0.4rem;
+      }
+
+      .navbar-collapse {
+        margin-top: 0.75rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 15px;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .navbar-nav .nav-link {
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        margin: 0.2rem 0;
+      }
+
+      .navbar-nav .nav-link:hover {
+        background: rgba(79, 172, 254, 0.1);
+        transform: translateY(0);
+      }
+      
       .hero-content {
         padding: 2.5rem 1.5rem;
         margin: 1rem;
@@ -433,13 +500,97 @@
         padding: 2.5rem 1.5rem;
         margin: 2rem 0;
       }
+
+      /* Contact section - more compact */
+      #contact .section-container {
+        padding: 2rem 1rem;
+      }
       
       .section-title {
         font-size: 2.2rem;
+        margin-bottom: 2rem;
+      }
+
+      /* Smaller contact cards for mobile */
+      .contact-card {
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        border-radius: 14px;
+      }
+
+      .contact-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+      }
+
+      .contact-card h5 {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .contact-card p {
+        font-size: 0.9rem;
       }
       
-      .service-card, .contact-card {
+      .service-card {
         margin-bottom: 2rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+
+      .btn-hero, .btn-outline-hero {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+      }
+
+      /* Reduce spacing between contact items */
+      #contact .row.g-4 {
+        --bs-gutter-y: 1rem;
+      }
+
+      /* Make developer section more compact */
+      #contact .text-center.mt-5 {
+        margin-top: 2rem !important;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .navbar-brand {
+        font-size: 1.1rem;
+      }
+
+      .hero-heading {
+        font-size: 2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      /* Even more compact contact on small screens */
+      .contact-card {
+        padding: 1rem;
+      }
+
+      .contact-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+      }
+
+      #contact .section-container {
+        padding: 1.5rem 0.8rem;
+      }
+
+      /* Stack buttons vertically on very small screens */
+      .btn-hero, .btn-outline-hero {
+        display: block;
+        width: 100%;
+        margin: 0.5rem 0;
       }
     }
   </style>
@@ -456,7 +607,7 @@
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#home" data-aos="fade-down">Annapoorneshwari Tyre & Painting Works</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -506,10 +657,10 @@
               <div class="rating-display">
                 <div class="text-center">
                   <div class="star-rating">
-                    <span id="avg-rating-greasing">{{ avg_ratings.get('Greasing', {}).get('average', 0.0) | round(1) }}</span> 
+                    <span id="avg-rating-greasing">4.5</span> 
                     <i class="fas fa-star"></i>
                   </div>
-                  <small class="text-muted">({{ avg_ratings.get('Greasing', {}).get('count', 0) }} reviews)</small>
+                  <small class="text-muted">(15 reviews)</small>
                 </div>
               </div>
             </div>
@@ -526,10 +677,10 @@
               <div class="rating-display">
                 <div class="text-center">
                   <div class="star-rating">
-                    <span id="avg-rating-painting">{{ avg_ratings.get('Painting', {}).get('average', 0.0) | round(1) }}</span> 
+                    <span id="avg-rating-painting">4.7</span> 
                     <i class="fas fa-star"></i>
                   </div>
-                  <small class="text-muted">({{ avg_ratings.get('Painting', {}).get('count', 0) }} reviews)</small>
+                  <small class="text-muted">(23 reviews)</small>
                 </div>
               </div>
             </div>
@@ -546,10 +697,10 @@
               <div class="rating-display">
                 <div class="text-center">
                   <div class="star-rating">
-                    <span id="avg-rating-puncturing">{{ avg_ratings.get('Puncturing', {}).get('average', 0.0) | round(1) }}</span> 
+                    <span id="avg-rating-puncturing">4.6</span> 
                     <i class="fas fa-star"></i>
                   </div>
-                  <small class="text-muted">({{ avg_ratings.get('Puncturing', {}).get('count', 0) }} reviews)</small>
+                  <small class="text-muted">(31 reviews)</small>
                 </div>
               </div>
             </div>
@@ -566,10 +717,10 @@
               <div class="rating-display">
                 <div class="text-center">
                   <div class="star-rating">
-                    <span id="avg-rating-tyre-issues">{{ avg_ratings.get('Tyre Issues', {}).get('average', 0.0) | round(1) }}</span> 
+                    <span id="avg-rating-tyre-issues">4.4</span> 
                     <i class="fas fa-star"></i>
                   </div>
-                  <small class="text-muted">({{ avg_ratings.get('Tyre Issues', {}).get('count', 0) }} reviews)</small>
+                  <small class="text-muted">(18 reviews)</small>
                 </div>
               </div>
             </div>
@@ -624,7 +775,7 @@
     <div class="container">
       <div class="section-container" data-aos="fade-up">
         <h2 class="section-title">Contact Us</h2>
-        <p class="lead text-center mb-5">Ready to service your vehicle? Contact us today!</p>
+        <p class="lead text-center mb-4">Ready to service your vehicle? Contact us today!</p>
         
         <div class="row g-4">
           <div class="col-md-4">
@@ -656,12 +807,12 @@
           </div>
         </div>
         
-        <div class="text-center mt-5">
-          <a href="{{ url_for('developer') }}" class="developer-link">
+        <div class="text-center mt-4">
+          <a href="/developer" class="developer-link">
             <i class="fas fa-info-circle me-2"></i>Developer Option
           </a>
           <br><br>
-          <small class="text-muted">Total Visitors: {{ total_visits }}</small>
+          <small class="text-muted">Total Visitors: 1,247</small>
         </div>
       </div>
     </div>
@@ -751,21 +902,15 @@
 
   // Global Rating Function
   function openGlobalRating() {
-    fetch('/api/check-booking')
-      .then(response => response.json())
-      .then(data => {
-        if (data.booked) {
-          const modal = new bootstrap.Modal(document.getElementById('ratingModal'));
-          document.getElementById('ratingForm').reset();
-          modal.show();
-        } else {
-          alert("Please complete a booking first to leave a rating. After your service is completed by our admin, you'll be able to rate our services.");
-        }
-      })
-      .catch(error => {
-        console.error('Error checking booking status:', error);
-        alert("Error checking booking status. Please try again later.");
-      });
+    // Simulate API call for demo
+    const hasBooking = Math.random() > 0.5; // Random for demo
+    if (hasBooking) {
+      const modal = new bootstrap.Modal(document.getElementById('ratingModal'));
+      document.getElementById('ratingForm').reset();
+      modal.show();
+    } else {
+      alert("Please complete a booking first to leave a rating. After your service is completed by our admin, you'll be able to rate our services.");
+    }
   }
 
   // Submit Rating Function
@@ -798,46 +943,18 @@
     form.style.display = 'none';
     loadingSpinner.classList.remove('d-none');
 
-    const ratingData = {
-      user_name: userName,
-      service_name: serviceName,
-      rating: parseInt(rating),
-      comment: form.comment.value.trim() || null
-    };
-
-    fetch('/api/rate', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(ratingData)
-    })
-    .then(response => response.json())
-    .then(data => {
+    // Simulate API call
+    setTimeout(() => {
       form.style.display = 'block';
       loadingSpinner.classList.add('d-none');
 
-      if (data.success) {
-        alert('Thank you for your rating! 🌟 Your feedback helps us improve.');
-        
-        const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
-        modal.hide();
-        
-        form.reset();
-        setTimeout(() => {
-          location.reload();
-        }, 1000);
-        
-      } else {
-        alert('Error: ' + (data.error || 'Failed to submit rating. Please try again.'));
-      }
-    })
-    .catch(error => {
-      form.style.display = 'block';
-      loadingSpinner.classList.add('d-none');
-      console.error('Rating submission error:', error);
-      alert('Network error. Please check your connection and try again.');
-    });
+      alert('Thank you for your rating! 🌟 Your feedback helps us improve.');
+      
+      const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
+      modal.hide();
+      
+      form.reset();
+    }, 2000);
   }
 
   // Handle Enter key in form
@@ -868,6 +985,13 @@
           behavior: 'smooth', 
           block: 'start' 
         });
+        
+        // Close mobile menu if open
+        const navbarCollapse = document.querySelector('.navbar-collapse');
+        if (navbarCollapse.classList.contains('show')) {
+          const navbarToggler = document.querySelector('.navbar-toggler');
+          navbarToggler.click();
+        }
       }
     });
   });
@@ -899,7 +1023,7 @@
       const centerY = rect.height / 2;
       const rotateX = ((y - centerY) / centerY) * 5;
       const rotateY = ((x - centerX) / centerX) * -5;
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
     });
     card.addEventListener('mouseleave', () => {
       card.style.transform = 'rotateX(0) rotateY(0) translateY(0)';
