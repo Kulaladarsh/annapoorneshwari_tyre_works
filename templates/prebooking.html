@@ -421,7 +421,7 @@
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Contact Number</label>
-              <input type="tel" class="form-control" name="contact" placeholder="9876543210" required />
+              <input type="tel" class="form-control" name="contact" placeholder="e.g 8861446025" required />
             </div>
           </div>
 
@@ -462,7 +462,7 @@
         <div class="form-section">
           <div class="section-title">
             <i class="fas fa-map-marker-alt"></i>
-            Service Location
+            Additional Personal Information
           </div>
           
           <div class="row">
@@ -471,13 +471,14 @@
               <input type="text" class="form-control" name="area" placeholder="Your area" required />
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label">District</label>
-              <input type="text" class="form-control" name="district" placeholder="Your district" required />
-            </div>
-            <div class="col-md-4 mb-3">
               <label class="form-label">Taluk</label>
               <input type="text" class="form-control" name="taluk" placeholder="Your taluk" required />
             </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">District</label>
+              <input type="text" class="form-control" name="district" placeholder="Your district" required />
+            </div>
+            
           </div>
         </div>
 
@@ -528,56 +529,59 @@
                 <option value="">Select Vehicle Type</option>
                 <option value="2-wheeler">2-Wheeler</option>
                 <option value="4-wheeler">4-Wheeler</option>
+                <option value="6-wheeler">6-Wheeler</option>
                 <option value="Other">Other</option>
               </select>
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Vehicle Details</label>
-              <input type="text" class="form-control" name="vehicle_details" placeholder="e.g., Honda Activa, Maruti Swift" required />
+              <input type="text" class="form-control" name="vehicle_details" placeholder="e.g., Honda Activa, Maruti Swift,Busses" required />
             </div>
           </div>
         </div>
 
         <!-- Payment Section -->
-        <div class="form-section payment-section">
-          <div class="section-title">
-            <i class="fas fa-credit-card"></i>
-            Payment Information
-          </div>
+     <!-- Payment Section -->
+<div class="form-section payment-section">
+  <div class="section-title">
+    <i class="fas fa-credit-card"></i>
+    Payment Information
+  </div>
 
-          <div class="alert alert-info">
-            <div class="d-flex align-items-center">
-              <i class="fas fa-info-circle me-2"></i>
-              <div>
-                <strong>Platform Fee: ₹20</strong><br>
-                <small>This fee is charged after service completion. Non-refundable if you don't attend the scheduled appointment.</small>
-              </div>
-            </div>
-          </div>
+  <div class="alert alert-info">
+    <div class="d-flex align-items-center">
+      <i class="fas fa-info-circle me-2"></i>
+      <div>
+        <strong>Platform Fee: ₹20</strong><br>
+        <small>This fee is charged after service completion. Non-refundable if you don't attend the scheduled appointment.</small>
+      </div>
+    </div>
+  </div>
 
-          <div class="mb-3">
-            <label class="form-label">Your UPI ID</label>
-            <input type="text" class="form-control" name="upi_number" placeholder="e.g., 9876543210@paytm" required />
-          </div>
+  <div class="upi-qr-container">
+    <label class="form-label d-block">Scan QR Code to Pay ₹20</label>
+    <img src="static/WhatsApp Image 2025-08-09 at 09.59.27.jpeg" alt="UPI QR Code" />
+    <p class="mt-2 text-muted small">
+      <i class="fas fa-mobile-alt"></i> 
+      Scan with any UPI app like PhonePe, GPay, Paytm
+    </p>
+  </div>
 
-          <div class="upi-qr-container">
-            <label class="form-label d-block">Scan QR Code to Pay ₹20</label>
-            <img src="static\WhatsApp Image 2025-08-09 at 09.59.27.jpeg" alt="UPI QR Code" />
-            <p class="mt-2 text-muted small">
-              <i class="fas fa-mobile-alt"></i> 
-              Scan with any UPI app like PhonePe, GPay, Paytm
-            </p>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">UPI Transaction Reference ID</label>
-            <input type="text" class="form-control" name="upi_ref" placeholder="e.g., 1234567890@okicici" pattern="^[a-zA-Z0-9]{10,20}$" required />
-            <small class="text-muted">
-              <i class="fas fa-receipt"></i> 
-              Enter the reference ID from your payment confirmation
-            </small>
-          </div>
-        </div>
+  <div class="mb-3">
+    <label class="form-label">Transaction ID</label>
+    <input type="text" 
+           class="form-control" 
+           name="transaction_id" 
+           placeholder="Enter UPI Transaction ID (12-20 digits)" 
+           pattern="[0-9]{12,20}"
+           title="Transaction ID must be 12-20 digits only"
+           required />
+    <small class="text-muted">
+      <i class="fas fa-info-circle"></i> 
+      Enter the transaction ID from your UPI payment app
+    </small>
+  </div>
+</div>
 
         <div class="text-center">
           <button type="submit" class="btn submit-btn w-100">
@@ -745,32 +749,38 @@
     const servicesSelect = document.querySelector('select[name="services"]');
     data.services = Array.from(servicesSelect.selectedOptions).map(option => option.value);
 
-    data.payment_info = { 
-      amount: 20, 
-      method: "UPI", 
-      ref: data.upi_ref 
-    };
+     const transactionId = data.transaction_id ? data.transaction_id.trim() : '';
+  
+  data.payment_info = { 
+    amount: 20, 
+    method: "UPI", 
+    txn_ref_id: transactionId // This must match transaction_id for validation
+  };
+  
+  // Debug log to check the values
+  console.log('Transaction ID:', transactionId);
+  console.log('Payment Info:', data.payment_info);
 
-    fetch("/prebook", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-    .then(res => res.json())
-    .then(data => {
-      hideLoadingOverlay();
-      if (data.success) {
-        showSuccessModal(data.booking_id);
-      } else {
-        showAlert(data.error || "Booking failed. Please try again.", "danger");
-      }
-    })
-    .catch(error => {
-      hideLoadingOverlay();
-      console.error('Error:', error);
-      showAlert("Network error. Please check your connection and try again.", "danger");
-    });
+  fetch("/prebook", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  })
+  .then(res => res.json())
+  .then(data => {
+    hideLoadingOverlay();
+    if (data.success) {
+      showSuccessModal(data.booking_id);
+    } else {
+      showAlert(data.error || "Booking failed. Please try again.", "danger");
+    }
+  })
+  .catch(error => {
+    hideLoadingOverlay();
+    console.error('Error:', error);
+    showAlert("Network error. Please check your connection and try again.", "danger");
   });
+});
 
   // Add smooth scrolling for better UX
   document.querySelectorAll('input, select, textarea').forEach(element => {

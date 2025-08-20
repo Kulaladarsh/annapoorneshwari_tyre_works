@@ -593,6 +593,14 @@
         margin: 0.5rem 0;
       }
     }
+
+    .service-card h4,
+    .service-card p {
+     text-align: center;
+    }
+
+    
+
   </style>
 </head>
 <body>
@@ -604,28 +612,32 @@
   <div class="particle" style="width: 12px; height: 12px; top: 80%; left: 70%; animation-delay: 1s;"></div>
 
   <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="#home" data-aos="fade-down">Annapoorneshwari Tyre & Painting Works</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item" data-aos="fade-down" data-aos-delay="100"><a class="nav-link" href="#home">Home</a></li>
-          <li class="nav-item" data-aos="fade-down" data-aos-delay="200"><a class="nav-link" href="#services">Services</a></li>
-          <li class="nav-item" data-aos="fade-down" data-aos-delay="300"><a class="nav-link" href="#about">About</a></li>
-          <li class="nav-item" data-aos="fade-down" data-aos-delay="400"><a class="nav-link" href="#contact">Contact</a></li>
-        </ul>
-      </div>
+<nav class="navbar navbar-expand-lg fixed-top">
+  <div class="container">
+    <a class="navbar-brand text-center" href="#home" data-aos="fade-down"
+       style="white-space: normal; font-size: 16px; line-height: 1.2;">
+      Annapoorneshwari Tyre & Painting Works
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item" data-aos="fade-down" data-aos-delay="100"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item" data-aos="fade-down" data-aos-delay="200"><a class="nav-link" href="#services">Services</a></li>
+        <li class="nav-item" data-aos="fade-down" data-aos-delay="300"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item" data-aos="fade-down" data-aos-delay="400"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
+
 
   <!-- Hero Section -->
   <section id="home" class="hero-section d-flex align-items-center justify-content-center" style="min-height: 70vh; padding-top: 120px;">
     <div class="container">
       <div class="hero-content" data-aos="fade-up">
-        <h1 class="hero-heading">We Repair, We Serve</h1>
+        <h1 class="hero-heading">Excellence in Repair, Commitment in Service</h1>
         <p class="hero-subtitle">Professional Tyre, Painting & Automotive Services</p>
         <div data-aos="fade-up" data-aos-delay="400">
           <a href="/prebook" class="btn btn-hero">
@@ -656,11 +668,16 @@
               <p class="mb-3">Professional greasing services for all vehicle types with quality lubricants</p>
               <div class="rating-display">
                 <div class="text-center">
-                  <div class="star-rating">
-                    <span id="avg-rating-greasing">4.5</span> 
-                    <i class="fas fa-star"></i>
-                  </div>
-                  <small class="text-muted">(15 reviews)</small>
+                <div class="star-rating">
+                  <span id="avg-rating-greasing">
+                    {{ avg_ratings.get('Greasing', {}).get('average', 'N/A') }}
+                  </span>
+                  <i class="fas fa-star"></i>
+                </div>
+                <small class="text-muted">
+                  ({{ avg_ratings.get('Greasing', {}).get('count', 0) }} reviews)
+                </small>
+
                 </div>
               </div>
             </div>
@@ -677,10 +694,15 @@
               <div class="rating-display">
                 <div class="text-center">
                   <div class="star-rating">
-                    <span id="avg-rating-painting">4.7</span> 
+                    <span id="avg-rating-painting">
+                      {{ avg_ratings.get('Painting', {}).get('average', 'N/A') }}
+                    </span>
                     <i class="fas fa-star"></i>
                   </div>
-                  <small class="text-muted">(23 reviews)</small>
+                  <small class="text-muted">
+                    ({{ avg_ratings.get('Painting', {}).get('count', 0) }} reviews)
+                  </small>
+
                 </div>
               </div>
             </div>
@@ -692,15 +714,20 @@
               <div class="service-icon">
                 <i class="fas fa-bolt"></i>
               </div>
-              <h4 class="fw-bold mb-3">Puncturing</h4>
-              <p class="mb-3">Quick and reliable puncture repair services for all types of tyres</p>
+              <center><h4 class="fw-bold mb-3">Puncturing</h4>
+              <p class="mb-3">Quick and reliable puncture repair services for all types of tyres</p></center>
               <div class="rating-display">
                 <div class="text-center">
-                  <div class="star-rating">
-                    <span id="avg-rating-puncturing">4.6</span> 
-                    <i class="fas fa-star"></i>
-                  </div>
-                  <small class="text-muted">(31 reviews)</small>
+                <div class="star-rating">
+                  <span id="avg-rating-puncturing">
+                    {{ avg_ratings.get('Puncturing', {}).get('average', 'N/A') }}
+                  </span>
+                  <i class="fas fa-star"></i>
+                </div>
+                <small class="text-muted">
+                  ({{ avg_ratings.get('Puncturing', {}).get('count', 0) }} reviews)
+                </small>
+
                 </div>
               </div>
             </div>
@@ -716,11 +743,16 @@
               <p class="mb-3">Complete tyre problem diagnosis and resolution services</p>
               <div class="rating-display">
                 <div class="text-center">
-                  <div class="star-rating">
-                    <span id="avg-rating-tyre-issues">4.4</span> 
-                    <i class="fas fa-star"></i>
-                  </div>
-                  <small class="text-muted">(18 reviews)</small>
+                <div class="star-rating">
+                  <span id="avg-rating-tyre-issues">
+                    {{ avg_ratings.get('Tyre Issues', {}).get('average', 'N/A') }}
+                  </span>
+                  <i class="fas fa-star"></i>
+                </div>
+                <small class="text-muted">
+                  ({{ avg_ratings.get('Tyre Issues', {}).get('count', 0) }} reviews)
+                </small>
+
                 </div>
               </div>
             </div>
@@ -747,9 +779,9 @@
       <div class="section-container" data-aos="fade-up">
         <div class="row align-items-center g-5">
           <div class="col-lg-6">
-            <h2 class="section-title text-start">About Us</h2>
-            <p class="lead mb-4">Annapoorneshwari Tyre & Painting Works has been serving customers with dedication and expertise for over a decade.</p>
-            <p class="mb-4">We specialize in comprehensive vehicle services including tyre repairs, painting, greasing, and puncture solutions. Our commitment to quality and customer satisfaction has made us a trusted name in the industry.</p>
+            <h2 class="section-title text-center">About Us</h2>
+            <p class="lead mb-4 text-center">Annapoorneshwari Tyre & Painting Works has been serving customers with dedication and expertise for over a decade.</p>
+            <p class="mb-4 text-center">We specialize in comprehensive vehicle services including tyre repairs, painting, greasing, and puncture solutions. Our commitment to quality and customer satisfaction has made us a trusted name in the industry.</p>
             <a href="/prebook" class="btn btn-hero">
               <i class="fas fa-calendar-check me-2"></i>Book Service Now
             </a>
@@ -784,7 +816,7 @@
                 <i class="fas fa-phone"></i>
               </div>
               <h5 class="fw-bold">Phone</h5>
-              <p class="mb-0">8861446025</p>
+              <p class="mb-0">9844053505</p>
             </div>
           </div>
           <div class="col-md-4">
@@ -812,7 +844,8 @@
             <i class="fas fa-info-circle me-2"></i>Developer Option
           </a>
           <br><br>
-          <small class="text-muted">Total Visitors: 1,247</small>
+         <small class="text-muted">Total Visitors: {{ total_visits }}</small>
+
         </div>
       </div>
     </div>
@@ -899,6 +932,93 @@
     once: true,
     offset: 50
   });
+  // Function to fetch and display average ratings with stars
+  async function loadAverageRatingsWithStars() {
+    try {
+      const response = await fetch('/api/average-ratings');
+      if (response.ok) {
+        const avgRatings = await response.json();
+        
+        const services = [
+          { key: 'greasing', name: 'Greasing' },
+          { key: 'painting', name: 'Painting' },
+          { key: 'puncturing', name: 'Puncturing' },
+          { key: 'tyre-issues', name: 'Tyre Issues' }
+        ];
+
+        services.forEach(service => {
+          const ratingContainer = document.getElementById(`avg-rating-${service.key}`)?.closest('.rating-display');
+          if (ratingContainer && avgRatings[service.name]) {
+            const rating = avgRatings[service.name];
+            
+            ratingContainer.innerHTML = `
+              <div class="text-center">
+                <div class="star-rating mb-2">
+                  <span class="fw-bold me-2">${rating.average}</span>
+                  ${generateStarsHTML(rating.average)}
+                </div>
+                <small class="text-muted">(${rating.count} reviews)</small>
+              </div>
+            `;
+          } else if (ratingContainer) {
+            ratingContainer.innerHTML = `
+              <div class="text-center">
+                <div class="star-rating mb-2">
+                  <span class="fw-bold me-2">0.0</span>
+                  ${generateStarsHTML(0)}
+                </div>
+                <small class="text-muted">(No reviews yet)</small>
+              </div>
+            `;
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error loading average ratings:', error);
+    }
+  }
+
+  // Helper function to generate stars HTML
+  function generateStarsHTML(rating) {
+    const ratingValue = parseFloat(rating) || 0;
+    const fullStars = Math.floor(ratingValue);
+    const hasHalfStar = (ratingValue % 1) >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+    let starsHTML = '';
+    
+    for (let i = 0; i < fullStars; i++) {
+      starsHTML += '<i class="fas fa-star text-warning"></i>';
+    }
+    
+    if (hasHalfStar) {
+      starsHTML += '<i class="fas fa-star-half-alt text-warning"></i>';
+    }
+    
+    for (let i = 0; i < emptyStars; i++) {
+      starsHTML += '<i class="far fa-star text-warning"></i>';
+    }
+
+    return starsHTML;
+  }
+
+  // Function to fetch and display total visitors
+  async function loadTotalVisitors() {
+    try {
+      const response = await fetch('/api/total-visits');
+      if (response.ok) {
+        const data = await response.json();
+        const visitorElement = document.querySelector('small.text-muted');
+        if (visitorElement && visitorElement.textContent.includes('Total Visitors:')) {
+          visitorElement.textContent = `Total Visitors: ${data.total_visits.toLocaleString()}`;
+        }
+      } else {
+        console.error('Failed to fetch total visitors');
+      }
+    } catch (error) {
+      console.error('Error loading total visitors:', error);
+    }
+  }
 
   // Global Rating Function
   function openGlobalRating() {
@@ -913,58 +1033,250 @@
     }
   }
 
-  // Submit Rating Function
-  function submitRating() {
+  /// Replace the existing submitRating function in your index.html with this:
+
+async function submitRating() {
     const form = document.getElementById('ratingForm');
     const loadingSpinner = document.getElementById('loadingSpinner');
+    const submitButton = document.querySelector('.modal-footer .btn:last-child');
 
     const userName = form.user_name.value.trim();
     const serviceName = form.service_name.value;
     const rating = form.rating.value;
+    const comment = form.comment.value.trim();
 
+    // Validation
     if (!userName) {
-      alert('Please enter your name');
-      form.user_name.focus();
-      return;
+        alert('Please enter your name');
+        form.user_name.focus();
+        return;
     }
 
     if (!serviceName) {
-      alert('Please select a service to rate');
-      form.service_name.focus();
-      return;
+        alert('Please select a service to rate');
+        form.service_name.focus();
+        return;
     }
 
     if (!rating) {
-      alert('Please select a rating');
-      form.rating.focus();
-      return;
+        alert('Please select a rating');
+        form.rating.focus();
+        return;
     }
 
+    // Show loading state
     form.style.display = 'none';
     loadingSpinner.classList.remove('d-none');
+    submitButton.disabled = true;
 
-    // Simulate API call
-    setTimeout(() => {
-      form.style.display = 'block';
-      loadingSpinner.classList.add('d-none');
+    try {
+        // Make actual API call to your backend
+        const response = await fetch('/api/rate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                user_name: userName,
+                service_name: serviceName,
+                rating: parseInt(rating),
+                comment: comment || null
+            })
+        });
 
-      alert('Thank you for your rating! 🌟 Your feedback helps us improve.');
-      
-      const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
-      modal.hide();
-      
-      form.reset();
-    }, 2000);
-  }
+        const result = await response.json();
 
-  // Handle Enter key in form
-  document.getElementById('ratingForm').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-      e.preventDefault();
-      submitRating();
+        if (result.success) {
+            // Show success message
+            alert(`Thank you for rating ${serviceName}! 🌟 ${result.message || 'Your feedback helps us improve.'}`);
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
+            modal.hide();
+            
+            // Reset form
+            form.reset();
+            
+            // ✅ REFRESH RATINGS IMMEDIATELY after successful submission
+            await loadAverageRatingsWithStars();
+            
+            // Optional: Add visual feedback that ratings updated
+            showRatingUpdateNotification(serviceName);
+            
+        } else {
+            // Handle error from backend
+            alert(`Error: ${result.error || 'Failed to submit rating. Please try again.'}`);
+        }
+
+    } catch (error) {
+        console.error('Error submitting rating:', error);
+        alert('Network error. Please check your connection and try again.');
+    } finally {
+        // Hide loading state
+        form.style.display = 'block';
+        loadingSpinner.classList.add('d-none');
+        submitButton.disabled = false;
     }
-  });
+}
 
+// Add this new function to show a visual notification when ratings update
+function showRatingUpdateNotification(serviceName) {
+    // Find the service card for the rated service
+    const serviceCards = document.querySelectorAll('.service-card');
+    let targetCard = null;
+    
+    serviceCards.forEach(card => {
+        const cardTitle = card.querySelector('h4');
+        if (cardTitle && cardTitle.textContent.trim() === serviceName) {
+            targetCard = card;
+        }
+    });
+    
+    if (targetCard) {
+        // Add a temporary highlight effect
+        const ratingDisplay = targetCard.querySelector('.rating-display');
+        if (ratingDisplay) {
+            ratingDisplay.style.background = 'rgba(79, 172, 254, 0.3)';
+            ratingDisplay.style.transform = 'scale(1.05)';
+            ratingDisplay.style.transition = 'all 0.5s ease';
+            
+            // Reset after animation
+            setTimeout(() => {
+                ratingDisplay.style.background = 'rgba(79, 172, 254, 0.1)';
+                ratingDisplay.style.transform = 'scale(1)';
+            }, 1500);
+        }
+    }
+    
+    // Show a toast notification (optional)
+    showToastNotification(`${serviceName} ratings updated!`, 'success');
+}
+
+// Add this function for toast notifications
+function showToastNotification(message, type = 'info') {
+    // Create toast element if it doesn't exist
+    let toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        `;
+        document.body.appendChild(toastContainer);
+    }
+    
+    const toast = document.createElement('div');
+    toast.className = `alert alert-${type === 'success' ? 'success' : 'info'} alert-dismissible fade show`;
+    toast.style.cssText = `
+        margin-bottom: 10px;
+        min-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        border: none;
+        border-radius: 10px;
+    `;
+    
+    toast.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        if (toast && toast.parentNode) {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 150);
+        }
+    }, 4000);
+}
+
+// Also update the openGlobalRating function to check actual booking status
+async function openGlobalRating() {
+    try {
+        // Check if user has completed bookings
+        const response = await fetch('/api/check-booking');
+        const result = await response.json();
+        
+        if (result.booked) {
+            const modal = new bootstrap.Modal(document.getElementById('ratingModal'));
+            document.getElementById('ratingForm').reset();
+            modal.show();
+        } else {
+            alert("Please complete a booking first to leave a rating. After your service is completed by our admin, you'll be able to rate our services.");
+        }
+    } catch (error) {
+        console.error('Error checking booking status:', error);
+        alert("Unable to verify booking status. Please try again later.");
+    }
+}
+
+// Enhanced loadAverageRatingsWithStars with error handling and loading states
+async function loadAverageRatingsWithStars() {
+    try {
+        const response = await fetch('/api/average-ratings');
+        if (response.ok) {
+            const avgRatings = await response.json();
+            
+            const services = [
+                { key: 'greasing', name: 'Greasing' },
+                { key: 'painting', name: 'Painting' },
+                { key: 'puncturing', name: 'Puncturing' },
+                { key: 'tyre-issues', name: 'Tyre Issues' }
+            ];
+
+            services.forEach(service => {
+                const ratingContainer = document.getElementById(`avg-rating-${service.key}`)?.closest('.rating-display');
+                if (ratingContainer && avgRatings[service.name]) {
+                    const rating = avgRatings[service.name];
+                    
+                    ratingContainer.innerHTML = `
+                        <div class="text-center">
+                            <div class="star-rating mb-2">
+                                <span class="fw-bold me-2">${rating.average}</span>
+                                ${generateStarsHTML(rating.average)}
+                            </div>
+                            <small class="text-muted">(${rating.count} reviews)</small>
+                        </div>
+                    `;
+                } else if (ratingContainer) {
+                    ratingContainer.innerHTML = `
+                        <div class="text-center">
+                            <div class="star-rating mb-2">
+                                <span class="fw-bold me-2">0.0</span>
+                                ${generateStarsHTML(0)}
+                            </div>
+                            <small class="text-muted">(No reviews yet)</small>
+                        </div>
+                    `;
+                }
+            });
+            
+            console.log('✅ Average ratings updated successfully');
+        } else {
+            console.error('Failed to fetch average ratings:', response.status);
+        }
+    } catch (error) {
+        console.error('Error loading average ratings:', error);
+    }
+}
+
+// Update the page initialization to reduce auto-refresh frequency
+document.addEventListener('DOMContentLoaded', function() {
+    // Load initial data
+    loadAverageRatingsWithStars();
+    loadTotalVisitors();
+    
+    // Refresh data every 60 seconds (reduced from 30)
+    setInterval(() => {
+        loadAverageRatingsWithStars();
+        loadTotalVisitors();
+    }, 60000);
+});
   // Navbar shrink effect on scroll
   window.addEventListener('scroll', function () {
     const navbar = document.querySelector('.navbar');

@@ -43,6 +43,8 @@ from db import (
     cleanup_expired_otps,
     get_admin_dashboard_stats,
     generate_receipt_pdf,
+    get_total_visits,
+    check_user_rating_exists,
     initialize_admin
 )
 
@@ -177,8 +179,7 @@ def prebook():
             'services': 'Service selection',
             'vehicle_type': 'Vehicle type',
             'vehicle_details': 'Vehicle details',
-            'upi_number': 'UPI number',
-            'upi_ref': 'UPI reference ID'
+            'transaction_id': 'Transaction ID'
         }
         missing_fields = [label for field, label in required_fields.items() if not data.get(field)]
         if missing_fields:
@@ -209,15 +210,10 @@ def prebook():
         except ValueError:
             return jsonify({"success": False, "error": "Invalid time format"}), 400
 
-        # UPI format check
-        upi_number = data.get("upi_number", "").strip()
-        if not re.match(r'^[\w.-]+@[\w.-]+$', upi_number):
-            return jsonify({"success": False, "error": "Invalid UPI ID"}), 400
-
-        # UPI reference check
-        upi_ref = data.get("upi_ref", "").strip()
-        if not (8 <= len(upi_ref) <= 30):
-            return jsonify({"success": False, "error": "UPI reference ID must be 8-30 characters"}), 400
+        # Transaction ID validation (numeric, 12–20 digits only)
+        transaction_id = data.get("transaction_id", "").strip()
+        if not re.match(r'^[0-9]{12,20}$', transaction_id):
+            return jsonify({"success": False, "error": "Transaction ID must be 12–20 digits only"}), 400
 
         # Services validation
         services = data.get('services', [])
@@ -226,28 +222,33 @@ def prebook():
         if not services:
             return jsonify({"success": False, "error": "Please select at least one service"}), 400
 
-        # Payment validation
+        # Payment validation - FIXED VERSION
         payment_info = data.get("payment_info", {})
         if int(payment_info.get("amount", 0)) != 20:
             return jsonify({"success": False, "error": "₹20 UPI payment is required"}), 400
-        if payment_info.get("ref") != upi_ref:
-            return jsonify({"success": False, "error": "UPI reference ID mismatch"}), 400
+        
+        # FIX: Compare transaction_id with txn_ref_id properly
+        payment_txn_ref_id = payment_info.get("txn_ref_id", "").strip()
+        if payment_txn_ref_id != transaction_id:
+            print(f"🔍 Debug - Transaction ID: '{transaction_id}', Payment txn_ref_id: '{payment_txn_ref_id}'")
+            return jsonify({"success": False, "error": "Transaction ID mismatch"}), 400
 
-        # Set user session data for ratings
+        # Save payment info with correct transaction_id
+
+        # Save user session
         session['user_name'] = data.get('name').strip()
         session['user_email'] = email
 
-        # ====== DB Save Logic (Your existing functions) ======
+        # ====== DB Save Logic ======
         booking_id = insert_prebooking(data)
         save_payment_info({
             "booking_id": booking_id,
             "amount": payment_info.get("amount", 0),
-            "ref": upi_ref,
-            "upi_number": upi_number,
+            "transaction_id": transaction_id,
             "status": "completed"
         })
 
-        # Generate and send initial booking confirmation receipt
+        # Send booking confirmation
         booking_data = get_prebooking_by_id(booking_id)
         if booking_data:
             try:
@@ -280,6 +281,10 @@ Annapoorneshwari Team"""
     except Exception as e:
         print(f"❌ Error in prebook: {e}")
         return jsonify({"success": False, "error": "Unexpected error"}), 500
+
+
+# ================= ADMIN ROUTES =================
+
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
@@ -377,15 +382,12 @@ def check_booking():
     })
 
     return jsonify({'booked': bool(booking_exists)})
+# Add this enhanced route to your app.py to replace the existing /api/rate route:
 
 @app.route('/api/rate', methods=['POST'])
 def rate_service():
     """
-    Fixed rating logic:
-    1. User must be logged in via session
-    2. Must have a completed booking for the specific service
-    3. Can only rate once per service (even if multiple bookings exist)
-    4. Validates all input data
+    Enhanced rating logic with real-time average calculation update
     """
     try:
         data = request.get_json()
@@ -424,7 +426,7 @@ def rate_service():
         # Check if user has a completed booking for this specific service
         completed_booking = prebookings_collection.find_one({
             "email": session_email,
-            "name": {"$regex": f"^{user_name}$", "$options": "i"},  # Case insensitive
+            "name": {"$regex": f"^{user_name}$", "$options": "i"},
             "services": service_name,
             "status": "completed"
         })
@@ -435,7 +437,7 @@ def rate_service():
                 "error": f"You must have a completed booking for '{service_name}' to rate this service"
             }), 403
 
-        # Check if user has already rated this service (prevent duplicate ratings)
+        # Check if user has already rated this service
         existing_rating = check_user_rating_exists(user_name, service_name)
         if existing_rating:
             return jsonify({
@@ -449,26 +451,41 @@ def rate_service():
             'service_name': service_name,
             'rating': rating,
             'comment': comment if comment else None,
-            'user_email': session_email,  # Store for reference
-            'booking_id': completed_booking.get('booking_id'),  # Link to booking
+            'user_email': session_email,
+            'booking_id': completed_booking.get('booking_id'),
             'created_at': datetime.now()
         }
 
         rating_id = insert_rating(rating_data)
         
+        # ✅ IMMEDIATELY CALCULATE NEW AVERAGE after rating insertion
+        updated_averages = calculate_average_ratings()
+        service_avg = updated_averages.get(service_name, {"average": 0, "count": 0})
+        
         print(f"✅ Rating submitted successfully: {rating_id}")
+        #print(f"✅ Updated average for {service_name}: {service_avg['average']} ({service_avg['count']} reviews)")
+        
         return jsonify({
             "success": True, 
-            "message": f"Thank you for rating '{service_name}'!",
-            "rating_id": str(rating_id)
+            "rating_id": str(rating_id),
+            "updated_average": service_avg["average"],
+            "total_reviews": service_avg["count"]
         })
 
+    except ValueError as ve:
+        print(f"❌ Validation error in rate_service: {str(ve)}")
+        return jsonify({
+            "success": False, 
+            "error": str(ve)
+        }), 400
     except Exception as e:
         print(f"❌ Error in rate_service: {str(e)}")
         return jsonify({
             "success": False, 
             "error": "Internal server error. Please try again later."
         }), 500
+
+# Enhanced average ratings API endpoint (already defined above)
 
 # Add these routes to your existing app.py file
 
@@ -604,6 +621,58 @@ Annapoorneshwari Team"""
     except Exception as e:
         print(f"Error completing booking: {e}")
         return jsonify({"success": False, "error": "Failed to update booking status"}), 500
+
+# avaerage ratings file
+# Note: The home route is already defined above - no need to duplicate it
+
+
+# ================= API ROUTES =================
+
+@app.route('/api/average-ratings')
+def average_ratings_api():
+    """API endpoint to get average ratings for all services"""
+    try:
+        avg_ratings = calculate_average_ratings()
+        return jsonify(avg_ratings)
+    except Exception as e:
+        print(f"Error getting average ratings: {e}")
+        return jsonify({}), 500
+
+
+@app.route('/api/total-visits')
+def total_visits_api():
+    """API endpoint to get total visit count"""
+    try:
+        total_visits = get_total_visits()   # calls db.py function
+        return jsonify({"total_visits": total_visits})
+    except Exception as e:
+        print(f"Error getting total visits: {e}")
+        return jsonify({"total_visits": 0}), 500
+
+
+@app.route('/api/service-stats')
+def service_stats_api():
+    """API endpoint to get comprehensive service statistics"""
+    try:
+        avg_ratings = calculate_average_ratings()
+        total_visits = get_total_visits()
+        total_bookings = len(get_prebookings())
+        total_ratings = len(get_ratings())
+        
+        return jsonify({
+            "average_ratings": avg_ratings,
+            "total_visits": total_visits,
+            "total_bookings": total_bookings,
+            "total_ratings": total_ratings
+        })
+    except Exception as e:
+        print(f"Error getting service stats: {e}")
+        return jsonify({
+            "average_ratings": {},
+            "total_visits": 0,
+            "total_bookings": 0,
+            "total_ratings": 0
+        }), 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

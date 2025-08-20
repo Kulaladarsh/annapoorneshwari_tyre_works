@@ -21,7 +21,9 @@ client = MongoClient(uri)
 
 
 # Access DB & collections
-db = client['annapoorneshwari_tyre_works']
+db = client["annapoorneshwari_tyre_works"]
+
+visits_collection = db['visits']
 services_collection = db['services']
 ratings_collection = db['get_ratings']
 prebookings_collection = db['prebookings']
@@ -61,65 +63,16 @@ def get_services():
     return list(services_collection.find({}, {"_id": 0}))
 
 # ==================== RATINGS ====================
-def check_user_rating_exists(user_name, service_name):
-    """
-    Check if user has already rated a specific service.
-    Returns True if rating exists, False otherwise.
-    """
-    try:
-        # Case-insensitive search for user name
-        count = ratings_collection.count_documents({
-            "user_name": {"$regex": f"^{user_name}$", "$options": "i"},
-            "service_name": service_name
-        })
-        return count > 0
-    except Exception as e:
-        print(f"Error checking user rating exists: {e}")
-        return False
 
-def insert_rating(rating_data):
-    """
-    Insert a new rating with proper validation and duplicate prevention.
-    """
-    try:
-        # Check for duplicate rating before inserting
-        existing = ratings_collection.find_one({
-            "user_name": {"$regex": f"^{rating_data['user_name']}$", "$options": "i"},
-            "service_name": rating_data['service_name']
-        })
-        
-        if existing:
-            raise ValueError("User has already rated this service")
-        
-        # Set creation timestamp
-        rating_data['created_at'] = datetime.now()
-        
-        # Insert the rating
-        result = ratings_collection.insert_one(rating_data)
-        return result.inserted_id
-        
-    except Exception as e:
-        print(f"Error inserting rating: {e}")
-        raise
 
-def get_ratings():
-    """
-    Get all ratings from the database.
-    Returns a list of all ratings with proper formatting.
-    """
-    try:
-        ratings = list(ratings_collection.find().sort("created_at", -1))
-        # Convert ObjectId to string for JSON serialization
-        for rating in ratings:
-            rating['_id'] = str(rating['_id'])
-        return ratings
-    except Exception as e:
-        print(f"Error getting ratings: {e}")
-        return []
+
+
+
+# Add/replace these functions in your db.py file:
 
 def calculate_average_ratings():
     """
-    Calculate average ratings for all services with proper error handling.
+    Enhanced calculation with better error handling and real-time updates
     """
     try:
         pipeline = [
@@ -127,25 +80,178 @@ def calculate_average_ratings():
                 "$group": {
                     "_id": "$service_name",
                     "average": {"$avg": "$rating"},
-                    "count": {"$sum": 1}
+                    "count": {"$sum": 1},
+                    "ratings": {"$push": "$rating"}  # Include individual ratings for debugging
                 }
+            },
+            {
+                "$sort": {"_id": 1}  # Sort by service name for consistency
             }
         ]
         results = list(ratings_collection.aggregate(pipeline))
-        
+
         avg_ratings = {}
         for item in results:
-            service_name = item['_id']
-            avg_ratings[service_name] = {
-                'average': round(item['average'], 1),
-                'count': item['count']
-            }
-        
+            service_name = item["_id"]
+            if service_name:
+                avg_ratings[service_name] = {
+                    "average": round(float(item["average"]), 1),
+                    "count": int(item["count"]),
+                    "raw_average": float(item["average"])  # Keep raw for precision
+                }
+                
+        # Debug print
+        print(f"🔄 Calculated averages for {len(avg_ratings)} services:")
+        for service, data in avg_ratings.items():
+            print(f"   {service}: {data['average']} ({data['count']} reviews)")
+                
         return avg_ratings
-        
+
     except Exception as e:
         print(f"Error calculating average ratings: {e}")
         return {}
+def insert_rating(rating_data):
+    """
+    Insert rating with booking_id validation and duplicate prevention
+    """
+    try:
+        # Ensure booking_id exists
+        if "booking_id" not in rating_data or not rating_data["booking_id"]:
+            raise ValueError("Booking ID is required for rating")
+
+        # Check if this booking already has a rating
+        existing = ratings_collection.find_one({
+            "booking_id": rating_data["booking_id"]
+        })
+        if existing:
+            raise ValueError(
+                f"Booking {rating_data['booking_id']} already has a rating"
+            )
+
+        # Optional: also prevent same user rating same service again
+        user_existing = ratings_collection.find_one({
+            "user_name": {"$regex": f"^{rating_data['user_name']}$", "$options": "i"},
+            "service_name": rating_data["service_name"]
+        })
+        if user_existing:
+            raise ValueError(
+                f"User {rating_data['user_name']} has already rated {rating_data['service_name']}"
+            )
+
+        # Add timestamp
+        rating_data["created_at"] = datetime.now()
+
+        # Insert the rating
+        result = ratings_collection.insert_one(rating_data)
+
+        # Verify insertion
+        inserted_rating = ratings_collection.find_one({"_id": result.inserted_id})
+        if not inserted_rating:
+            raise Exception("Failed to verify rating insertion")
+
+        print(f"✅ Rating inserted successfully: {result.inserted_id}")
+        print(f"   Booking ID: {rating_data['booking_id']}")
+        print(f"   User: {rating_data['user_name']}")
+        print(f"   Service: {rating_data['service_name']}")
+        print(f"   Rating: {rating_data['rating']}/5")
+
+        return result.inserted_id
+
+    except Exception as e:
+        print(f"❌ Error inserting rating: {e}")
+        raise
+
+
+def get_ratings():
+    """
+    Enhanced get ratings with better formatting
+    """
+    try:
+        ratings = list(ratings_collection.find().sort("created_at", -1))
+        
+        # Convert ObjectId to string and format dates
+        for rating in ratings:
+            rating['_id'] = str(rating['_id'])
+            if 'created_at' in rating and rating['created_at']:
+                rating['created_at_formatted'] = rating['created_at'].strftime('%Y-%m-%d %H:%M:%S')
+        
+        print(f"📊 Retrieved {len(ratings)} total ratings")
+        return ratings
+        
+    except Exception as e:
+        print(f"Error getting ratings: {e}")
+        return []
+
+def get_service_rating_stats(service_name):
+    """
+    Get detailed rating statistics for a specific service
+    """
+    try:
+        pipeline = [
+            {"$match": {"service_name": service_name}},
+            {
+                "$group": {
+                    "_id": "$service_name",
+                    "average": {"$avg": "$rating"},
+                    "count": {"$sum": 1},
+                    "ratings": {"$push": "$rating"},
+                    "five_star": {"$sum": {"$cond": [{"$eq": ["$rating", 5]}, 1, 0]}},
+                    "four_star": {"$sum": {"$cond": [{"$eq": ["$rating", 4]}, 1, 0]}},
+                    "three_star": {"$sum": {"$cond": [{"$eq": ["$rating", 3]}, 1, 0]}},
+                    "two_star": {"$sum": {"$cond": [{"$eq": ["$rating", 2]}, 1, 0]}},
+                    "one_star": {"$sum": {"$cond": [{"$eq": ["$rating", 1]}, 1, 0]}}
+                }
+            }
+        ]
+        
+        result = list(ratings_collection.aggregate(pipeline))
+        
+        if result:
+            stats = result[0]
+            return {
+                "service_name": service_name,
+                "average": round(float(stats["average"]), 1),
+                "count": int(stats["count"]),
+                "distribution": {
+                    "5": stats["five_star"],
+                    "4": stats["four_star"],
+                    "3": stats["three_star"],
+                    "2": stats["two_star"],
+                    "1": stats["one_star"]
+                }
+            }
+        return None
+        
+    except Exception as e:
+        print(f"Error getting service rating stats: {e}")
+        return None
+
+# Create indexes for better performance (enhanced version)
+def create_indexes():
+    """Enhanced index creation with better error handling"""
+    try:
+        # Ratings collection indexes
+        try:
+            ratings_collection.create_index([("service_name", 1), ("user_name", 1)], unique=True, name="service_user_unique")
+            print("✅ Created unique rating index")
+        except Exception as e:
+            if "duplicate key" not in str(e).lower():
+                print(f"Rating index creation note: {e}")
+        
+        # Additional performance indexes
+        try:
+            ratings_collection.create_index([("service_name", 1), ("created_at", -1)], name="service_date_idx")
+            ratings_collection.create_index([("user_email", 1)], name="user_email_idx")
+            prebookings_collection.create_index([("email", 1), ("status", 1)], name="email_status_idx")
+            prebookings_collection.create_index([("services", 1), ("status", 1)], name="services_status_idx")
+            print("✅ Created performance indexes")
+        except Exception as e:
+            print(f"Performance index note: {e}")
+            
+    except Exception as e:
+        print(f"Index creation error: {e}")
+
+
 
 def delete_rating_by_id(rating_id):
     """Delete rating by ID"""
@@ -171,6 +277,20 @@ def get_user_completed_bookings(user_email, user_name):
     except Exception as e:
         print(f"Error getting user completed bookings: {e}")
         return []
+
+def check_user_rating_exists(user_name, service_name):
+    """
+    Check if a user has already rated a specific service.
+    Returns the rating document if exists, None otherwise.
+    """
+    try:
+        return ratings_collection.find_one({
+            "user_name": {"$regex": f"^{user_name}$", "$options": "i"},
+            "service_name": service_name
+        })
+    except Exception as e:
+        print(f"Error checking rating existence: {e}")
+        return None
 
 def get_user_rated_services(user_name):
     """
@@ -312,16 +432,18 @@ def verify_otp(email, otp):
         print(f"Error verifying OTP: {e}")
         return False
 
-def increment_visit_count():
-    visits = db.visits.find_one({})
-    if not visits:
-        db.visits.insert_one({"count": 1})
-    else:
-        db.visits.update_one({}, {"$inc": {"count": 1}})
 
 def get_total_visits():
-    visits = db.visits.find_one({})
-    return visits.get("count", 0) if visits else 0
+    """Get total visit count with daily tracking."""
+    try:
+        total_visits = visits_collection.aggregate([
+            {"$group": {"_id": None, "total": {"$sum": "$count"}}}
+        ])
+        total_count = next(total_visits, {}).get("total", 0)
+        return total_count
+    except Exception as e:
+        print(f"Error getting total visits: {e}")
+        return 0
 
 # ==================== PAYMENTS ====================
 def save_payment_info(payment_data):
@@ -636,13 +758,16 @@ def increment_visit_count():
         print("Error incrementing visits:", e)
 
 def get_total_visits():
+    """Get total visits count from all days."""
     try:
         total = visits_collection.aggregate([
             {"$group": {"_id": None, "total": {"$sum": "$count"}}}
         ])
         return next(total, {}).get("total", 0)
-    except:
+    except Exception as e:
+        print("Error getting total visits:", e)
         return 0
+
 
 
 initialize_admin()
