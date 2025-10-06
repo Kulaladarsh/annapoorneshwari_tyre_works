@@ -1,436 +1,1270 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Admin Dashboard - Annapoorneshwari Tyre & Painting Works</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- FontAwesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  <style>
-    .stat-card {
-      transition: transform 0.2s ease-in-out;
-    }
-    .stat-card:hover {
-      transform: translateY(-5px);
-    }
-    .revenue-highlight {
-      background: linear-gradient(135deg, #28a745, #20c997);
-    }
-    .amount-input-group {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .amount-display {
-      font-weight: bold;
-      color: #28a745;
-      font-size: 0.9rem;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Admin Dashboard - Annapoorneshwari Tyre & Painting Works</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --success-color: #198754;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --dark-color: #212529;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .stat-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border: none;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .revenue-highlight {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .chart-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+        }
+
+        .table thead th {
+            font-weight: 600;
+        }
+        
+        .amount-display {
+            font-weight: 600;
+            color: var(--success-color);
+            font-size: 1rem;
+        }
+
+        .footer {
+            background-color: var(--dark-color);
+            color: var(--light-bg);
+            padding: 1rem 0;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Enhanced Mobile Responsiveness */
+        @media (max-width: 1200px) {
+            .container { max-width: 95%; }
+            main { margin-top: 120px !important; }
+            .stat-card .card-body { padding: 1.25rem; }
+        }
+
+        @media (max-width: 992px) {
+            main { margin-top: 110px !important; }
+            .stat-card .card-body { padding: 1rem; }
+            .chart-card { padding: 1.25rem; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding-top: 80px; }
+
+            nav { position: fixed; top: 0; width: 100%; z-index: 1030; }
+
+            main {
+                margin-top: 100px !important;
+                padding: 1rem;
+                border-radius: 15px;
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.8rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stat-card {
+                margin-bottom: 1rem;
+                border-radius: 12px;
+            }
+
+            .stat-card .card-body {
+                padding: 1rem 0.75rem;
+            }
+
+            .stat-card .fa-3x {
+                font-size: 2rem !important;
+                margin-bottom: 0.75rem;
+            }
+
+            .stat-card h5 {
+                font-size: 1.1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-card .fs-2 {
+                font-size: 1.5rem !important;
+            }
+
+            .chart-card {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+                border-radius: 12px;
+            }
+
+            .chart-card h5 {
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.8rem;
+                border-radius: 10px;
+                overflow-x: auto;
+            }
+
+            .table th, .table td {
+                padding: 0.5rem;
+                white-space: nowrap;
+            }
+
+            .btn-group-vertical {
+                flex-direction: row !important;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .btn-group-vertical .btn {
+                margin: 0.125rem;
+                padding: 0.25rem 0.5rem;
+                font-size: 0.75rem;
+                display: inline-block;
+                width: auto;
+                max-width: 80px;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            .modal-dialog {
+                margin: 0.5rem;
+                max-width: calc(100vw - 1rem);
+            }
+
+            .modal-content {
+                border-radius: 15px;
+            }
+
+            .modal-header, .modal-body, .modal-footer {
+                padding: 1rem;
+            }
+
+            .form-control, .form-select {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+
+            .form-label {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .alert {
+                padding: 0.75rem 1rem;
+                font-size: 0.85rem;
+                border-radius: 8px;
+            }
+
+            .offcanvas-body .btn {
+                margin-bottom: 0.5rem;
+            }
+
+            .footer {
+                padding: 0.75rem 0;
+                text-align: center;
+            }
+
+            .footer .container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .footer small {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            main {
+                margin-top: 90px !important;
+                padding: 0.75rem;
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .stat-card .card-body {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .stat-card .fa-3x {
+                font-size: 1.5rem !important;
+                margin-bottom: 0.5rem;
+            }
+
+            .stat-card h5 {
+                font-size: 1rem;
+            }
+
+            .stat-card .fs-2 {
+                font-size: 1.25rem !important;
+            }
+
+            .chart-card {
+                padding: 0.75rem;
+            }
+
+            .chart-card h5 {
+                font-size: 1.1rem;
+            }
+
+            .table-responsive {
+                font-size: 0.75rem;
+            }
+
+            .table th, .table td {
+                padding: 0.375rem;
+            }
+
+            .btn-group-vertical .btn {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.7rem;
+                max-width: 70px;
+            }
+
+            .badge {
+                font-size: 0.65rem;
+                padding: 0.15rem 0.3rem;
+            }
+
+            .modal-dialog {
+                margin: 0.25rem;
+                max-width: calc(100vw - 0.5rem);
+            }
+
+            .modal-header, .modal-body, .modal-footer {
+                padding: 0.75rem;
+            }
+
+            .form-control, .form-select {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .form-label {
+                font-size: 0.85rem;
+            }
+
+            .alert {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .offcanvas-body {
+                padding: 1rem 0.75rem;
+            }
+
+            .footer small {
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Professional Enhancements */
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chart-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: left 0.6s;
+        }
+
+        .chart-card:hover::before {
+            left: 100%;
+        }
+
+        .chart-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(13, 110, 253, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(25, 135, 84, 0.4);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(13, 202, 240, 0.4);
+        }
+
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #343a40 0%, #495057 100%);
+            color: white;
+            border: none;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .table thead th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(0, 123, 255, 0.05);
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            border: none;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            vertical-align: middle;
+        }
+
+        .badge {
+            font-weight: 500;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+        }
+
+        .modal-content {
+            border: none;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+            color: white;
+            border: none;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .form-control, .form-select {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .form-control:hover, .form-select:hover {
+            border-color: #0d6efd;
+        }
+
+        .alert {
+            border: none;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .alert:hover::before {
+            left: 100%;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(33, 37, 41, 0.95) !important;
+        }
+
+        .offcanvas {
+            background: rgba(33, 37, 41, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        main {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Smooth animations */
+        * {
+            scroll-behavior: smooth;
+        }
+
+        .loading {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced dropdowns */
+        .dropdown-menu {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-item {
+            transition: all 0.2s ease;
+            border-radius: 5px;
+            margin: 2px 4px;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            transform: translateX(5px);
+        }
+
+        /* Professional shadows */
+        .shadow-professional {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .shadow-professional-hover:hover {
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), 0 15px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        /* Enhanced card styling */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Enhanced chart container */
+        #bookingStatusChart {
+            transition: all 0.3s ease;
+        }
+
+        #bookingStatusChart:hover {
+            transform: scale(1.02);
+        }
+    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-  <nav class="navbar navbar-dark bg-dark fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="{{ url_for('home') }}">Admin Dashboard</a>
-      <button class="btn btn-dark d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Toggle menu">
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="d-none d-lg-flex">
-        <ul class="navbar-nav flex-row">
-          <li class="nav-item px-2"><a class="nav-link text-white" href="{{ url_for('home') }}">Home</a></li>
-          <li class="nav-item px-2"><a class="nav-link text-white" href="{{ url_for('admin_logout') }}">Logout</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="sidebarMenuLabel">Menu</h5>
-      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body d-flex flex-column">
-      <a href="{{ url_for('home') }}" class="btn btn-link text-start mb-2">Home</a>
-      <a href="{{ url_for('admin_logout') }}" class="btn btn-link text-start">Logout</a>
-    </div>
-  </div>
-
-  <main class="container my-5 p-4 bg-white rounded shadow-sm" style="margin-top: 100px !important;">
-    <h2 class="mb-4 text-center">Dashboard Overview</h2>
-    
-    <!-- Enhanced Statistics Cards -->
-    <div class="row g-4 mb-5">
-      <div class="col-lg-3 col-md-6">
-        <div class="card stat-card text-white bg-primary h-100">
-          <div class="card-body text-center">
-            <i class="fas fa-calendar-check fa-2x mb-2"></i>
-            <h5 class="card-title">Total Bookings</h5>
-            <p class="card-text fs-3">{{ total_bookings or 0 }}</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-lg-3 col-md-6">
-        <div class="card stat-card text-white bg-success h-100">
-          <div class="card-body text-center">
-            <i class="fas fa-check-circle fa-2x mb-2"></i>
-            <h5 class="card-title">Completed</h5>
-            <p class="card-text fs-3">{{ completed_bookings or 0 }}</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-lg-3 col-md-6">
-        <div class="card stat-card text-white bg-warning h-100">
-          <div class="card-body text-center">
-            <i class="fas fa-clock fa-2x mb-2"></i>
-            <h5 class="card-title">Pending</h5>
-            <p class="card-text fs-3">{{ pending_bookings or 0 }}</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-lg-3 col-md-6">
-        <div class="card stat-card text-white revenue-highlight h-100">
-          <div class="card-body text-center">
-            <i class="fas fa-rupee-sign fa-2x mb-2"></i>
-            <h5 class="card-title">Total Revenue</h5>
-            <p class="card-text fs-3">₹{{ total_service_amount or 0 }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Additional Statistics Row -->
-    <div class="row g-4 mb-5">
-      <div class="col-md-6">
-        <div class="card stat-card text-white bg-info h-100">
-          <div class="card-body text-center">
-            <i class="fas fa-calendar-day fa-2x mb-2"></i>
-            <h5 class="card-title">Today's Bookings</h5>
-            <p class="card-text fs-3">{{ daily_prebookings or 0 }}</p>
-          </div>
-        </div>
-      </div>
-      
-      <div class="col-md-6">
-        <div class="card stat-card text-white bg-secondary h-100">
-          <div class="card-body text-center">
-            <i class="fas fa-star fa-2x mb-2"></i>
-            <h5 class="card-title">Average Rating</h5>
-            <p class="card-text fs-3">{{ average_rating or 'N/A' }}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <h3>Recent Bookings</h3>
-    {% if prebookings %}
-    <div class="table-responsive">
-      <table class="table table-striped table-hover">
-        <thead class="table-dark">
-          <tr>
-            <th>Name</th>
-            <th>Contact</th>
-            <th>Location</th>
-            <th>Email</th>
-            <th>Date & Time</th>
-            <th>Services</th>
-            <th>Vehicle</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for prebook in prebookings %}
-          <tr>
-            <td>{{ prebook.name }}</td>
-            <td>
-              <small>{{ prebook.contact }}</small>
-            </td>
-            <td>
-              <small>{{ prebook.area }}<br>
-              {{ prebook.district }}, {{ prebook.taluk }}</small>
-            </td>
-            <td>
-              <small>{{ prebook.email }}</small>
-            </td>
-            <td>
-              <small>{{ prebook.preferred_date or prebook.date }}<br>
-              {{ prebook.time }}</small>
-            </td>
-            <td>
-              {% for service in prebook.services %}
-                <span class="badge bg-primary me-1">{{ service }}</span>
-              {% endfor %}
-            </td>
-            <td>
-              <small>{{ prebook.vehicle_type }}<br>
-              {{ prebook.vehicle_details }}</small>
-            </td>
-            <td>
-              <div id="amount-display-{{ prebook._id }}">
-                {% if prebook.total_amount %}
-                  <span class="amount-display">₹{{ prebook.total_amount }}</span>
-                  <small class="text-muted d-block">(Service: ₹{{ prebook.service_amount or 0 }})</small>
-                {% else %}
-                  <span class="text-muted">Not set</span>
-                {% endif %}
-              </div>
-            </td>
-            <td>
-              {% if prebook.status == 'completed' %}
-                <span class="badge bg-success">
-                  <i class="fas fa-check"></i> Completed
-                </span>
-              {% else %}
-                <span class="badge bg-warning text-dark">
-                  <i class="fas fa-clock"></i> Pending
-                </span>
-              {% endif %}
-            </td>
-            <td>
-              <div class="btn-group-vertical" role="group">
-                {% if prebook.status != 'completed' %}
-                  <button class="btn btn-primary btn-sm mb-1" onclick="showAmountModal('{{ prebook._id }}', '{{ prebook.name }}')" title="Set Service Amount">
-                    <i class="fas fa-rupee-sign"></i> Set Amount
-                  </button>
-                  <button class="btn btn-success btn-sm mb-1" onclick="completeWithAmount('{{ prebook._id }}')" title="Complete with Amount">
-                    <i class="fas fa-check"></i> Complete
-                  </button>
-                {% endif %}
-                <a href="/receipt/{{ prebook.booking_id }}" class="btn btn-info btn-sm mb-1" title="View Receipt">
-                  <i class="fas fa-receipt"></i> Receipt
-                </a>
-                <button class="btn btn-danger btn-sm" onclick="deleteItem('prebook', '{{ prebook._id }}')" title="Delete Booking">
-                  <i class="fas fa-trash"></i> Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    {% else %}
-    <div class="alert alert-info text-center">
-      <i class="fas fa-info-circle"></i> No bookings found.
-    </div>
-    {% endif %}
-  </main>
-
-  <!-- Service Amount Modal -->
-  <div class="modal fade" id="amountModal" tabindex="-1" aria-labelledby="amountModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" id="amountModalLabel">
-            <i class="fas fa-rupee-sign me-2"></i>Set Service Amount
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p class="mb-3">Customer: <strong id="customerName"></strong></p>
-          <input type="hidden" id="currentBookingId">
-          
-          <div class="mb-3">
-            <label for="serviceAmount" class="form-label">Service Charges (₹)</label>
-            <input type="number" class="form-control" id="serviceAmount" placeholder="Enter service amount" min="0" step="10" oninput="calculateTotal()">
-            <small class="text-muted">Enter the actual service charges (excluding booking fee)</small>
-          </div>
-          
-          <div class="alert alert-info">
-            <div class="d-flex justify-content-between">
-              <span>Service Charges:</span>
-              <span id="serviceChargeDisplay">₹0</span>
+    <nav class="navbar navbar-dark bg-dark fixed-top shadow">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="fas fa-tools me-2"></i>Admin Dashboard
+            </a>
+            <button class="btn btn-dark d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Toggle menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="d-none d-lg-flex">
+                <ul class="navbar-nav flex-row">
+                    <li class="nav-item px-2"><a class="nav-link text-white" href="{{ url_for('home') }}">Home</a></li>
+                    <li class="nav-item px-2"><a class="nav-link text-white" href="{{ url_for('admin_logout') }}">Logout</a></li>
+                </ul>
             </div>
-            <div class="d-flex justify-content-between">
-              <span>Booking Fee:</span>
-              <span>₹20</span>
-            </div>
-            <hr>
-            <div class="d-flex justify-content-between fw-bold">
-              <span>Total Amount:</span>
-              <span id="totalAmountDisplay">₹20</span>
-            </div>
-          </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" onclick="saveServiceAmount()">
-            <i class="fas fa-save me-1"></i>Save Amount
-          </button>
+    </nav>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarMenuLabel">Menu</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-      </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-dark text-start mb-2"><i class="fas fa-home me-2"></i>Home</a>
+            <a href="{{ url_for('admin_logout') }}" class="btn btn-outline-dark text-start"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+        </div>
     </div>
-  </div>
 
-  <footer class="bg-light text-dark py-3 mt-auto shadow-sm">
-    <div class="container d-flex justify-content-between align-items-center">
-      <small>© 2025 Annapoorneshwari Tyre & Painting Works. All rights reserved.</small>
-      <div>
-        <small class="text-muted">Admin Panel v2.0</small>
-      </div>
+    <main class="container my-5 p-4 bg-white rounded shadow" style="margin-top: 100px !important;">
+        <h2 class="mb-4 text-center text-dark fw-bold">Dashboard Overview</h2>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card text-white bg-primary h-100">
+                    <div class="card-body">
+                        <i class="fas fa-calendar-check fa-3x mb-3"></i>
+                        <h5 class="card-title fw-bold">Total Bookings</h5>
+                        <p class="card-text fs-2">{{ total_bookings|default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card text-white bg-success h-100">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle fa-3x mb-3"></i>
+                        <h5 class="card-title fw-bold">Completed</h5>
+                        <p class="card-text fs-2">{{ completed_bookings|default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card text-white bg-warning h-100">
+                    <div class="card-body">
+                        <i class="fas fa-clock fa-3x mb-3"></i>
+                        <h5 class="card-title fw-bold">Pending</h5>
+                        <p class="card-text fs-2">{{ pending_bookings|default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card stat-card text-white bg-danger h-100">
+                    <div class="card-body">
+                        <i class="fas fa-times-circle fa-3x mb-3"></i>
+                        <h5 class="card-title fw-bold">Rejected</h5>
+                        <p class="card-text fs-2">{{ rejected_bookings|default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <div class="col-lg-4">
+                <div class="card stat-card text-white revenue-highlight h-100">
+                    <div class="card-body">
+                        <i class="fas fa-rupee-sign fa-3x mb-3"></i>
+                        <h5 class="card-title fw-bold">Total Revenue</h5>
+                        <p class="card-text fs-2">₹{{ total_service_amount|default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card stat-card text-white bg-info h-100">
+                    <div class="card-body">
+                        <i class="fas fa-star fa-3x mb-3"></i>
+                        <h5 class="card-title fw-bold">Total Ratings</h5>
+                        <p class="card-text fs-2">{{ total_ratings|default(0) }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card chart-card h-100">
+                    <h5 class="card-title text-center fw-bold">Booking Status Overview</h5>
+                    <canvas id="bookingStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+
+        <h3 class="mt-5 mb-3 text-dark fw-bold">Recent Bookings</h3>
+        <hr>
+        {% if prebookings %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Services</th>
+                        <th>Vehicle</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prebook in prebookings %}
+                    <tr>
+                        <td>{{ prebook.name }}<br><small class="text-muted">{{ prebook.email }}</small></td>
+                        <td>{{ prebook.contact }}<br><small class="text-muted">{{ prebook.area }}</small></td>
+                        <td>
+                            {% for service in prebook.services %}
+                                <span class="badge bg-primary me-1">{{ service }}</span>
+                            {% endfor %}
+                        </td>
+                        <td><small>{{ prebook.vehicle_type }}<br>{{ prebook.vehicle_details }}</small></td>
+                        <td>
+                            <div id="amount-display-{{ prebook._id }}">
+                                {% if prebook.total_amount %}
+                                    <span class="amount-display">₹{{ prebook.total_amount }}</span>
+                                    <small class="text-muted d-block">(Service: ₹{{ prebook.service_amount|default(0) }})</small>
+                                {% else %}
+                                    <span class="text-muted">Not set</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            {% if prebook.status == 'completed' %}
+                                <span class="badge bg-success"><i class="fas fa-check"></i> Completed</span>
+                            {% elif prebook.status == 'rejected' %}
+                                <span class="badge bg-danger"><i class="fas fa-times"></i> Rejected</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark"><i class="fas fa-clock"></i> Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="btn-group-vertical" role="group">
+                                {% if prebook.status != 'completed' and prebook.status != 'rejected' %}
+                                    <button class="btn btn-primary btn-sm mb-1" onclick="showAmountModal('{{ prebook._id }}', '{{ prebook.name }}')" title="Set Service Amount">
+                                        <i class="fas fa-rupee-sign"></i> Set Amount
+                                    </button>
+                                    <button class="btn btn-success btn-sm mb-1" onclick="completeWithAmount('{{ prebook._id }}')" title="Complete with Amount">
+                                        <i class="fas fa-check"></i> Complete
+                                    </button>
+                                    <button class="btn btn-danger btn-sm mb-1" onclick="rejectBooking('{{ prebook._id }}')" title="Reject Booking">
+                                        <i class="fas fa-times-circle"></i> Reject
+                                    </button>
+                                {% endif %}
+                                <a href="/receipt/{{ prebook.booking_id }}" class="btn btn-info btn-sm mb-1" title="View Receipt">
+                                    <i class="fas fa-receipt"></i> Receipt
+                                </a>
+                                <button class="btn btn-danger btn-sm" onclick="deleteItem('prebook', '{{ prebook._id }}')" title="Delete Booking">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> No bookings found.
+        </div>
+        {% endif %}
+
+        <h3 class="mt-5 mb-3 text-dark fw-bold">Customer Ratings & Reviews</h3>
+        <hr>
+        {% if ratings %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Rating</th>
+                        <th>Review</th>
+                        <th>Photos</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rating in ratings %}
+                    <tr>
+                        <td>{{ rating.user_name }}<br><small class="text-muted">{{ rating.user_email }}</small></td>
+                        <td><span class="badge bg-primary">{{ rating.service_name }}</span></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% for i in range(5) %}
+                                    {% if i < rating.rating %}
+                                        <i class="fas fa-star text-warning"></i>
+                                    {% else %}
+                                        <i class="far fa-star text-muted"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="ms-2 fw-bold">{{ rating.rating }}/5</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if rating.comment %}
+                                <span title="{{ rating.comment }}">{{ rating.comment|truncate(50) }}</span>
+                            {% else %}
+                                <span class="text-muted">No comment</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rating.photo_urls and rating.photo_urls|length > 0 %}
+                                <button class="btn btn-sm btn-outline-primary" data-rating-id="{{ rating._id }}" onclick="showRatingImages(this)">
+                                    <i class="fas fa-images"></i> View {{ rating.photo_urls|length }} photo{{ 's' if rating.photo_urls|length > 1 else '' }}
+                                </button>
+                            {% else %}
+                                <span class="text-muted">No photos</span>
+                            {% endif %}
+                        </td>
+                        <td><small>{{ rating.created_at.strftime('%d/%m/%Y') if rating.created_at else 'N/A' }}</small></td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteItem('rating', '{{ rating._id }}')" title="Delete Rating">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-info text-center">
+            <i class="fas fa-info-circle"></i> No ratings found.
+        </div>
+        {% endif %}
+    </main>
+
+    <div class="modal fade" id="amountModal" tabindex="-1" aria-labelledby="amountModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="amountModalLabel">
+                        <i class="fas fa-rupee-sign me-2"></i>Set Individual Service Amounts
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-3">Customer: <strong id="customerName"></strong></p>
+                    <input type="hidden" id="currentBookingId">
+                    <input type="hidden" id="currentServicesData">
+
+                    <div id="servicesAmountContainer">
+                        <!-- Service amount inputs will be dynamically added here -->
+                    </div>
+
+    <div class="alert alert-info mt-3">
+        <div class="d-flex justify-content-between fw-bold">
+            <span>Total Amount:</span>
+            <span id="totalAmountDisplay">₹0</span>
+        </div>
     </div>
-  </footer>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveIndividualServiceAmounts()">
+                        <i class="fas fa-save me-1"></i>Save Amounts
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <script>
+    <!-- Modal for viewing rating images -->
+    <div class="modal fade" id="ratingImagesModal" tabindex="-1" aria-labelledby="ratingImagesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="ratingImagesModalLabel">
+                        <i class="fas fa-images me-2"></i>Rating Photos
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="ratingImagesContainer" class="row g-3">
+                        <!-- Images will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container d-flex justify-content-between align-items-center flex-column flex-md-row">
+            <small class="text-center text-md-start mb-2 mb-md-0">© 2025 Annapoorneshwari Tyre & Painting Works. All rights reserved.</small>
+            <div><small class="text-muted">Admin Panel v3.0</small></div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    // Rating photos data
+    window.ratingPhotos = {};
+    {% for rating in ratings %}
+    window.ratingPhotos['{{ rating._id }}'] = {{ rating.photo_urls|default([])|tojson }};
+    {% endfor %}
+    </script>
+
+    <script>
+    // Data for the chart is passed from the backend
+    const completedCount = {{ completed_bookings|default(0)|tojson }};
+    const pendingCount = {{ pending_bookings|default(0)|tojson }};
+    const rejectedCount = {{ rejected_bookings|default(0)|tojson }};
+
+    // Initialize the bar chart
+    const ctx = document.getElementById('bookingStatusChart').getContext('2d');
+    const bookingStatusChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Completed', 'Pending', 'Rejected'],
+            datasets: [{
+                label: 'Number of Bookings',
+                data: [completedCount, pendingCount, rejectedCount],
+                backgroundColor: [
+                    '#198754', // Green for completed
+                    '#ffc107', // Yellow for pending
+                    '#dc3545'  // Red for rejected
+                ],
+                borderColor: [
+                    '#198754',
+                    '#ffc107',
+                    '#dc3545'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Bookings'
+                    },
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            label += context.raw;
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Functions for modals and API calls (existing code)
     function showAmountModal(bookingId, customerName) {
-      document.getElementById('currentBookingId').value = bookingId;
-      document.getElementById('customerName').textContent = customerName;
-      document.getElementById('serviceAmount').value = '';
-      calculateTotal();
-      
-      const modal = new bootstrap.Modal(document.getElementById('amountModal'));
-      modal.show();
+        // Fetch booking details to get services
+        fetch(`/api/prebook/${bookingId}`)
+            .then(response => response.json())
+            .then(booking => {
+                document.getElementById('currentBookingId').value = bookingId;
+                document.getElementById('customerName').textContent = customerName;
+                document.getElementById('currentServicesData').value = JSON.stringify(booking.services || []);
+
+                // Generate service amount inputs
+                const container = document.getElementById('servicesAmountContainer');
+                container.innerHTML = '';
+
+                const services = booking.services || [];
+                if (services.length === 0) {
+                    container.innerHTML = '<div class="alert alert-warning">No services found for this booking.</div>';
+                } else {
+                    services.forEach((service, index) => {
+                        const serviceName = typeof service === 'string' ? service : service.name || 'Unknown Service';
+                        const currentAmount = typeof service === 'object' && service.amount ? service.amount : 0;
+
+                        const div = document.createElement('div');
+                        div.className = 'mb-3';
+                        div.innerHTML = `
+                            <label for="service-amount-${index}" class="form-label">${serviceName}</label>
+                            <input type="number" class="form-control service-amount-input" id="service-amount-${index}"
+                                   placeholder="Enter amount for ${serviceName}" min="0" step="10"
+                                   value="${currentAmount}" data-service-index="${index}" oninput="calculateIndividualTotal()">
+                            <small class="text-muted">Amount for ${serviceName} (₹)</small>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
+
+                calculateIndividualTotal();
+                const modal = new bootstrap.Modal(document.getElementById('amountModal'));
+                modal.show();
+            })
+            .catch(error => {
+                alert('Error loading booking details: ' + error.message);
+            });
     }
 
+    function calculateIndividualTotal() {
+        const serviceInputs = document.querySelectorAll('.service-amount-input');
+        let totalAmount = 0;
+
+        serviceInputs.forEach(input => {
+            const amount = parseFloat(input.value) || 0;
+            totalAmount += amount;
+        });
+
+        document.getElementById('totalAmountDisplay').textContent = `₹${totalAmount}`;
+    }
+
+    async function saveIndividualServiceAmounts() {
+        const bookingId = document.getElementById('currentBookingId').value;
+        const servicesData = JSON.parse(document.getElementById('currentServicesData').value || '[]');
+        const serviceInputs = document.querySelectorAll('.service-amount-input');
+
+        // Build services data with amounts
+        const updatedServices = [];
+        serviceInputs.forEach((input, index) => {
+            const amount = parseFloat(input.value) || 0;
+            const originalService = servicesData[index];
+
+            if (typeof originalService === 'string') {
+                updatedServices.push({ name: originalService, amount: amount });
+            } else {
+                updatedServices.push({ ...originalService, amount: amount });
+            }
+        });
+
+        // Check for negative amounts
+        if (updatedServices.some(service => service.amount < 0)) {
+            alert('Service amounts cannot be negative');
+            return;
+        }
+
+        try {
+            const res = await fetch(`/admin/update-individual-service-amounts/${bookingId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ services_data: updatedServices })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(`✅ Service amounts updated successfully!\nTotal: ₹${data.total_amount}`);
+                const amountDisplay = document.getElementById(`amount-display-${bookingId}`);
+                if (amountDisplay) {
+                    const serviceBreakdown = updatedServices.map(s => `${s.name}: ₹${s.amount}`).join(', ');
+                    amountDisplay.innerHTML = `
+                        <span class="amount-display">₹${data.total_amount}</span>
+                        <small class="text-muted d-block">${serviceBreakdown}</small>
+                    `;
+                }
+                bootstrap.Modal.getInstance(document.getElementById('amountModal')).hide();
+            } else {
+                alert('❌ Error: ' + (data.error || 'Failed to update amounts'));
+            }
+        } catch (error) {
+            alert('❌ Network error: ' + error.message);
+        }
+    }
+
+    // Keep the old functions for backward compatibility
     function calculateTotal() {
-      const serviceAmount = parseFloat(document.getElementById('serviceAmount').value) || 0;
-      const bookingFee = 20;
-      const total = serviceAmount + bookingFee;
-      
-      document.getElementById('serviceChargeDisplay').textContent = `₹${serviceAmount}`;
-      document.getElementById('totalAmountDisplay').textContent = `₹${total}`;
+        const serviceAmount = parseFloat(document.getElementById('serviceAmount').value) || 0;
+        const bookingFee = 20;
+        const total = serviceAmount + bookingFee;
+        document.getElementById('serviceChargeDisplay').textContent = `₹${serviceAmount}`;
+        document.getElementById('totalAmountDisplay').textContent = `₹${total}`;
     }
 
     async function saveServiceAmount() {
-      const bookingId = document.getElementById('currentBookingId').value;
-      const serviceAmount = parseFloat(document.getElementById('serviceAmount').value) || 0;
-      
-      if (serviceAmount < 0) {
-        alert('Service amount cannot be negative');
-        return;
-      }
-      
-      try {
-        const res = await fetch(`/admin/update-service-amount/${bookingId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ service_amount: serviceAmount })
-        });
-        
-        const data = await res.json();
-        
-        if (data.success) {
-          alert(`✅ Amount updated successfully!\nTotal: ₹${data.total_amount}`);
-          
-          // Update the display without reloading
-          const amountDisplay = document.getElementById(`amount-display-${bookingId}`);
-          if (amountDisplay) {
-            amountDisplay.innerHTML = `
-              <span class="amount-display">₹${data.total_amount}</span>
-              <small class="text-muted d-block">(Service: ₹${serviceAmount})</small>
-            `;
-          }
-          
-          // Close modal
-          bootstrap.Modal.getInstance(document.getElementById('amountModal')).hide();
-        } else {
-          alert('❌ Error: ' + (data.error || 'Failed to update amount'));
+        const bookingId = document.getElementById('currentBookingId').value;
+        const serviceAmount = parseFloat(document.getElementById('serviceAmount').value) || 0;
+        if (serviceAmount < 0) {
+            alert('Service amount cannot be negative');
+            return;
         }
-      } catch (error) {
-        alert('❌ Network error: ' + error.message);
-      }
+        try {
+            const res = await fetch(`/admin/update-service-amount/${bookingId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ service_amount: serviceAmount })
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(`✅ Amount updated successfully!\nTotal: ₹${data.total_amount}`);
+                const amountDisplay = document.getElementById(`amount-display-${bookingId}`);
+                if (amountDisplay) {
+                    amountDisplay.innerHTML = `
+                        <span class="amount-display">₹${data.total_amount}</span>
+                        <small class="text-muted d-block">(Service: ₹${serviceAmount})</small>
+                    `;
+                }
+                bootstrap.Modal.getInstance(document.getElementById('amountModal')).hide();
+            } else {
+                alert('❌ Error: ' + (data.error || 'Failed to update amount'));
+            }
+        } catch (error) {
+            alert('❌ Network error: ' + error.message);
+        }
     }
 
     async function completeWithAmount(bookingId) {
-      const serviceAmountInput = prompt('Enter service amount (₹) for this booking:\n(Booking fee of ₹20 will be added automatically)');
-      
-      if (serviceAmountInput === null) return; // User cancelled
-      
-      const serviceAmount = parseFloat(serviceAmountInput) || 0;
-      
-      if (serviceAmount < 0) {
-        alert('Service amount cannot be negative');
-        return;
-      }
-      
-      const totalAmount = serviceAmount + 20;
-      
-      if (!confirm(`Confirm completion with amounts:\n\nService Charges: ₹${serviceAmount}\nBooking Fee: ₹20\nTotal Amount: ₹${totalAmount}\n\nThis will:\n- Mark booking as completed\n- Send final invoice to customer\n- Allow customer to rate the service`)) {
-        return;
-      }
-      
-      // Show loading state
-      const button = event.target;
-      const originalText = button.innerHTML;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-      button.disabled = true;
-      
-      try {
-        const res = await fetch(`/admin/complete-booking/${bookingId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ service_amount: serviceAmount })
-        });
-        
-        const data = await res.json();
-        
-        if (data.success) {
-          alert(`✅ Booking completed successfully!\n📧 Final invoice sent to customer\nTotal Amount: ₹${totalAmount}`);
-          location.reload();
-        } else {
-          alert('❌ Error: ' + (data.error || 'Failed to complete booking'));
-          button.innerHTML = originalText;
-          button.disabled = false;
+        // Get the current total amount from the display
+        const amountDisplay = document.getElementById(`amount-display-${bookingId}`);
+        let totalAmount = 0;
+        if (amountDisplay) {
+            const amountText = amountDisplay.querySelector('.amount-display');
+            if (amountText) {
+                const amountMatch = amountText.textContent.match(/₹(\d+)/);
+                if (amountMatch) {
+                    totalAmount = parseFloat(amountMatch[1]) || 0;
+                }
+            }
         }
-      } catch (error) {
-        alert('❌ Network error: ' + error.message);
-        button.innerHTML = originalText;
-        button.disabled = false;
-      }
+
+        if (totalAmount === 0) {
+            alert('Please set the service amount first before completing the booking.');
+            return;
+        }
+
+        if (!confirm(`Confirm completion of booking?\n\nTotal Amount: ₹${totalAmount}\n\nThis will:\n- Mark booking as completed\n- Send final invoice to customer\n- Allow customer to rate the service`)) {
+            return;
+        }
+
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        button.disabled = true;
+
+        try {
+            const res = await fetch(`/admin/complete-booking/${bookingId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            const data = await res.json();
+            if (data.success) {
+                alert(`✅ Booking completed successfully!\n📧 Final invoice sent to customer\nTotal Amount: ₹${totalAmount}`);
+                location.reload();
+            } else {
+                alert('❌ Error: ' + (data.error || 'Failed to complete booking'));
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }
+        } catch (error) {
+            alert('❌ Network error: ' + error.message);
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
     }
 
     async function deleteItem(type, id) {
-      if (!confirm('Are you sure you want to delete this item?')) return;
-      
-      try {
-        const res = await fetch(`/api/${type}/${id}`, { method: 'DELETE' });
-        const data = await res.json();
-        
-        if (res.ok) {
-          alert("Deleted successfully");
-          location.reload();
-        } else {
-          alert("Error: " + (data.error || "Unknown error"));
+        if (!confirm('Are you sure you want to delete this item?')) return;
+        try {
+            const res = await fetch(`/api/${type}/${id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (res.ok) {
+                alert("Deleted successfully");
+                location.reload();
+            } else {
+                alert("Error: " + (data.error || "Unknown error"));
+            }
+        } catch (error) {
+            alert("Network error: " + error.message);
         }
-      } catch (error) {
-        alert("Network error: " + error.message);
-      }
     }
 
-    async function completeBooking(bookingId) {
-      // Redirect to the new complete with amount function
-      completeWithAmount(bookingId);
+    async function rejectBooking(bookingId) {
+        const reason = prompt("Enter reason for rejection:", "No reason provided.");
+        if (!reason) return;
+        if (!confirm("Are you sure you want to reject this booking?")) return;
+        try {
+            const response = await fetch(`/api/prebook/${bookingId}/reject`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reason })
+            });
+            const data = await response.json();
+            if (data.success) {
+                alert("Booking rejected and email sent!");
+                location.reload();
+            } else {
+                alert("Error: " + data.error);
+            }
+        } catch (err) {
+            alert("Failed to reject booking.");
+        }
     }
 
     // Auto-refresh dashboard every 30 seconds
     let autoRefresh = setInterval(() => {
-      location.reload();
+        location.reload();
     }, 30000);
 
-    // Pause auto-refresh when user is interacting
     document.addEventListener('click', () => {
-      clearInterval(autoRefresh);
-      autoRefresh = setInterval(() => location.reload(), 30000);
+        clearInterval(autoRefresh);
+        autoRefresh = setInterval(() => location.reload(), 30000);
     });
 
-    // Display loading message on page transitions
+    function showRatingImages(button) {
+        try {
+            const ratingId = button.dataset.ratingId;
+            const photoUrls = window.ratingPhotos[ratingId];
+            const container = document.getElementById('ratingImagesContainer');
+            container.innerHTML = '';
+
+            if (photoUrls && photoUrls.length > 0) {
+                photoUrls.forEach((url, index) => {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-6 col-lg-4';
+                    col.innerHTML = `
+                        <div class="card">
+                            <img src="${url}" class="card-img-top" alt="Rating Photo ${index + 1}" style="height: 200px; object-fit: cover;" onclick="window.open('${url}', '_blank')">
+                            <div class="card-body p-2">
+                                <small class="text-muted">Photo ${index + 1}</small>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(col);
+                });
+            } else {
+                container.innerHTML = '<div class="col-12"><div class="alert alert-info text-center">No photos available</div></div>';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('ratingImagesModal'));
+            modal.show();
+        } catch (error) {
+            alert('Error loading images: ' + error.message);
+        }
+    }
+
+
+
     window.addEventListener('beforeunload', function() {
-      document.body.innerHTML = '<div class="d-flex justify-content-center align-items-center" style="height: 100vh;"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+        document.body.innerHTML = '<div class="d-flex justify-content-center align-items-center" style="height: 100vh;"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
     });
-  </script>
-
-  <!-- Bootstrap JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</script>
 </body>
 </html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reschedule Booking - Annapoorneshwari Tyre Works</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 25px;
+            padding: 10px 30px;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h4><i class="fas fa-calendar-alt"></i> Reschedule Booking</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <strong>Booking ID:</strong> {{ booking.booking_id }}<br>
+                            <strong>Current Date:</strong> {{ booking.preferred_date }}<br>
+                            <strong>Current Time:</strong> {{ booking.time }}<br>
+                            <strong>Services:</strong> {{ booking.services|join(', ') if booking.services else 'N/A' }}
+                        </div>
+
+                        <form method="POST">
+                            <div class="mb-3">
+                                <label for="preferred_date" class="form-label">
+                                    <i class="fas fa-calendar"></i> New Preferred Date *
+                                </label>
+                                <input type="date" class="form-control" id="preferred_date" name="preferred_date"
+                                       min="{{ (booking.preferred_date or '') }}" required>
+                                <div class="form-text">Date cannot be in the past</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="time" class="form-label">
+                                    <i class="fas fa-clock"></i> New Preferred Time *
+                                </label>
+                                <select class="form-control" id="time" name="time" required>
+                                    <option value="">Select Time</option>
+                                    <option value="9:00 AM" {% if booking.time == '9:00 AM' %}selected{% endif %}>9:00 AM</option>
+                                    <option value="10:00 AM" {% if booking.time == '10:00 AM' %}selected{% endif %}>10:00 AM</option>
+                                    <option value="11:00 AM" {% if booking.time == '11:00 AM' %}selected{% endif %}>11:00 AM</option>
+                                    <option value="12:00 PM" {% if booking.time == '12:00 PM' %}selected{% endif %}>12:00 PM</option>
+                                    <option value="1:00 PM" {% if booking.time == '1:00 PM' %}selected{% endif %}>1:00 PM</option>
+                                    <option value="2:00 PM" {% if booking.time == '2:00 PM' %}selected{% endif %}>2:00 PM</option>
+                                    <option value="3:00 PM" {% if booking.time == '3:00 PM' %}selected{% endif %}>3:00 PM</option>
+                                    <option value="4:00 PM" {% if booking.time == '4:00 PM' %}selected{% endif %}>4:00 PM</option>
+                                    <option value="5:00 PM" {% if booking.time == '5:00 PM' %}selected{% endif %}>5:00 PM</option>
+                                    <option value="6:00 PM" {% if booking.time == '6:00 PM' %}selected{% endif %}>6:00 PM</option>
+                                </select>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Update Booking
+                                </button>
+                                <a href="{{ url_for('user_dashboard') }}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set minimum date to today
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('preferred_date');
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.setAttribute('min', today);
+        });
+    </script>
+</body>
+</html>

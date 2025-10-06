@@ -5,22 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
   <title>Annapoorneshwari Tyre & Painting Works</title>
   
-  <!-- Favicon -->
   <link rel="icon" href="https://www.google.com/favicon.ico" type="image/x-icon" />
-
-  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  
-  <!-- Google Fonts - Poppins -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- FontAwesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-  
-  <!-- AOS Animation -->
   <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
   
-  <style>
+<style>
     :root {
       --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       --secondary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -28,15 +19,12 @@
       --bg-light: #f8f9fa;
       --text-dark: #333;
       --glass-bg: rgba(255, 255, 255, 0.95);
-      --shadow-primary: 0 25px 50px rgba(102, 126, 234, 0.15);
-      --shadow-hover: 0 30px 60px rgba(102, 126, 234, 0.25);
+      --shadow-primary: 0 15px 30px rgba(102, 126, 234, 0.1); /* Reduced shadow */
+      --shadow-hover: 0 20px 40px rgba(102, 126, 234, 0.15); /* Reduced hover shadow */
+      --section-spacing: 2.5rem; /* New compact spacing variable */
     }
 
-    * {
-      margin: 10;
-      padding: 10;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       background: var(--primary-gradient);
@@ -45,14 +33,11 @@
       position: relative;
     }
 
-    /* Animated Background */
     body::before {
       content: '';
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       background: radial-gradient(circle at 20% 80%, rgba(120, 162, 255, 0.3) 0%, transparent 50%),
                   radial-gradient(circle at 80% 20%, rgba(255, 120, 198, 0.3) 0%, transparent 50%);
       z-index: -1;
@@ -64,68 +49,51 @@
       100% { transform: translateX(10px) translateY(10px); }
     }
 
-    /* Floating particles */
-    .particle {
-      position: absolute;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      pointer-events: none;
-      animation: float 6s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      50% { transform: translateY(-20px) rotate(180deg); }
-    }
-
+    /* COMPACT: Service Card Size */
     .service-card {
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      padding: 2rem;
-      transition: all 0.4s ease;
+      border-radius: 15px; /* Slightly smaller radius */
+      padding: 1.5rem; /* Reduced padding */
+      transition: all 0.3s ease; /* Faster transition */
       box-shadow: var(--shadow-primary);
-      transform-style: preserve-3d;
-      perspective: 1000px;
       height: 100%;
     }
 
     .service-card:hover {
-      transform: translateY(-10px) scale(1.02);
+      transform: translateY(-5px) scale(1.01); /* Reduced hover effect */
       box-shadow: var(--shadow-hover);
     }
 
+    /* COMPACT: Service Icon Size */
     .service-icon {
-      width: 80px;
-      height: 80px;
-      border-radius: 20px;
+      width: 60px; height: 60px; /* Smaller icon */
+      border-radius: 15px;
       background: var(--secondary-gradient);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 1.5rem;
-      font-size: 2rem;
+      margin: 0 auto 1rem; /* Reduced margin */
+      font-size: 1.5rem; /* Smaller font */
       color: white;
-      box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
+      box-shadow: 0 8px 20px rgba(79, 172, 254, 0.2);
       transition: transform 0.3s ease;
     }
 
     .service-card:hover .service-icon {
-      transform: scale(1.1) rotate(5deg);
+      transform: scale(1.05) rotate(3deg); /* Reduced hover effect */
     }
 
     .rating-display {
       background: rgba(79, 172, 254, 0.1);
-      border-radius: 12px;
-      padding: 15px;
-      margin-top: 20px;
+      border-radius: 10px; /* Smaller radius */
+      padding: 10px; /* Reduced padding */
+      margin-top: 15px; /* Reduced margin */
       backdrop-filter: blur(10px);
     }
 
-    .star-rating {
-      color: var(--accent-color);
-    }
+    .star-rating { color: var(--accent-color); }
 
     .global-rating-btn {
       background: var(--primary-gradient);
@@ -134,10 +102,462 @@
       font-weight: 600;
       transition: all 0.4s ease;
       box-shadow: var(--shadow-primary);
+      border-radius: 50px;
+      padding: 15px 30px; /* Slightly smaller button */
+    }
+
+    .global-rating-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      color: white;
+    }
+
+    .navbar {
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95)) !important;
+      backdrop-filter: blur(25px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2); /* Reduced shadow */
+      animation: slideDown 0.8s ease forwards;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1030;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .navbar-nav .nav-link {
+      position: relative;
+      color: white !important;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-nav .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #ffffff, #00f2fe);
+      transition: width 0.3s ease;
+    }
+
+    .navbar-nav .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Sliding Sidebar for Mobile (Keep standard for functionality) */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 300px;
+      height: 100vh;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.98), rgba(118, 75, 162, 0.98));
+      backdrop-filter: blur(25px);
+      box-shadow: -5px 0 20px rgba(0, 0, 0, 0.3);
+      transition: right 0.3s ease;
+      z-index: 1040;
+      padding: 80px 20px 20px;
+    }
+
+    .sidebar.active {
+      right: 0;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 1035;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar .nav-link {
+      color: white !important;
+      font-size: 1.1rem;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: block;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      padding-left: 10px;
+    }
+
+    /* COMPACT: Hero Section Adjustments */
+    .hero-section {
+      background: transparent !important;
       position: relative;
       overflow: hidden;
-      border-radius: 50px;
-      padding: 18px 40px;
+      min-height: 60vh !important; /* Reduced height */
+      padding-top: 100px !important; /* Reduced top padding */
+    }
+
+    .hero-content {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px; /* Smaller radius */
+      padding: 3rem 2rem; /* Reduced padding */
+      box-shadow: var(--shadow-primary);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: center;
+      margin: 1.5rem auto; /* Reduced margin */
+      max-width: 700px; /* Slightly narrower */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px; /* Ensure minimum height */
+    }
+
+    .hero-heading {
+      font-size: clamp(2rem, 5vw, 3.5rem); /* More reasonable size range */
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+      word-break: break-word; /* Prevent overflow */
+      hyphens: auto; /* Allow hyphenation if needed */
+      text-align: center;
+      width: 100%;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.4rem); /* Responsive subtitle */
+      margin-bottom: 2rem;
+      line-height: 1.4;
+      word-break: break-word;
+      text-align: center;
+      width: 100%;
+    }
+    
+    /* COMPACT: General Section Adjustments */
+    .section-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px; /* Smaller radius */
+      padding: 3rem 2rem; /* Reduced padding */
+      box-shadow: var(--shadow-primary);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin: var(--section-spacing) 0; /* Use variable for spacing */
+    }
+
+    .section-title {
+      font-size: 2.5rem; /* Slightly smaller title */
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 2rem; /* Reduced margin */
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* UPDATED: Image preview styles */
+    .image-preview-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px; /* Reduced gap */
+      margin-top: 8px; /* Reduced margin */
+    }
+
+    .image-preview-item {
+      position: relative;
+      width: 80px; /* Smaller preview size */
+      height: 80px;
+      border-radius: 8px; /* Smaller radius */
+      overflow: hidden;
+      border: 1px solid #ddd;
+    }
+
+    .image-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-preview-remove {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      background: rgba(255, 0, 0, 0.8);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px; /* Smaller remove button */
+      height: 20px;
+      cursor: pointer;
+      font-size: 10px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    /* UPDATED: Booking selector in modal */
+    .booking-option {
+      padding: 10px; /* Reduced padding */
+      border: 1px solid #e0e0e0; /* Thinner border */
+      border-radius: 8px; /* Smaller radius */
+      margin-bottom: 8px; /* Reduced margin */
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .booking-option:hover {
+      border-color: #4facfe;
+      background: rgba(79, 172, 254, 0.1);
+    }
+
+    .booking-option.selected {
+      border-color: #4facfe;
+      background: rgba(79, 172, 254, 0.2);
+    }
+
+    /* Enhanced Mobile Responsiveness (Overrides for compactness) */
+    @media (max-width: 1200px) {
+      .section-container { padding: 2.5rem 1.5rem; margin: 1.5rem 1rem; }
+      .hero-content { padding: 2.5rem 1.5rem; margin: 1rem; }
+    }
+
+    @media (max-width: 992px) {
+      .navbar-brand { font-size: 1rem; }
+      .section-title { font-size: 2.2rem; }
+      .hero-content { padding: 2rem 1rem; }
+      .section-container { padding: 2rem 1rem; margin: 1rem 0.5rem; }
+      .service-card { padding: 1.25rem; }
+    }
+
+    @media (max-width: 768px) {
+      body { padding-top: 60px; } /* Reduced top padding */
+
+      .navbar {
+        padding: 0.5rem 1rem;
+        backdrop-filter: blur(25px);
+      }
+      
+      /* REQUIRED UPDATE: Full name on mobile */
+      .navbar-brand {
+        width: calc(100% - 70px); /* Leave space for toggler */
+      }
+      .navbar-text {
+        font-size: 0.9rem; /* Smaller font for fit */
+        line-height: 1.2;
+        white-space: normal; /* Allow wrap/full name */
+        margin-right: auto; /* Push toggler to the right */
+        text-align: left;
+      }
+
+      .navbar-toggler {
+        margin-left: 0.5rem;
+      }
+
+      .hero-section { min-height: 55vh; padding-top: 80px; } /* More compact */
+      .hero-content {
+        padding: 1.5rem 1rem;
+        margin: 0.5rem;
+        border-radius: 12px;
+      }
+
+      .hero-heading {
+        font-size: clamp(1.6rem, 7vw, 3rem);
+        margin-bottom: 0.75rem;
+      }
+
+      .hero-subtitle {
+        font-size: 1.1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .btn-hero, .btn-outline-hero {
+        padding: 10px 20px; /* More compact buttons */
+        font-size: 0.85rem;
+        margin: 0.25rem auto;
+        display: inline-block; /* Allow side-by-side */
+        width: auto;
+        max-width: none;
+      }
+      /* If buttons must stack on smallest screen, keep display: block in @media(max-width: 576px) */
+
+      .section-container {
+        padding: 1.5rem 1rem; /* More compact section */
+        margin: 1rem 0.25rem; /* Reduced section margin */
+        border-radius: 12px;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .service-card {
+        padding: 1rem 0.75rem; /* Very compact service card */
+        margin-bottom: 0.5rem;
+        border-radius: 12px;
+      }
+
+      .service-icon {
+        width: 50px;
+        height: 50px;
+        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+      }
+      
+      /* Footer adjustments for better mobile layout */
+      footer {
+        padding: 1rem 0;
+      }
+      .footer-section .col-md-6 {
+        text-align: center !important;
+      }
+      .footer-section .d-flex {
+        justify-content: center !important;
+        margin-top: 0.5rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero-section { min-height: 50vh; padding-top: 70px; }
+      
+      .navbar-text {
+        font-size: 0.8rem; /* Even smaller font to ensure fit */
+      }
+
+      .hero-content {
+        padding: 1rem 0.75rem;
+        margin: 0.25rem;
+      }
+      
+      .btn-hero, .btn-outline-hero {
+        display: block;
+        width: 80%;
+        max-width: 200px;
+        margin: 0.5rem auto;
+      }
+
+      .section-container {
+        padding: 1rem 0.75rem;
+        margin: 0.75rem 0.25rem;
+      }
+
+      .section-title {
+        font-size: 1.6rem;
+        margin-bottom: 1rem;
+      }
+
+      .service-card h4 {
+        font-size: 1rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .service-card p {
+        font-size: 0.8rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .rating-display {
+        padding: 8px;
+        margin-top: 8px;
+      }
+
+      .global-rating-btn {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+      }
+      
+      .about-section h3 {
+        font-size: 1.5rem;
+      }
+      
+      .about-section .fs-2 {
+        font-size: 1.3rem !important;
+      }
+
+      .contact-section .col-md-4 > div {
+        padding: 1rem;
+      }
+    }
+
+    /* Professional Enhancements (No change required here, but included for completeness) */
+    .navbar-toggler {
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 8px;
+      padding: 0.5rem;
+    }
+
+    .navbar-toggler:focus {
+      box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+    }
+
+    .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.8%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    .service-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.5s;
+    }
+
+    .service-card:hover::before {
+      left: 100%;
+    }
+
+    .btn-hero, .btn-outline-hero {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .btn-hero::before, .btn-outline-hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-hero:hover::before, .btn-outline-hero:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .global-rating-btn {
+      position: relative;
+      overflow: hidden;
     }
 
     .global-rating-btn::before {
@@ -147,7 +567,7 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
       transition: left 0.5s;
     }
 
@@ -155,612 +575,196 @@
       left: 100%;
     }
 
-    .global-rating-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-hover);
-      color: white;
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
     }
 
-    /* Glass effect navbar */
-    .navbar {
-      background: var(--glass-bg) !important;
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      animation: slideDown 0.8s ease forwards;
-      transition: all 0.3s ease;
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
+    /* Loading animation */
+    .loading {
+      opacity: 0;
+      animation: fadeIn 0.8s ease forwards;
     }
 
-    .navbar.scrolled {
-      background: rgba(255, 255, 255, 0.98) !important;
-      padding-top: 0.4rem;
-      padding-bottom: 0.4rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes slideDown {
-      from { transform: translateY(-100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    /* Enhanced glassmorphism */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
     }
 
-    .navbar-brand {
-      background: var(--primary-gradient);
+    /* Professional color scheme */
+    .text-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-weight: 800;
-      font-size: 1.5rem;
     }
 
-    .navbar-nav .nav-link {
-      color: var(--text-dark) !important;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      position: relative;
+    .bg-gradient-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
-    .navbar-nav .nav-link:hover {
-      color: #4facfe !important;
-      transform: translateY(-2px);
+    .bg-gradient-secondary {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     }
 
-    .navbar-nav .nav-link::before {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      width: 0;
-      height: 2px;
-      background: var(--secondary-gradient);
-      transition: all 0.3s ease;
-      transform: translateX(-50%);
+    /* Enhanced shadows */
+    .shadow-professional {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08), 0 5px 10px rgba(0, 0, 0, 0.04); /* More compact shadow */
     }
 
-    .navbar-nav .nav-link:hover::before {
-      width: 80%;
-    }
-
-    /* Mobile navbar fixes */
-    .navbar-toggler {
-      border: none;
-      padding: 0.25rem 0.5rem;
-      font-size: 1rem;
-      background: transparent;
-    }
-
-    .navbar-toggler:focus {
-      box-shadow: none;
-    }
-
-    .navbar-toggler-icon {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2833, 37, 41, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    }
-
-    .navbar-collapse {
-      margin-top: 0.5rem;
-    }
-
-    /* Hero Section */
-    .hero-section {
-      background: transparent !important;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-content {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 30px;
-      padding: 4rem 3rem;
-      box-shadow: var(--shadow-primary);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      text-align: center;
-      margin: 2rem auto;
-      max-width: 800px;
-    }
-
-    .hero-heading {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 800;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 1.5rem;
-      animation: fadeInUp 1.2s ease forwards;
-    }
-
-    .hero-subtitle {
-      font-size: 1.4rem;
-      color: var(--text-dark);
-      margin-bottom: 2rem;
-      font-weight: 400;
-      opacity: 0.8;
-    }
-
-    @keyframes fadeInUp {
-      from { transform: translateY(40px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .btn-hero {
-      background: var(--secondary-gradient);
-      border: none;
-      color: white;
-      font-weight: 600;
-      padding: 15px 35px;
-      border-radius: 50px;
-      transition: all 0.4s ease;
-      box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
-      position: relative;
-      overflow: hidden;
-      margin: 0.5rem;
-    }
-
-    .btn-hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .btn-hero:hover::before {
-      left: 100%;
-    }
-
-    .btn-hero:hover {
+    .shadow-professional-hover:hover {
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 8px 15px rgba(0, 0, 0, 0.06); /* More compact hover shadow */
       transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(79, 172, 254, 0.4);
-      color: white;
     }
-
-    .btn-outline-hero {
-      background: transparent;
-      border: 2px solid #4facfe;
-      color: #4facfe;
-      font-weight: 600;
-      padding: 13px 35px;
-      border-radius: 50px;
-      transition: all 0.4s ease;
-      margin: 0.5rem;
-    }
-
-    .btn-outline-hero:hover {
-      background: var(--secondary-gradient);
-      border-color: transparent;
-      color: white;
-      transform: translateY(-3px);
-      box-shadow: 0 15px 40px rgba(79, 172, 254, 0.4);
-    }
-
-    /* Sections */
-    .section-container {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border-radius: 30px;
-      padding: 4rem 3rem;
-      box-shadow: var(--shadow-primary);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      margin: 3rem 0;
-    }
-
-    .section-title {
-      font-size: 3rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 3rem;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      position: relative;
-    }
-
-    .section-title::after {
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 4px;
-      background: var(--secondary-gradient);
-      border-radius: 2px;
-    }
-
-    /* Contact cards - made smaller */
-    .contact-card {
-      background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      padding: 1.5rem;
-      text-align: center;
-      transition: all 0.4s ease;
-      box-shadow: var(--shadow-primary);
-      height: 100%;
-    }
-
-    .contact-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .contact-icon {
-      width: 60px;
-      height: 60px;
-      border-radius: 16px;
-      background: var(--secondary-gradient);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 1rem;
-      font-size: 1.5rem;
-      color: white;
-      box-shadow: 0 10px 30px rgba(79, 172, 254, 0.3);
-    }
-
-    .contact-card h5 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .contact-card p {
-      font-size: 0.95rem;
-      margin-bottom: 0;
-    }
-
-    /* Developer link */
-    .developer-link {
-      background: var(--primary-gradient);
-      color: white;
-      padding: 12px 30px;
-      border-radius: 50px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.4s ease;
-      box-shadow: var(--shadow-primary);
-      display: inline-block;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .developer-link::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .developer-link:hover::before {
-      left: 100%;
-    }
-
-    .developer-link:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--shadow-hover);
-      color: white;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      /* Navbar mobile adjustments */
-      .navbar {
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-      }
-      
-      .navbar-brand {
-        font-size: 1.2rem;
-        line-height: 1.3;
-        margin-right: 0.5rem;
-      }
-
-      .navbar-toggler {
-        margin-left: auto;
-        padding: 0.25rem 0.4rem;
-      }
-
-      .navbar-collapse {
-        margin-top: 0.75rem;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 15px;
-        padding: 1rem;
-        margin-top: 0.5rem;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-
-      .navbar-nav .nav-link {
-        padding: 0.5rem 1rem;
-        border-radius: 10px;
-        margin: 0.2rem 0;
-      }
-
-      .navbar-nav .nav-link:hover {
-        background: rgba(79, 172, 254, 0.1);
-        transform: translateY(0);
-      }
-      
-      .hero-content {
-        padding: 2.5rem 1.5rem;
-        margin: 1rem;
-      }
-      
-      .section-container {
-        padding: 2.5rem 1.5rem;
-        margin: 2rem 0;
-      }
-
-      /* Contact section - more compact */
-      #contact .section-container {
-        padding: 2rem 1rem;
-      }
-      
-      .section-title {
-        font-size: 2.2rem;
-        margin-bottom: 2rem;
-      }
-
-      /* Smaller contact cards for mobile */
-      .contact-card {
-        padding: 1.2rem;
-        margin-bottom: 1rem;
-        border-radius: 14px;
-      }
-
-      .contact-icon {
-        width: 50px;
-        height: 50px;
-        font-size: 1.3rem;
-        margin-bottom: 0.8rem;
-      }
-
-      .contact-card h5 {
-        font-size: 1rem;
-        margin-bottom: 0.4rem;
-      }
-
-      .contact-card p {
-        font-size: 0.9rem;
-      }
-      
-      .service-card {
-        margin-bottom: 2rem;
-      }
-
-      .hero-subtitle {
-        font-size: 1.1rem;
-      }
-
-      .btn-hero, .btn-outline-hero {
-        padding: 12px 25px;
-        font-size: 0.9rem;
-      }
-
-      /* Reduce spacing between contact items */
-      #contact .row.g-4 {
-        --bs-gutter-y: 1rem;
-      }
-
-      /* Make developer section more compact */
-      #contact .text-center.mt-5 {
-        margin-top: 2rem !important;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .navbar-brand {
-        font-size: 1.1rem;
-      }
-
-      .hero-heading {
-        font-size: 2rem;
-      }
-
-      .section-title {
-        font-size: 2rem;
-      }
-
-      /* Even more compact contact on small screens */
-      .contact-card {
-        padding: 1rem;
-      }
-
-      .contact-icon {
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
-      }
-
-      #contact .section-container {
-        padding: 1.5rem 0.8rem;
-      }
-
-      /* Stack buttons vertically on very small screens */
-      .btn-hero, .btn-outline-hero {
-        display: block;
-        width: 100%;
-        margin: 0.5rem 0;
-      }
-    }
-
-    .service-card h4,
-    .service-card p {
-     text-align: center;
-    }
-
-    
-
   </style>
 </head>
 <body>
 
-  <!-- Floating Particles -->
-  <div class="particle" style="width: 10px; height: 10px; top: 20%; left: 10%; animation-delay: 0s;"></div>
-  <div class="particle" style="width: 15px; height: 15px; top: 60%; left: 85%; animation-delay: 2s;"></div>
-  <div class="particle" style="width: 8px; height: 8px; top: 40%; left: 20%; animation-delay: 4s;"></div>
-  <div class="particle" style="width: 12px; height: 12px; top: 80%; left: 70%; animation-delay: 1s;"></div>
-
-  <!-- Navigation -->
-<nav class="navbar navbar-expand-lg fixed-top">
-  <div class="container">
-    <a class="navbar-brand text-center" href="#home" data-aos="fade-down"
-       style="white-space: normal; font-size: 16px; line-height: 1.2;">
-      Annapoorneshwari Tyre & Painting Works
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item" data-aos="fade-down" data-aos-delay="100"><a class="nav-link" href="#home">Home</a></li>
-        <li class="nav-item" data-aos="fade-down" data-aos-delay="200"><a class="nav-link" href="#services">Services</a></li>
-        <li class="nav-item" data-aos="fade-down" data-aos-delay="300"><a class="nav-link" href="#about">About</a></li>
-        <li class="nav-item" data-aos="fade-down" data-aos-delay="400"><a class="nav-link" href="#contact">Contact</a></li>
-      </ul>
+  <nav class="navbar fixed-top">
+    <div class="container d-flex justify-content-between align-items-center">
+      <a class="navbar-brand d-flex align-items-center" href="#home">
+        <span class="navbar-text">Annapoorneshwari Tyre & Painting Works</span>
+      </a>
+      <button class="navbar-toggler" type="button" id="sidebarToggle">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </div>
+  </nav>
+
+  <div class="sidebar" id="sidebarMenu" aria-label="Mobile navigation sidebar">
+    <ul class="navbar-nav flex-column">
+      <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+      <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+      <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      <li class="nav-item"><a class="nav-link" href="/developer">Developer</a></li>
+      {% if session.get('user_id') %}
+        <li class="nav-item"><a class="nav-link" href="/user/dashboard">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+      {% else %}
+        <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+      {% endif %}
+    </ul>
   </div>
-</nav>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+<section id="home" class="hero-section d-flex align-items-center justify-content-center" style="min-height: 70vh; padding-top: 120px;">
+  <div class="container text-center">
+    <div class="hero-content">
+      <h1 class="hero-heading mb-3" style="font-size: 2.5rem; line-height: 1.2;">Excellence in Repair, Commitment in Service</h1>
+      <p class="hero-subtitle mb-4" style="font-size: 1.1rem;">Professional Tyre, Painting & Automotive Services</p>
+      
+      <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+        <!-- Pre-Booking Button -->
+        <a href="/prebook" class="btn" 
+           style="background: var(--secondary-gradient); border: none; color: white; padding: 12px 30px; border-radius: 50px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.2s;">
+          <i class="fas fa-calendar-check me-2"></i>Pre-Booking
+        </a>
 
-  <!-- Hero Section -->
-  <section id="home" class="hero-section d-flex align-items-center justify-content-center" style="min-height: 70vh; padding-top: 120px;">
-    <div class="container">
-      <div class="hero-content" data-aos="fade-up">
-        <h1 class="hero-heading">Excellence in Repair, Commitment in Service</h1>
-        <p class="hero-subtitle">Professional Tyre, Painting & Automotive Services</p>
-        <div data-aos="fade-up" data-aos-delay="400">
-          <a href="/prebook" class="btn btn-hero">
-            <i class="fas fa-calendar-check me-2"></i>Pre-Booking
-          </a>
-          <a href="#services" class="btn btn-outline-hero">
-            <i class="fas fa-tools me-2"></i>Explore Services
-          </a>
-        </div>
+        <!-- Explore Services Button -->
+        <a href="#services" class="btn" 
+           style="background: transparent; border: 2px solid #4facfe; color: #4facfe; padding: 12px 30px; border-radius: 50px; font-weight: 500; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;">
+          <i class="fas fa-tools me-2"></i>Explore Services
+        </a>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Services Section -->
+
   <section id="services" class="py-5">
     <div class="container">
-      <div class="section-container" data-aos="fade-up">
+      <div class="section-container">
         <h2 class="section-title">Our Services</h2>
         <div class="row g-4">
           
-          <!-- Greasing Service -->
-          <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-spray-can"></i>
-              </div>
-              <h4 class="fw-bold mb-3">Greasing</h4>
-              <p class="mb-3">Professional greasing services for all vehicle types with quality lubricants</p>
-              <div class="rating-display">
-                <div class="text-center">
-                <div class="star-rating">
-                  <span id="avg-rating-greasing">
-                    {{ avg_ratings.get('Greasing', {}).get('average', 'N/A') }}
-                  </span>
-                  <i class="fas fa-star"></i>
-                </div>
-                <small class="text-muted">
-                  ({{ avg_ratings.get('Greasing', {}).get('count', 0) }} reviews)
-                </small>
-
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Painting Service -->
-          <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="200">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-paint-roller"></i>
-              </div>
-              <h4 class="fw-bold mb-3">Painting</h4>
-              <p class="mb-3">Expert painting services for bikes, cars, buses, and commercial vehicles</p>
-              <div class="rating-display">
-                <div class="text-center">
-                  <div class="star-rating">
-                    <span id="avg-rating-painting">
-                      {{ avg_ratings.get('Painting', {}).get('average', 'N/A') }}
-                    </span>
-                    <i class="fas fa-star"></i>
+          <div class="col-md-6 col-lg-3">
+            <a href="/service/Greasing" style="text-decoration: none; color: inherit;">
+              <div class="service-card">
+                <div class="service-icon"><i class="fas fa-spray-can"></i></div>
+                <h4 class="fw-bold mb-3 text-center">Greasing</h4>
+                <p class="mb-3 text-center">Professional greasing services</p>
+                <div class="rating-display" id="rating-greasing">
+                  <div class="text-center">
+                    <div class="star-rating">
+                      <span>{{ avg_ratings.get('Greasing', {}).get('average', 'N/A') }}</span>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <small class="text-muted">({{ avg_ratings.get('Painting', {}).get('count', 0) }} reviews)</small>
                   </div>
-                  <small class="text-muted">
-                    ({{ avg_ratings.get('Painting', {}).get('count', 0) }} reviews)
-                  </small>
-
                 </div>
               </div>
-            </div>
+            </a>
           </div>
 
-          <!-- Puncturing Service -->
-          <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="300">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-bolt"></i>
-              </div>
-              <center><h4 class="fw-bold mb-3">Puncturing</h4>
-              <p class="mb-3">Quick and reliable puncture repair services for all types of tyres</p></center>
-              <div class="rating-display">
-                <div class="text-center">
-                <div class="star-rating">
-                  <span id="avg-rating-puncturing">
-                    {{ avg_ratings.get('Puncturing', {}).get('average', 'N/A') }}
-                  </span>
-                  <i class="fas fa-star"></i>
-                </div>
-                <small class="text-muted">
-                  ({{ avg_ratings.get('Puncturing', {}).get('count', 0) }} reviews)
-                </small>
-
+          <div class="col-md-6 col-lg-3">
+            <a href="/service/Puncturing" style="text-decoration: none; color: inherit;">
+              <div class="service-card">
+                <div class="service-icon"><i class="fas fa-bolt"></i></div>
+                <h4 class="fw-bold mb-3 text-center">Puncturing</h4>
+                <p class="mb-3 text-center">Quick puncture repairs</p>
+                <div class="rating-display" id="rating-puncturing">
+                  <div class="text-center">
+                    <div class="star-rating">
+                      <span>{{ avg_ratings.get('Puncturing', {}).get('average', 'N/A') }}</span>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <small class="text-muted">({{ avg_ratings.get('Puncturing', {}).get('count', 0) }} reviews)</small>
+                  </div>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
 
-          <!-- Tyre Issues -->
-          <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="400">
-            <div class="service-card">
-              <div class="service-icon">
-                <i class="fas fa-wrench"></i>
-              </div>
-              <h4 class="fw-bold mb-3">Tyre Issues</h4>
-              <p class="mb-3">Complete tyre problem diagnosis and resolution services</p>
-              <div class="rating-display">
-                <div class="text-center">
-                <div class="star-rating">
-                  <span id="avg-rating-tyre-issues">
-                    {{ avg_ratings.get('Tyre Issues', {}).get('average', 'N/A') }}
-                  </span>
-                  <i class="fas fa-star"></i>
+          <div class="col-md-6 col-lg-3">
+            <a href="/service/Tyre Issues" style="text-decoration: none; color: inherit;">
+              <div class="service-card">
+                <div class="service-icon"><i class="fas fa-wrench"></i></div>
+                <h4 class="fw-bold mb-3 text-center">Tyre Issues</h4>
+                <p class="mb-3 text-center">Complete tyre solutions</p>
+                <div class="rating-display" id="rating-tyre-issues">
+                  <div class="text-center">
+                    <div class="star-rating">
+                      <span>{{ avg_ratings.get('Tyre Issues', {}).get('average', 'N/A') }}</span>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <small class="text-muted">({{ avg_ratings.get('Tyre Issues', {}).get('count', 0) }} reviews)</small>
+                  </div>
                 </div>
-                <small class="text-muted">
-                  ({{ avg_ratings.get('Tyre Issues', {}).get('count', 0) }} reviews)
-                </small>
+              </div>
+            </a>
+          </div>
 
+          <div class="col-md-6 col-lg-3">
+            <a href="/service/Painting" style="text-decoration: none; color: inherit;">
+              <div class="service-card">
+                <div class="service-icon"><i class="fas fa-paint-brush"></i></div>
+                <h4 class="fw-bold mb-3 text-center">Painting</h4>
+                <p class="mb-3 text-center">Professional painting services</p>
+                <div class="rating-display" id="rating-painting">
+                  <div class="text-center">
+                    <div class="star-rating">
+                      <span>{{ avg_ratings.get('Painting', {}).get('average', 'N/A') }}</span>
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <small class="text-muted">({{ avg_ratings.get('Painting', {}).get('count', 0) }} reviews)</small>
+                  </div>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
 
         </div>
         
-        <!-- Global Rating Button -->
         <div class="text-center mt-5">
           <button class="btn global-rating-btn" onclick="openGlobalRating()">
             <i class="fas fa-star me-2"></i> Rate Our Services
@@ -772,120 +776,173 @@
       </div>
     </div>
   </section>
-  
-  <!-- About Section -->
-  <section id="about" class="py-5">
-    <div class="container">
-      <div class="section-container" data-aos="fade-up">
-        <div class="row align-items-center g-5">
-          <div class="col-lg-6">
-            <h2 class="section-title text-center">About Us</h2>
-            <p class="lead mb-4 text-center">Annapoorneshwari Tyre & Painting Works has been serving customers with dedication and expertise for over a decade.</p>
-            <p class="mb-4 text-center">We specialize in comprehensive vehicle services including tyre repairs, painting, greasing, and puncture solutions. Our commitment to quality and customer satisfaction has made us a trusted name in the industry.</p>
-            <a href="/prebook" class="btn btn-hero">
-              <i class="fas fa-calendar-check me-2"></i>Book Service Now
-            </a>
-          </div>
-          <div class="col-lg-6">
-            <div class="position-relative">
-              <div class="map-container" style="border-radius: 20px; overflow: hidden; box-shadow: var(--shadow-primary); height: 400px;">
-                <iframe src="https://www.google.com/maps?q=Hebri%20Santekatte&output=embed" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        loading="lazy"
-                        style="width: 100%; height: 100%; border: none;"></iframe>
+
+<section id="about" class="py-5">
+  <div class="container">
+    <div class="section-container text-center text-lg-start">
+      <h2 class="section-title mb-4">About Us</h2>
+      <div class="row g-4 align-items-center">
+        
+        <!-- Text Content -->
+        <div class="col-lg-6">
+          <h3 class="fw-bold mb-4" style="line-height: 1.3;">Excellence in Automotive Services</h3>
+          <p class="mb-3" style="max-width: 500px;">Annapoorneshwari Tyre & Painting Works has been serving the community with dedication and expertise for over a decade. Our commitment to quality service and customer satisfaction has made us a trusted name in automotive care.</p>
+          <p class="mb-3" style="max-width: 500px;">We specialize in comprehensive tyre solutions, professional painting services, greasing, and puncture repairs. Our skilled technicians use modern equipment and techniques to ensure your vehicle receives the best possible care.</p>
+
+          <div class="row g-3 mt-4 justify-content-center justify-content-lg-start">
+            <div class="col-6 col-md-4">
+              <div class="text-center text-lg-start">
+                <div class="fs-2 fw-bold text-primary">10+</div>
+                <small class="text-muted">Years of Experience</small>
+              </div>
+            </div>
+            <div class="col-6 col-md-4">
+              <div class="text-center text-lg-start">
+                <div class="fs-2 fw-bold text-primary">1000+</div>
+                <small class="text-muted">Happy Customers</small>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Icon Cards -->
+        <div class="col-lg-6">
+          <div class="row g-3">
+            <!-- Expert Technicians -->
+            <div class="col-6">
+              <div style="background: var(--glass-bg); border-radius: 16px; padding: 2rem; text-align: center; height: 100%;">
+                <div style="width: 60px; height: 60px; border-radius: 16px; background: var(--secondary-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                  <i class="fas fa-tools" style="font-size: 1.5rem; color: white;"></i>
+                </div>
+                <h6 class="fw-bold">Expert Technicians</h6>
+                <p class="text-muted small">Skilled professionals with years of experience</p>
+              </div>
+            </div>
+
+            <!-- Quick Service -->
+            <div class="col-6">
+              <div style="background: var(--glass-bg); border-radius: 16px; padding: 2rem; text-align: center; height: 100%;">
+                <div style="width: 60px; height: 60px; border-radius: 16px; background: var(--secondary-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                  <i class="fas fa-clock" style="font-size: 1.5rem; color: white;"></i>
+                </div>
+                <h6 class="fw-bold">Quick Service</h6>
+                <p class="text-muted small">Fast and efficient service delivery</p>
+              </div>
+            </div>
+
+            <!-- Quality Guarantee -->
+            <div class="col-6">
+              <div style="background: var(--glass-bg); border-radius: 16px; padding: 2rem; text-align: center; height: 100%;">
+                <div style="width: 60px; height: 60px; border-radius: 16px; background: var(--secondary-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                  <i class="fas fa-shield-alt" style="font-size: 1.5rem; color: white;"></i>
+                </div>
+                <h6 class="fw-bold">Quality Guarantee</h6>
+                <p class="text-muted small">Warranty on all our services</p>
+              </div>
+            </div>
+
+            <!-- Customer First -->
+            <div class="col-6">
+              <div style="background: var(--glass-bg); border-radius: 16px; padding: 2rem; text-align: center; height: 100%;">
+                <div style="width: 60px; height: 60px; border-radius: 16px; background: var(--secondary-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                  <i class="fas fa-handshake" style="font-size: 1.5rem; color: white;"></i>
+                </div>
+                <h6 class="fw-bold">Customer First</h6>
+                <p class="text-muted small">Your satisfaction is our priority</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="py-5">
-    <div class="container">
-      <div class="section-container" data-aos="fade-up">
-        <h2 class="section-title">Contact Us</h2>
-        <p class="lead text-center mb-4">Ready to service your vehicle? Contact us today!</p>
+<section id="contact" class="py-4 contact-section">
+  <div class="container">
+    <div class="section-container">
+      <h2 class="section-title">Contact Us</h2>
+      <div class="row g-3">
         
-        <div class="row g-4">
-          <div class="col-md-4">
-            <div class="contact-card">
-              <div class="contact-icon">
-                <i class="fas fa-phone"></i>
+        <!-- Phone Card -->
+        <div class="col-md-4">
+          <a href="tel:9844053505" style="text-decoration: none; color: inherit;">
+            <div style="background: var(--glass-bg); border-radius: 12px; padding: 1.25rem; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; cursor: pointer; transition: transform 0.2s;">
+              <div style="width: 50px; height: 50px; border-radius: 12px; background: var(--secondary-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                <i class="fas fa-phone" style="font-size: 1.25rem; color: white;"></i>
               </div>
-              <h5 class="fw-bold">Phone</h5>
-              <p class="mb-0">9844053505</p>
+              <h5 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Phone</h5>
+              <p style="font-size: 0.95rem; margin: 0; word-break: break-all;">9844053505</p>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="contact-card">
-              <div class="contact-icon">
-                <i class="fas fa-envelope"></i>
-              </div>
-              <h5 class="fw-bold">Email</h5>
-              <p class="mb-0">kulaladarsh1@gmail.com</p>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="contact-card">
-              <div class="contact-icon">
-                <i class="fas fa-map-marker-alt"></i>
-              </div>
-              <h5 class="fw-bold">Location</h5>
-              <p class="mb-0">Hebri Santekatte, Karnataka</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="text-center mt-4">
-          <a href="/developer" class="developer-link">
-            <i class="fas fa-info-circle me-2"></i>Developer Option
           </a>
-          <br><br>
-         <small class="text-muted">Total Visitors: {{ total_visits }}</small>
-
         </div>
+
+        <!-- Email Card -->
+        <div class="col-md-4">
+          <a href="mailto:kulaladarsh1@gmail.com" style="text-decoration: none; color: inherit;">
+            <div style="background: var(--glass-bg); border-radius: 12px; padding: 1.25rem; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; cursor: pointer; transition: transform 0.2s;">
+              <div style="width: 50px; height: 50px; border-radius: 12px; background: var(--secondary-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                <i class="fas fa-envelope" style="font-size: 1.25rem; color: white;"></i>
+              </div>
+              <h5 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Email</h5>
+              <p style="font-size: 0.9rem; margin: 0; word-break: break-word;">kulaladarsh1@gmail.com</p>
+            </div>
+          </a>
+        </div>
+
+        <!-- Location Card -->
+        <div class="col-md-4">
+          <a href="https://maps.app.goo.gl/gFdhx4RuwekJ21AGA" target="_blank" rel="noopener" style="text-decoration: none; color: inherit;">
+            <div style="background: var(--glass-bg); border-radius: 12px; padding: 1.25rem; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center; cursor: pointer; transition: transform 0.2s;">
+              <div style="width: 50px; height: 50px; border-radius: 12px; background: var(--secondary-gradient); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
+                <i class="fas fa-map-marker-alt" style="font-size: 1.25rem; color: white;"></i>
+              </div>
+              <h5 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Location</h5>
+              <p style="font-size: 0.95rem; margin: 0; color: inherit;">Hebri Santekatte</p>
+            </div>
+          </a>
+        </div>
+
+      </div>
+      <div class="text-center mt-3">
+        <small class="text-muted" style="font-size: 0.85rem;">Total Visitors: {{ total_visits }}</small>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer class="py-4" style="background: var(--glass-bg); backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1);">
-    <div class="container text-center">
-      <p class="mb-0 text-muted">&copy; 2025 Annapoorneshwari Tyre & Painting Works. All rights reserved.</p>
-    </div>
-  </footer>
 
-  <!-- Rating Modal -->
-  <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="border-radius: 20px; border: none; box-shadow: var(--shadow-primary);">
+  <!-- UPDATED: Rating Modal with Booking Selection & Image Upload -->
+  <div class="modal fade" id="ratingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="border-radius: 20px; border: none;">
         <div class="modal-header" style="background: var(--secondary-gradient); color: white; border-radius: 20px 20px 0 0;">
-          <h5 class="modal-title" id="ratingModalLabel">
-            <i class="fas fa-star me-2"></i>Rate Our Service
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title"><i class="fas fa-star me-2"></i>Rate Our Service</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body p-4">
-          <form id="ratingForm">
+          
+          <!-- UPDATED: Step 1 - Select Booking -->
+          <div id="bookingSelectionStep">
+            <h6 class="mb-3">Select the booking you want to rate:</h6>
+            <div id="bookingList"></div>
+          </div>
+
+          <!-- UPDATED: Step 2 - Rating Form (shown after booking selection) -->
+          <form id="ratingForm" style="display: none;" enctype="multipart/form-data">
+            <input type="hidden" id="selectedBookingId" name="booking_id" />
+            <input type="hidden" id="selectedServiceName" name="service_name" />
+            
+            <div class="alert alert-info" id="bookingInfo"></div>
+
             <div class="mb-3">
               <label for="userName" class="form-label fw-bold">Your Name</label>
-              <input type="text" class="form-control" id="userName" name="user_name" required placeholder="Enter your full name" style="border-radius: 10px;">
-              <small class="text-muted">This should match your booking name</small>
+              <input type="text" class="form-control" id="userName" name="user_name" value="{{ session.get('user_name', '') }}" readonly style="border-radius: 10px;">
+              <small class="text-muted">Auto-filled from your account</small>
             </div>
-            <div class="mb-3">
-              <label for="serviceDisplay" class="form-label fw-bold">Service Name</label>
-              <select class="form-select" id="serviceDisplay" name="service_name" required style="border-radius: 10px;">
-                <option value="" disabled selected>Select the service you want to rate</option>
-                <option value="Greasing">Greasing</option>
-                <option value="Painting">Painting</option>
-                <option value="Puncturing">Puncturing</option>
-                <option value="Tyre Issues">Tyre Issues</option>
-              </select>
-              <small class="text-muted">You can only rate services you've booked and completed</small>
-            </div>
+
             <div class="mb-3">
               <label for="rating" class="form-label fw-bold">Rating</label>
               <select class="form-select" id="rating" name="rating" required style="border-radius: 10px;">
@@ -897,452 +954,324 @@
                 <option value="1">1 ⭐ Poor</option>
               </select>
             </div>
+
             <div class="mb-3">
               <label for="comment" class="form-label fw-bold">Comments <span class="text-muted">(Optional)</span></label>
               <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Share your experience..." style="border-radius: 10px;"></textarea>
             </div>
-          </form>
-          <div id="loadingSpinner" class="text-center d-none">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+
+            <!-- UPDATED: Image upload with preview -->
+            <div class="mb-3">
+              <label for="photos" class="form-label fw-bold">Upload Photos <span class="text-muted">(Optional - Max 5)</span></label>
+              <input type="file" class="form-control" id="photos" name="photos" multiple accept="image/*" style="border-radius: 10px;">
+              <small class="text-muted">JPG, PNG, GIF - Max 5MB each</small>
+              <div id="imagePreview" class="image-preview-container"></div>
             </div>
+
+            <button type="button" class="btn btn-secondary me-2" onclick="backToBookingSelection()">Back</button>
+            <button type="submit" class="btn" style="background: var(--secondary-gradient); color: white; border: none; border-radius: 10px; padding: 10px 25px;">
+              <i class="fas fa-paper-plane me-1"></i> Submit Rating
+            </button>
+          </form>
+
+          <div id="loadingSpinner" class="text-center d-none">
+            <div class="spinner-border text-primary"></div>
             <p class="mt-2">Submitting your rating...</p>
           </div>
-        </div>
-        <div class="modal-footer border-0">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius: 10px;">Cancel</button>
-          <button type="button" class="btn" onclick="submitRating()" style="background: var(--secondary-gradient); color: white; border: none; border-radius: 10px; padding: 10px 25px;">
-            <i class="fas fa-paper-plane me-1"></i> Submit Rating
-          </button>
         </div>
       </div>
     </div>
   </div>
 
-<!-- Bootstrap 5 JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+ <!-- Footer -->
+<footer class="py-3" style="background: var(--glass-bg); backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1); margin-top: 3rem;">
+  <div class="container">
+    <div class="row align-items-center text-center text-md-start">
+      
+      <!-- Copyright -->
+      <div class="col-md-6 mb-2 mb-md-0">
+        <p class="text-muted mb-0">&copy; 2025 Annapoorneshwari Tyre & Painting Works. All rights reserved.</p>
+      </div>
 
-<!-- AOS Animation -->
-<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+      <!-- Social Icons -->
+      <div class="col-md-6">
+        <div class="d-flex justify-content-center justify-content-md-end">
+          <a href="#" class="text-muted me-3 fs-5" title="Facebook"><i class="fab fa-facebook"></i></a>
+          <a href="#" class="text-muted me-3 fs-5" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="text-muted me-3 fs-5" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="#" class="text-muted fs-5" title="Twitter"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
 
-<script>
-  // Initialize AOS animations
-  AOS.init({
-    duration: 800,
-    once: true,
-    offset: 50
-  });
-  // Function to fetch and display average ratings with stars
-  async function loadAverageRatingsWithStars() {
-    try {
-      const response = await fetch('/api/average-ratings');
-      if (response.ok) {
-        const avgRatings = await response.json();
+    </div>
+  </div>
+</footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+  <script>
+    AOS.init({ duration: 800, once: true });
+
+    // Sidebar toggle functionality
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+      const sidebar = document.getElementById('sidebarMenu');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('active');
+      overlay.classList.toggle('active');
+    });
+
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+      const sidebar = document.getElementById('sidebarMenu');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+
+    // Close sidebar when clicking on nav links
+    document.querySelectorAll('#sidebarMenu .nav-link').forEach(link => {
+      link.addEventListener('click', function() {
+        const sidebar = document.getElementById('sidebarMenu');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+      });
+    });
+
+    let userBookings = [];
+    let selectedBooking = null;
+
+    // UPDATED: Open rating modal - check for bookings first
+    async function openGlobalRating() {
+      try {
+        const response = await fetch('/api/check-booking');
+        const result = await response.json();
         
-        const services = [
-          { key: 'greasing', name: 'Greasing' },
-          { key: 'painting', name: 'Painting' },
-          { key: 'puncturing', name: 'Puncturing' },
-          { key: 'tyre-issues', name: 'Tyre Issues' }
-        ];
-
-        services.forEach(service => {
-          const ratingContainer = document.getElementById(`avg-rating-${service.key}`)?.closest('.rating-display');
-          if (ratingContainer && avgRatings[service.name]) {
-            const rating = avgRatings[service.name];
-            
-            ratingContainer.innerHTML = `
-              <div class="text-center">
-                <div class="star-rating mb-2">
-                  <span class="fw-bold me-2">${rating.average}</span>
-                  ${generateStarsHTML(rating.average)}
-                </div>
-                <small class="text-muted">(${rating.count} reviews)</small>
-              </div>
-            `;
-          } else if (ratingContainer) {
-            ratingContainer.innerHTML = `
-              <div class="text-center">
-                <div class="star-rating mb-2">
-                  <span class="fw-bold me-2">0.0</span>
-                  ${generateStarsHTML(0)}
-                </div>
-                <small class="text-muted">(No reviews yet)</small>
-              </div>
-            `;
-          }
-        });
-      }
-    } catch (error) {
-      console.error('Error loading average ratings:', error);
-    }
-  }
-
-  // Helper function to generate stars HTML
-  function generateStarsHTML(rating) {
-    const ratingValue = parseFloat(rating) || 0;
-    const fullStars = Math.floor(ratingValue);
-    const hasHalfStar = (ratingValue % 1) >= 0.5;
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
-    let starsHTML = '';
-    
-    for (let i = 0; i < fullStars; i++) {
-      starsHTML += '<i class="fas fa-star text-warning"></i>';
-    }
-    
-    if (hasHalfStar) {
-      starsHTML += '<i class="fas fa-star-half-alt text-warning"></i>';
-    }
-    
-    for (let i = 0; i < emptyStars; i++) {
-      starsHTML += '<i class="far fa-star text-warning"></i>';
-    }
-
-    return starsHTML;
-  }
-
-  // Function to fetch and display total visitors
-  async function loadTotalVisitors() {
-    try {
-      const response = await fetch('/api/total-visits');
-      if (response.ok) {
-        const data = await response.json();
-        const visitorElement = document.querySelector('small.text-muted');
-        if (visitorElement && visitorElement.textContent.includes('Total Visitors:')) {
-          visitorElement.textContent = `Total Visitors: ${data.total_visits.toLocaleString()}`;
+        if (result.booked && result.bookings.length > 0) {
+          userBookings = result.bookings;
+          showBookingSelection();
+          const modal = new bootstrap.Modal(document.getElementById('ratingModal'));
+          modal.show();
+        } else {
+          alert("Please complete a booking first. After your service is completed by our admin, you'll be able to rate our services.");
         }
-      } else {
-        console.error('Failed to fetch total visitors');
+      } catch (error) {
+        console.error('Error checking booking:', error);
+        alert("Unable to verify booking status. Please try again.");
       }
-    } catch (error) {
-      console.error('Error loading total visitors:', error);
     }
-  }
 
-  // Global Rating Function
-  function openGlobalRating() {
-    // Simulate API call for demo
-    const hasBooking = Math.random() > 0.5; // Random for demo
-    if (hasBooking) {
-      const modal = new bootstrap.Modal(document.getElementById('ratingModal'));
+    // UPDATED: Show booking selection step
+    function showBookingSelection() {
+      document.getElementById('bookingSelectionStep').style.display = 'block';
+      document.getElementById('ratingForm').style.display = 'none';
+      
+      const bookingList = document.getElementById('bookingList');
+      bookingList.innerHTML = '';
+
+      // Group bookings by service
+      const serviceGroups = {};
+      userBookings.forEach(booking => {
+        booking.services.forEach(service => {
+          if (!serviceGroups[service]) {
+            serviceGroups[service] = [];
+          }
+          serviceGroups[service].push({
+            booking_id: booking.booking_id,
+            service: service
+          });
+        });
+      });
+
+      // Create booking options
+      Object.keys(serviceGroups).forEach(serviceName => {
+        serviceGroups[serviceName].forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'booking-option';
+          div.innerHTML = `
+            <strong>${serviceName}</strong><br>
+            <small class="text-muted">Booking ID: ${item.booking_id}</small>
+          `;
+          div.onclick = () => selectBooking(item.booking_id, serviceName, div);
+          bookingList.appendChild(div);
+        });
+      });
+    }
+
+    // UPDATED: Select a booking
+    function selectBooking(bookingId, serviceName, element) {
+      // Remove previous selection
+      document.querySelectorAll('.booking-option').forEach(el => {
+        el.classList.remove('selected');
+      });
+      
+      // Mark selected
+      element.classList.add('selected');
+      selectedBooking = { bookingId, serviceName };
+      
+      // Show form after selection
+      setTimeout(() => {
+        showRatingForm(bookingId, serviceName);
+      }, 300);
+    }
+
+    // UPDATED: Show rating form
+    function showRatingForm(bookingId, serviceName) {
+      document.getElementById('bookingSelectionStep').style.display = 'none';
+      document.getElementById('ratingForm').style.display = 'block';
+      
+      document.getElementById('selectedBookingId').value = bookingId;
+      document.getElementById('selectedServiceName').value = serviceName;
+      
+      document.getElementById('bookingInfo').innerHTML = `
+        <strong>Rating for:</strong> ${serviceName}<br>
+        <strong>Booking ID:</strong> ${bookingId}
+      `;
+    }
+
+    // Back to booking selection
+    function backToBookingSelection() {
       document.getElementById('ratingForm').reset();
-      modal.show();
-    } else {
-      alert("Please complete a booking first to leave a rating. After your service is completed by our admin, you'll be able to rate our services.");
-    }
-  }
-
-  /// Replace the existing submitRating function in your index.html with this:
-
-async function submitRating() {
-    const form = document.getElementById('ratingForm');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const submitButton = document.querySelector('.modal-footer .btn:last-child');
-
-    const userName = form.user_name.value.trim();
-    const serviceName = form.service_name.value;
-    const rating = form.rating.value;
-    const comment = form.comment.value.trim();
-
-    // Validation
-    if (!userName) {
-        alert('Please enter your name');
-        form.user_name.focus();
-        return;
+      document.getElementById('imagePreview').innerHTML = '';
+      showBookingSelection();
     }
 
-    if (!serviceName) {
-        alert('Please select a service to rate');
-        form.service_name.focus();
-        return;
+    // UPDATED: Handle image preview
+    document.getElementById('photos').addEventListener('change', function(e) {
+      const preview = document.getElementById('imagePreview');
+      preview.innerHTML = '';
+      
+      const files = Array.from(e.target.files).slice(0, 5);
+      
+      files.forEach((file, index) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const div = document.createElement('div');
+          div.className = 'image-preview-item';
+          div.innerHTML = `
+            <img src="${e.target.result}" alt="Preview ${index + 1}">
+            <button type="button" class="image-preview-remove" onclick="removeImage(${index})">×</button>
+          `;
+          preview.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Remove image from preview
+    function removeImage(index) {
+      const input = document.getElementById('photos');
+      const dt = new DataTransfer();
+      const files = Array.from(input.files);
+      files.splice(index, 1);
+      files.forEach(file => dt.items.add(file));
+      input.files = dt.files;
+      
+      // Trigger change to update preview
+      input.dispatchEvent(new Event('change'));
     }
 
-    if (!rating) {
-        alert('Please select a rating');
-        form.rating.focus();
-        return;
-    }
+    // UPDATED: Submit rating with images
+    document.getElementById('ratingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const loadingSpinner = document.getElementById('loadingSpinner');
+      
+      form.style.display = 'none';
+      loadingSpinner.classList.remove('d-none');
 
-    // Show loading state
-    form.style.display = 'none';
-    loadingSpinner.classList.remove('d-none');
-    submitButton.disabled = true;
-
-    try {
-        // Make actual API call to your backend
-        const response = await fetch('/api/rate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                user_name: userName,
-                service_name: serviceName,
-                rating: parseInt(rating),
-                comment: comment || null
-            })
+      try {
+        const formData = new FormData(form);
+        
+        const response = await fetch('/api/rate-with-images', {
+          method: 'POST',
+          body: formData
         });
 
         const result = await response.json();
 
         if (result.success) {
-            // Show success message
-            alert(`Thank you for rating ${serviceName}! 🌟 ${result.message || 'Your feedback helps us improve.'}`);
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
-            modal.hide();
-            
-            // Reset form
-            form.reset();
-            
-            // ✅ REFRESH RATINGS IMMEDIATELY after successful submission
-            await loadAverageRatingsWithStars();
-            
-            // Optional: Add visual feedback that ratings updated
-            showRatingUpdateNotification(serviceName);
-            
+          alert(`Thank you for rating! Your feedback helps us improve.`);
+          
+          const modal = bootstrap.Modal.getInstance(document.getElementById('ratingModal'));
+          modal.hide();
+          
+          form.reset();
+          document.getElementById('imagePreview').innerHTML = '';
+          
+          // Refresh ratings
+          await loadAverageRatingsWithStars();
+          showRatingUpdateNotification(formData.get('service_name'));
         } else {
-            // Handle error from backend
-            alert(`Error: ${result.error || 'Failed to submit rating. Please try again.'}`);
+          alert(`Error: ${result.error || 'Failed to submit rating'}`);
+          form.style.display = 'block';
         }
-
-    } catch (error) {
-        console.error('Error submitting rating:', error);
-        alert('Network error. Please check your connection and try again.');
-    } finally {
-        // Hide loading state
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Network error. Please try again.');
         form.style.display = 'block';
+      } finally {
         loadingSpinner.classList.add('d-none');
-        submitButton.disabled = false;
-    }
-}
-
-// Add this new function to show a visual notification when ratings update
-function showRatingUpdateNotification(serviceName) {
-    // Find the service card for the rated service
-    const serviceCards = document.querySelectorAll('.service-card');
-    let targetCard = null;
-    
-    serviceCards.forEach(card => {
-        const cardTitle = card.querySelector('h4');
-        if (cardTitle && cardTitle.textContent.trim() === serviceName) {
-            targetCard = card;
-        }
-    });
-    
-    if (targetCard) {
-        // Add a temporary highlight effect
-        const ratingDisplay = targetCard.querySelector('.rating-display');
-        if (ratingDisplay) {
-            ratingDisplay.style.background = 'rgba(79, 172, 254, 0.3)';
-            ratingDisplay.style.transform = 'scale(1.05)';
-            ratingDisplay.style.transition = 'all 0.5s ease';
-            
-            // Reset after animation
-            setTimeout(() => {
-                ratingDisplay.style.background = 'rgba(79, 172, 254, 0.1)';
-                ratingDisplay.style.transform = 'scale(1)';
-            }, 1500);
-        }
-    }
-    
-    // Show a toast notification (optional)
-    showToastNotification(`${serviceName} ratings updated!`, 'success');
-}
-
-// Add this function for toast notifications
-function showToastNotification(message, type = 'info') {
-    // Create toast element if it doesn't exist
-    let toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) {
-        toastContainer = document.createElement('div');
-        toastContainer.id = 'toast-container';
-        toastContainer.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        `;
-        document.body.appendChild(toastContainer);
-    }
-    
-    const toast = document.createElement('div');
-    toast.className = `alert alert-${type === 'success' ? 'success' : 'info'} alert-dismissible fade show`;
-    toast.style.cssText = `
-        margin-bottom: 10px;
-        min-width: 300px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        border: none;
-        border-radius: 10px;
-    `;
-    
-    toast.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    // Auto remove after 4 seconds
-    setTimeout(() => {
-        if (toast && toast.parentNode) {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 150);
-        }
-    }, 4000);
-}
-
-// Also update the openGlobalRating function to check actual booking status
-async function openGlobalRating() {
-    try {
-        // Check if user has completed bookings
-        const response = await fetch('/api/check-booking');
-        const result = await response.json();
-        
-        if (result.booked) {
-            const modal = new bootstrap.Modal(document.getElementById('ratingModal'));
-            document.getElementById('ratingForm').reset();
-            modal.show();
-        } else {
-            alert("Please complete a booking first to leave a rating. After your service is completed by our admin, you'll be able to rate our services.");
-        }
-    } catch (error) {
-        console.error('Error checking booking status:', error);
-        alert("Unable to verify booking status. Please try again later.");
-    }
-}
-
-// Enhanced loadAverageRatingsWithStars with error handling and loading states
-async function loadAverageRatingsWithStars() {
-    try {
-        const response = await fetch('/api/average-ratings');
-        if (response.ok) {
-            const avgRatings = await response.json();
-            
-            const services = [
-                { key: 'greasing', name: 'Greasing' },
-                { key: 'painting', name: 'Painting' },
-                { key: 'puncturing', name: 'Puncturing' },
-                { key: 'tyre-issues', name: 'Tyre Issues' }
-            ];
-
-            services.forEach(service => {
-                const ratingContainer = document.getElementById(`avg-rating-${service.key}`)?.closest('.rating-display');
-                if (ratingContainer && avgRatings[service.name]) {
-                    const rating = avgRatings[service.name];
-                    
-                    ratingContainer.innerHTML = `
-                        <div class="text-center">
-                            <div class="star-rating mb-2">
-                                <span class="fw-bold me-2">${rating.average}</span>
-                                ${generateStarsHTML(rating.average)}
-                            </div>
-                            <small class="text-muted">(${rating.count} reviews)</small>
-                        </div>
-                    `;
-                } else if (ratingContainer) {
-                    ratingContainer.innerHTML = `
-                        <div class="text-center">
-                            <div class="star-rating mb-2">
-                                <span class="fw-bold me-2">0.0</span>
-                                ${generateStarsHTML(0)}
-                            </div>
-                            <small class="text-muted">(No reviews yet)</small>
-                        </div>
-                    `;
-                }
-            });
-            
-            console.log('✅ Average ratings updated successfully');
-        } else {
-            console.error('Failed to fetch average ratings:', response.status);
-        }
-    } catch (error) {
-        console.error('Error loading average ratings:', error);
-    }
-}
-
-// Update the page initialization to reduce auto-refresh frequency
-document.addEventListener('DOMContentLoaded', function() {
-    // Load initial data
-    loadAverageRatingsWithStars();
-    loadTotalVisitors();
-    
-    // Refresh data every 60 seconds (reduced from 30)
-    setInterval(() => {
-        loadAverageRatingsWithStars();
-        loadTotalVisitors();
-    }, 60000);
-});
-  // Navbar shrink effect on scroll
-  window.addEventListener('scroll', function () {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  });
-
-  // Smooth scrolling for navigation links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start' 
-        });
-        
-        // Close mobile menu if open
-        const navbarCollapse = document.querySelector('.navbar-collapse');
-        if (navbarCollapse.classList.contains('show')) {
-          const navbarToggler = document.querySelector('.navbar-toggler');
-          navbarToggler.click();
-        }
       }
     });
-  });
 
-  // 3D Tilt Effect for service cards
-  document.querySelectorAll('.service-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * 5;
-      const rotateY = ((x - centerX) / centerX) * -5;
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px) scale(1.02)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'rotateX(0) rotateY(0) translateY(0) scale(1)';
-    });
-  });
+    // Load average ratings
+    async function loadAverageRatingsWithStars() {
+      try {
+        const response = await fetch('/api/average-ratings');
+        if (response.ok) {
+          const avgRatings = await response.json();
+          
+          const services = [
+            { key: 'greasing', name: 'Greasing' },
+            { key: 'painting', name: 'Painting' },
+            { key: 'puncturing', name: 'Puncturing' },
+            { key: 'tyre-issues', name: 'Tyre Issues' }
+          ];
 
-  // Contact card hover effects
-  document.querySelectorAll('.contact-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const rotateX = ((y - centerY) / centerY) * 5;
-      const rotateY = ((x - centerX) / centerX) * -5;
-      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'rotateX(0) rotateY(0) translateY(0)';
-    });
-  });
+          services.forEach(service => {
+            const ratingDiv = document.getElementById(`rating-${service.key}`);
+            if (ratingDiv && avgRatings[service.name]) {
+              const rating = avgRatings[service.name];
+              ratingDiv.innerHTML = `
+                <div class="text-center">
+                  <div class="star-rating mb-2">
+                    <span class="fw-bold me-2">${rating.average}</span>
+                    ${generateStarsHTML(rating.average)}
+                  </div>
+                  <small class="text-muted">(${rating.count} reviews)</small>
+                </div>
+              `;
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading ratings:', error);
+      }
+    }
 
-  console.log('Professional Annapoorneshwari Tyre & Painting Works website loaded successfully!');
-</script>
+    function generateStarsHTML(rating) {
+      const fullStars = Math.floor(rating);
+      const hasHalf = (rating % 1) >= 0.5;
+      const emptyStars = 5 - fullStars - (hasHalf ? 1 : 0);
+
+      let html = '';
+      for (let i = 0; i < fullStars; i++) html += '<i class="fas fa-star text-warning"></i>';
+      if (hasHalf) html += '<i class="fas fa-star-half-alt text-warning"></i>';
+      for (let i = 0; i < emptyStars; i++) html += '<i class="far fa-star text-warning"></i>';
+      return html;
+    }
+
+    function showRatingUpdateNotification(serviceName) {
+      console.log(`Ratings updated for ${serviceName}`);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      loadAverageRatingsWithStars();
+      setInterval(loadAverageRatingsWithStars, 60000);
+    });
+  </script>
 </body>
-</html>

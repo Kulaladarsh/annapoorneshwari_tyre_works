@@ -35,18 +35,27 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
       position: relative;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
 
     .form-card::before {
       content: '';
       position: absolute;
       top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
-      background-size: 200% 100%;
-      animation: gradientShift 3s ease infinite;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.8s;
+    }
+
+    .form-card:hover::before {
+      left: 100%;
+    }
+
+    .form-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
     }
 
     @keyframes gradientShift {
@@ -81,6 +90,29 @@
       background: rgba(248, 249, 250, 0.5);
       border-radius: 15px;
       border-left: 4px solid #667eea;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .form-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(248, 249, 250, 0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .form-section:hover::before {
+      left: 100%;
+    }
+
+    .form-section:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
 
     .section-title {
@@ -98,7 +130,7 @@
     }
 
     .form-control, .form-select {
-      border: 2px solid #e9ecef;
+      border: 2px solid rgba(102, 126, 234, 0.2);
       border-radius: 12px;
       padding: 12px 16px;
       font-size: 1rem;
@@ -108,7 +140,7 @@
 
     .form-control:focus, .form-select:focus {
       border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
       background: white;
       transform: translateY(-2px);
     }
@@ -128,16 +160,20 @@
       transition: all 0.3s ease;
     }
 
+    .input-group .btn:hover {
+      transform: translateY(-1px);
+    }
+
     .btn-outline-secondary:hover {
       background: #667eea;
       border-color: #667eea;
-      transform: translateY(-1px);
+      color: white;
     }
 
     .btn-outline-success:hover {
       background: #28a745;
       border-color: #28a745;
-      transform: translateY(-1px);
+      color: white;
     }
 
     .otp-status {
@@ -310,20 +346,496 @@
       margin-bottom: 20px;
     }
 
-    /* Responsive Design */
+    /* Enhanced Mobile Responsiveness */
+    @media (max-width: 1200px) {
+      .main-container { max-width: 95%; }
+      .form-card { padding: 35px; }
+    }
+
+    @media (max-width: 992px) {
+      .form-card { padding: 30px; }
+      .header-section h2 { font-size: 2.2rem; }
+      .form-section { padding: 22px; }
+    }
+
     @media (max-width: 768px) {
+      body { padding: 15px 0; }
+
+      .main-container { padding: 0 10px; }
+
       .form-card {
-        padding: 25px;
+        padding: 25px 20px;
         border-radius: 20px;
+        margin: 0;
+      }
+
+      .header-section {
+        margin-bottom: 30px;
       }
 
       .header-section h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+      }
+
+      .header-section p {
+        font-size: 1rem;
       }
 
       .form-section {
-        padding: 20px;
+        padding: 18px;
+        margin-bottom: 20px;
+        border-radius: 12px;
       }
+
+      .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+      }
+
+      .row .col-md-6 {
+        margin-bottom: 1rem;
+      }
+
+      .row .col-md-4 {
+        margin-bottom: 1rem;
+      }
+
+      .form-control, .form-select {
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        border-radius: 10px;
+      }
+
+      .form-label {
+        font-size: 0.9rem;
+        margin-bottom: 6px;
+      }
+
+      .input-group .btn {
+        padding: 10px 14px;
+        font-size: 0.9rem;
+      }
+
+      .otp-status {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+        border-radius: 6px;
+      }
+
+      .alert-info {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+      }
+
+      .upi-qr-container {
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .upi-qr-container img {
+        max-width: 180px;
+      }
+
+      .submit-btn {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+      }
+
+      .success-content {
+        padding: 30px 20px;
+        max-width: 90%;
+      }
+
+      .success-title {
+        font-size: 1.6rem;
+      }
+
+      .success-message {
+        font-size: 1rem;
+      }
+
+      .booking-id {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      body { padding: 10px 0; }
+
+      .main-container { padding: 0 5px; }
+
+      .form-card {
+        padding: 20px 15px;
+        border-radius: 15px;
+      }
+
+      .header-section {
+        margin-bottom: 25px;
+      }
+
+      .header-section h2 {
+        font-size: 1.5rem;
+      }
+
+      .header-section p {
+        font-size: 0.9rem;
+      }
+
+      .form-section {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .section-title {
+        font-size: 1rem;
+        margin-bottom: 12px;
+      }
+
+      .form-control, .form-select {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+
+      .form-label {
+        font-size: 0.85rem;
+      }
+
+      .input-group .btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+      }
+
+      .otp-status {
+        font-size: 0.8rem;
+        padding: 5px 8px;
+      }
+
+      .alert-info {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+      }
+
+      .upi-qr-container {
+        padding: 12px;
+        margin: 12px 0;
+      }
+
+      .upi-qr-container img {
+        max-width: 150px;
+      }
+
+      .submit-btn {
+        padding: 10px 25px;
+        font-size: 1rem;
+      }
+
+      .success-content {
+        padding: 25px 15px;
+      }
+
+      .success-title {
+        font-size: 1.4rem;
+      }
+
+      .success-message {
+        font-size: 0.9rem;
+      }
+
+      .booking-id {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    /* Professional Enhancements */
+    .form-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.8s;
+    }
+
+    .form-card:hover::before {
+      left: 100%;
+    }
+
+    .form-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-control, .form-select {
+      transition: all 0.3s ease;
+      border: 2px solid rgba(102, 126, 234, 0.2);
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .input-group .btn {
+      transition: all 0.3s ease;
+    }
+
+    .input-group .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-outline-secondary:hover {
+      background: #667eea;
+      border-color: #667eea;
+      color: white;
+    }
+
+    .btn-outline-success:hover {
+      background: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+
+    .submit-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .submit-btn:hover::before {
+      left: 100%;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+    }
+
+    .form-section {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .form-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(248, 249, 250, 0.3), transparent);
+      transition: left 0.6s;
+    }
+
+    .form-section:hover::before {
+      left: 100%;
+    }
+
+    .form-section:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .upi-qr-container {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .upi-qr-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.7s;
+    }
+
+    .upi-qr-container:hover::before {
+      left: 100%;
+    }
+
+    .upi-qr-container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .alert {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .alert::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .alert:hover::before {
+      left: 100%;
+    }
+
+    .alert:hover {
+      transform: translateY(-1px);
+    }
+
+    .success-modal {
+      backdrop-filter: blur(10px);
+    }
+
+    .success-content {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .success-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.6s;
+    }
+
+    .success-modal.show .success-content::before {
+      left: 100%;
+    }
+
+    /* Smooth animations */
+    * {
+      scroll-behavior: smooth;
+    }
+
+    .fade-in {
+      animation: fadeInUpEnhanced 0.8s ease forwards;
+    }
+
+    @keyframes fadeInUpEnhanced {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Enhanced dropdowns */
+    .form-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+      transition: all 0.3s ease;
+    }
+
+    .form-select:focus {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    }
+
+    /* Professional shadows */
+    .shadow-professional {
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .shadow-professional-hover:hover {
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), 0 15px 30px rgba(0, 0, 0, 0.1);
+      transform: translateY(-5px);
+    }
+
+    /* Enhanced input focus states */
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+
+    /* Loading overlay enhancements */
+    .loading-overlay {
+      backdrop-filter: blur(5px);
+    }
+
+    .loading-spinner {
+      animation: spin 1s linear infinite;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top: 4px solid white;
+    }
+
+    /* Alert enhancements */
+    .alert {
+      border: none;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .alert-info {
+      background: linear-gradient(135deg, rgba(13, 202, 240, 0.1), rgba(102, 126, 234, 0.1));
+      border-left: 4px solid #0dcaf0;
+    }
+
+    /* Button ripple effect */
+    .btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:active::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Enhanced modal */
+    .modal-content {
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
     }
 
     .fade-in {
@@ -378,7 +890,7 @@
     }
   </style>
 </head>
-<body>
+<body data-user-logged-in="{% if user %}true{% else %}false{% endif %}">
   <!-- Loading Overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
@@ -413,49 +925,24 @@
             <i class="fas fa-user"></i>
             Personal Information
           </div>
-          
+
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" name="name" placeholder="Enter your full name" required />
+              <input type="text" class="form-control" name="name" placeholder="Enter your full name" value="{{ user.name if user else '' }}" required />
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Contact Number</label>
-              <input type="tel" class="form-control" name="contact" placeholder="e.g 8861446025" required />
+              <input type="tel" class="form-control" name="contact" placeholder="e.g 8861446025" value="{{ user.phone if user else '' }}" required />
             </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label">Email Address</label>
-            <div class="input-group">
-              <input type="email" class="form-control" name="email" placeholder="Enter your email address" required />
-              <button type="button" class="btn btn-outline-secondary" onclick="sendOTP()">
-                <i class="fas fa-paper-plane"></i> Send OTP
-              </button>
-            </div>
-            <div class="otp-status text-success d-none" id="otpSuccess">
-              <i class="fas fa-check-circle"></i> OTP sent successfully to your email!
-            </div>
-            <div class="otp-status text-danger d-none" id="otpError">
-              <i class="fas fa-exclamation-circle"></i> Failed to send OTP. Please try again.
-            </div>
+            <input type="email" class="form-control" name="email" placeholder="Enter your email address" value="{{ user.email if user else '' }}" required />
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Enter OTP</label>
-            <div class="input-group">
-              <input type="text" class="form-control" name="otp" placeholder="Enter 6-digit OTP" required />
-              <button type="button" class="btn btn-outline-success" onclick="verifyOTP()">
-                <i class="fas fa-shield-alt"></i> Verify
-              </button>
-            </div>
-            <div class="otp-status text-success d-none" id="otpVerified">
-              <i class="fas fa-check-circle"></i> Email verified successfully!
-            </div>
-            <div class="otp-status text-danger d-none" id="otpInvalid">
-              <i class="fas fa-times-circle"></i> Invalid or expired OTP.
-            </div>
-          </div>
+
         </div>
 
         <!-- Location Section -->
@@ -468,15 +955,15 @@
           <div class="row">
             <div class="col-md-4 mb-3">
               <label class="form-label">Area</label>
-              <input type="text" class="form-control" name="area" placeholder="Your area" required />
+              <input type="text" class="form-control" name="area" placeholder="Your area" value="{{ user.area if user else '' }}" required />
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">Taluk</label>
-              <input type="text" class="form-control" name="taluk" placeholder="Your taluk" required />
+              <input type="text" class="form-control" name="taluk" placeholder="Your taluk" value="{{ user.taluk if user else '' }}" required />
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">District</label>
-              <input type="text" class="form-control" name="district" placeholder="Your district" required />
+              <input type="text" class="form-control" name="district" placeholder="Your district" value="{{ user.district if user else '' }}" required />
             </div>
             
           </div>
@@ -540,48 +1027,7 @@
           </div>
         </div>
 
-        <!-- Payment Section -->
-     <!-- Payment Section -->
-<div class="form-section payment-section">
-  <div class="section-title">
-    <i class="fas fa-credit-card"></i>
-    Payment Information
-  </div>
 
-  <div class="alert alert-info">
-    <div class="d-flex align-items-center">
-      <i class="fas fa-info-circle me-2"></i>
-      <div>
-        <strong>Platform Fee: ₹20</strong><br>
-        <small>This fee is charged after service completion. Non-refundable if you don't attend the scheduled appointment.</small>
-      </div>
-    </div>
-  </div>
-
-  <div class="upi-qr-container">
-    <label class="form-label d-block">Scan QR Code to Pay ₹20</label>
-    <img src="static/WhatsApp Image 2025-08-09 at 09.59.27.jpeg" alt="UPI QR Code" />
-    <p class="mt-2 text-muted small">
-      <i class="fas fa-mobile-alt"></i> 
-      Scan with any UPI app like PhonePe, GPay, Paytm
-    </p>
-  </div>
-
-  <div class="mb-3">
-    <label class="form-label">Transaction ID</label>
-    <input type="text" 
-           class="form-control" 
-           name="transaction_id" 
-           placeholder="Enter UPI Transaction ID (12-20 digits)" 
-           pattern="[0-9]{12,20}"
-           title="Transaction ID must be 12-20 digits only"
-           required />
-    <small class="text-muted">
-      <i class="fas fa-info-circle"></i> 
-      Enter the transaction ID from your UPI payment app
-    </small>
-  </div>
-</div>
 
         <div class="text-center">
           <button type="submit" class="btn submit-btn w-100">
@@ -593,7 +1039,9 @@
     </div>
   </div>
 
-<script>
+
+
+  <script>
   let otpVerified = false;
   let otpSent = false;
 
@@ -604,7 +1052,17 @@
     document.querySelector('input[name="preferred_date"]').min = today;
   });
 
+  // Check if user is logged in (user data is pre-filled)
+  const isLoggedIn = document.body.dataset.userLoggedIn === 'true';
+
   function sendOTP() {
+    // Skip OTP for logged-in users
+    if (isLoggedIn) {
+      otpSent = true;
+      otpVerified = true;
+      return;
+    }
+
     const email = document.querySelector('input[name="email"]').value.trim();
     if (!email) {
       showAlert("Please enter your email first.", "warning");
@@ -645,6 +1103,13 @@
   }
 
   function verifyOTP() {
+    // Skip OTP verification for logged-in users
+    if (isLoggedIn) {
+      otpSent = true;
+      otpVerified = true;
+      return;
+    }
+
     if (!otpSent) {
       showAlert("Please send OTP first.", "warning");
       return;
@@ -730,14 +1195,17 @@
   document.getElementById("prebookingForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    if (!otpSent) {
-      showAlert("Please send your OTP first.", "warning");
-      return;
-    }
+    // Skip OTP checks for logged-in users
+    if (!isLoggedIn) {
+      if (!otpSent) {
+        showAlert("Please send your OTP first.", "warning");
+        return;
+      }
 
-    if (!otpVerified) {
-      showAlert("Please verify your OTP before submitting.", "warning");
-      return;
+      if (!otpVerified) {
+        showAlert("Please verify your OTP before submitting.", "warning");
+        return;
+      }
     }
 
     showLoadingOverlay();
@@ -748,18 +1216,6 @@
     // Handle multiple services selection
     const servicesSelect = document.querySelector('select[name="services"]');
     data.services = Array.from(servicesSelect.selectedOptions).map(option => option.value);
-
-     const transactionId = data.transaction_id ? data.transaction_id.trim() : '';
-  
-  data.payment_info = { 
-    amount: 20, 
-    method: "UPI", 
-    txn_ref_id: transactionId // This must match transaction_id for validation
-  };
-  
-  // Debug log to check the values
-  console.log('Transaction ID:', transactionId);
-  console.log('Payment Info:', data.payment_info);
 
   fetch("/prebook", {
     method: "POST",

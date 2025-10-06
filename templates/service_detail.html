@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <title>{{ service_name }} - Service Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding-top: 80px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1000px;
+    }
+    
+    .service-header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .service-header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
+    }
+    
+    .star-rating {
+      color: #ffc107;
+      font-size: 1.5rem;
+    }
+    
+    .review-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .review-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .review-user {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    
+    .review-date {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .review-rating {
+      color: #ffc107;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .review-comment {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    
+    /* UPDATED: Image gallery styles */
+    .review-photos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      margin-top: 1rem;
+    }
+    
+    .review-photos img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 2px solid #e0e0e0;
+    }
+    
+    .review-photos img:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .booking-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    
+    .no-reviews {
+      text-align: center;
+      padding: 3rem;
+      color: white;
+      font-size: 1.1rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+    }
+    
+    .rating-form {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-top: 3rem;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .rating-form h3 {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-control, .form-select {
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+      padding: 0.75rem;
+      transition: border-color 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+      border-color: #4facfe;
+      box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.25);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(79, 172, 254, 0.4);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      padding: 12px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      color: white;
+    }
+    
+    /* Image preview in form */
+    .image-preview-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .image-preview-item {
+      position: relative;
+      width: 100%;
+      padding-bottom: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #ddd;
+    }
+    
+    .image-preview-item img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Image modal */
+    .image-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .image-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+    
+    .image-modal-close {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+    }
+    
+    /* Enhanced Mobile Responsiveness */
+    @media (max-width: 1200px) {
+      .container { max-width: 95%; }
+      .service-header { padding: 2.5rem 2rem; }
+      .review-card { padding: 1.25rem; }
+    }
+
+    @media (max-width: 992px) {
+      .service-header { padding: 2rem 1.5rem; }
+      .service-header h1 { font-size: 2.2rem; }
+      .review-card { padding: 1rem; }
+      .rating-form { padding: 1.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      body { padding-top: 80px; }
+
+      .service-header {
+        padding: 1.5rem 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 15px;
+      }
+
+      .service-header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .star-rating {
+        font-size: 1.2rem;
+      }
+
+      .review-card {
+        padding: 1rem 0.75rem;
+        margin-bottom: 1rem;
+        border-radius: 12px;
+      }
+
+      .review-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 0.75rem;
+      }
+
+      .review-user {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .review-date {
+        font-size: 0.85rem;
+      }
+
+      .review-rating {
+        margin-bottom: 0.5rem;
+      }
+
+      .review-comment {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .review-photos {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+        margin-top: 0.75rem;
+      }
+
+      .review-photos img {
+        width: 100%;
+        height: 80px;
+        border-radius: 8px;
+      }
+
+      .rating-form {
+        padding: 1.25rem 1rem;
+        margin-top: 2rem;
+        border-radius: 12px;
+      }
+
+      .rating-form h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .btn-primary, .btn-secondary {
+        padding: 10px 25px;
+        font-size: 0.9rem;
+      }
+
+      .image-preview-container {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 8px;
+      }
+
+      .image-preview-item {
+        width: 100%;
+        padding-bottom: 100%;
+      }
+
+      .footer-section .row.g-4 .col-lg-4,
+      .footer-section .row.g-4 .col-lg-2 {
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-section h5 {
+        font-size: 1.1rem;
+      }
+
+      .footer-section h6 {
+        font-size: 0.95rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .service-header {
+        padding: 1.25rem 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .service-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .star-rating {
+        font-size: 1rem;
+      }
+
+      .review-card {
+        padding: 0.75rem 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .review-user {
+        font-size: 0.9rem;
+      }
+
+      .review-date {
+        font-size: 0.8rem;
+      }
+
+      .review-rating {
+        font-size: 1rem;
+      }
+
+      .review-comment {
+        font-size: 0.85rem;
+      }
+
+      .review-photos {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 6px;
+      }
+
+      .review-photos img {
+        height: 70px;
+        border-radius: 6px;
+      }
+
+      .rating-form {
+        padding: 1rem 0.75rem;
+        margin-top: 1.5rem;
+      }
+
+      .rating-form h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .form-control, .form-select {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary, .btn-secondary {
+        padding: 8px 20px;
+        font-size: 0.85rem;
+      }
+
+      .image-preview-container {
+        grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+        gap: 6px;
+      }
+
+      .footer-section .container {
+        padding: 0 0.5rem;
+      }
+
+      .footer-section h5 {
+        font-size: 1rem;
+      }
+
+      .footer-section h6 {
+        font-size: 0.9rem;
+      }
+
+      .footer-section .d-flex {
+        justify-content: center;
+      }
+
+      .footer-section .col-lg-4 p {
+        font-size: 0.85rem;
+      }
+    }
+
+    /* Professional Enhancements */
+    .service-header {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.8s;
+    }
+
+    .service-header:hover::before {
+      left: 100%;
+    }
+
+    .review-card {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .review-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.5s;
+    }
+
+    .review-card:hover::before {
+      left: 100%;
+    }
+
+    .review-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+    }
+
+    .rating-form {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rating-form::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+      transition: left 0.6s;
+    }
+
+    .rating-form:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary, .btn-secondary {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary::before, .btn-secondary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-primary:hover::before, .btn-secondary:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Enhanced image modal */
+    .image-modal {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .image-modal img {
+      transition: transform 0.3s ease;
+      cursor: zoom-out;
+    }
+
+    .image-modal img:hover {
+      transform: scale(1.05);
+    }
+
+    .image-modal-close {
+      transition: all 0.3s ease;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .image-modal-close:hover {
+      background: rgba(0, 0, 0, 0.8);
+      transform: scale(1.1);
+    }
+
+    /* Smooth animations */
+    * {
+      scroll-behavior: smooth;
+    }
+
+    .loading {
+      opacity: 0;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Professional form styling */
+    .form-control:focus, .form-select:focus {
+      border-color: #4facfe;
+      box-shadow: 0 0 0 0.2rem rgba(79, 172, 254, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .form-control, .form-select {
+      transition: all 0.3s ease;
+    }
+
+    .form-control:hover, .form-select:hover {
+      border-color: #4facfe;
+    }
+
+    /* Enhanced booking badge */
+    .booking-badge {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .booking-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .booking-badge:hover::before {
+      left: 100%;
+    }
+
+    /* Professional star rating */
+    .star-rating .fas, .star-rating .far, .star-rating .fa-star-half-alt {
+      transition: transform 0.2s ease;
+    }
+
+    .star-rating:hover .fas, .star-rating:hover .far, .star-rating:hover .fa-star-half-alt {
+      transform: scale(1.1);
+    }
+
+    /* Enhanced footer */
+    .footer-section {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+      transition: left 1s;
+    }
+
+    .footer-section:hover::before {
+      left: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="service-header">
+      <h1>{{ service_name }}</h1>
+      <div class="star-rating">
+        {% for i in range(1, 6) %}
+          {% if i <= average_rating|round(0, 'floor') %}
+            <i class="fas fa-star"></i>
+          {% elif i - average_rating < 1 %}
+            <i class="fas fa-star-half-alt"></i>
+          {% else %}
+            <i class="far fa-star"></i>
+          {% endif %}
+        {% endfor %}
+        <span class="ms-2" style="color: #333; font-size: 1.2rem;">{{ "%.1f"|format(average_rating) }}</span>
+        <span style="color: #666; font-size: 1rem;">({{ total_reviews }} reviews)</span>
+      </div>
+    </div>
+
+    <!-- UPDATED: Display reviews with images and booking IDs -->
+    {% if ratings and ratings|length > 0 %}
+      {% for review in ratings %}
+        <div class="review-card">
+          <div class="review-header">
+            <div>
+              <span class="review-user"><i class="fas fa-user-circle me-2"></i>{{ review.user_name }}</span>
+              <span class="booking-badge">Booking: {{ review.booking_id }}</span>
+            </div>
+            <span class="review-date">{{ review.created_at_formatted if review.get('created_at_formatted') else '' }}</span>
+          </div>
+          
+          <div class="review-rating mb-3">
+            {% for i in range(1, 6) %}
+              {% if i <= review.rating %}
+                <i class="fas fa-star"></i>
+              {% else %}
+                <i class="far fa-star"></i>
+              {% endif %}
+            {% endfor %}
+            <span class="ms-2 fw-bold">{{ review.rating }}/5</span>
+          </div>
+          
+          {% if review.comment %}
+            <div class="review-comment mb-3">
+              <i class="fas fa-quote-left text-muted me-2"></i>
+              {{ review.comment }}
+              <i class="fas fa-quote-right text-muted ms-2"></i>
+            </div>
+          {% else %}
+            <p class="review-comment text-muted mb-3"><em><i class="fas fa-comment-slash me-2"></i>No comment provided</em></p>
+          {% endif %}
+          
+          <!-- UPDATED: Display uploaded images prominently -->
+          {% if review.photo_urls and review.photo_urls|length > 0 %}
+            <div class="review-photos">
+              <h6 class="text-muted mb-3"><i class="fas fa-images me-2"></i>Uploaded Photos ({{ review.photo_urls|length }})</h6>
+              {% for photo_url in review.photo_urls %}
+                <img src="{{ photo_url }}"
+                     alt="Review photo by {{ review.user_name }}"
+                     onclick="openImageModal('{{ photo_url }}')"
+                     loading="lazy"
+                     title="Click to view full size" />
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-reviews">
+        <i class="fas fa-star-half-alt mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+        <h4>No reviews available yet</h4>
+        <p>Be the first to share your experience with this service!</p>
+      </div>
+    {% endif %}
+
+    <!-- RATING FORM -->
+    {% if can_rate %}
+    <div class="rating-form">
+      <h3>Give Your Rating for {{ service_name }}</h3>
+      <form id="ratingForm" enctype="multipart/form-data" method="POST" action="/api/rate-with-images">
+        <div class="mb-3">
+          <label for="userName" class="form-label">Your Name</label>
+          <input type="text" class="form-control" id="userName" name="user_name" value="{{ session.get('user_name', '') }}" readonly />
+        </div>
+
+        <div class="mb-3">
+          <label for="userEmail" class="form-label">Your Email</label>
+          <input type="email" class="form-control" id="userEmail" name="user_email" value="{{ session.get('user_email', '') }}" readonly />
+        </div>
+
+        <input type="hidden" name="booking_id" id="bookingIdInput" value="" readonly />
+
+        <div class="mb-3">
+          <label for="serviceSelect" class="form-label">Select Service</label>
+          <select class="form-select" id="serviceSelect" name="service_name" required>
+            <option value="" disabled selected>Select a service</option>
+            {% for booking in bookings %}
+              {% for service in booking.services %}
+                <option value="{{ service.name }}">{{ service.name }} (Booking ID: {{ booking.booking_id }})</option>
+              {% endfor %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Rating</label>
+          <div id="starRating" class="star-rating" role="radiogroup" aria-label="Star rating">
+            {% for i in range(1, 6) %}
+              <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" required />
+              <label for="star{{ i }}" title="{{ i }} stars">
+                <i class="fas fa-star"></i>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="comment" class="form-label">Comment (optional)</label>
+          <textarea class="form-control" id="comment" name="comment" rows="3" placeholder="Write your review here..."></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="photos" class="form-label">Upload Photos (max 5)</label>
+          <input class="form-control" type="file" id="photos" name="photos" accept="image/*" multiple onchange="previewImages(this)" />
+          <div id="imagePreview" class="image-preview-container"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Rating</button>
+      </form>
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-4">
+      You can only rate this service if you have a completed booking for it.
+    </div>
+    {% endif %}
+
+    <!-- PREVIOUS RATINGS -->
+    <div class="mt-5">
+      <h3>Previous Ratings for {{ service_name }}</h3>
+      {% if ratings and ratings|length > 0 %}
+        {% for review in ratings %}
+          <div class="review-card">
+            <div class="review-header">
+              <div>
+                <span class="review-user"><i class="fas fa-user-circle me-2"></i>{{ review.user_name }}</span>
+                <span class="booking-badge">Booking: {{ review.booking_id }}</span>
+              </div>
+              <span class="review-date">{{ review.created_at_formatted if review.get('created_at_formatted') else '' }}</span>
+            </div>
+            
+            <div class="review-rating mb-3">
+              {% for i in range(1, 6) %}
+                {% if i <= review.rating %}
+                  <i class="fas fa-star"></i>
+                {% else %}
+                  <i class="far fa-star"></i>
+                {% endif %}
+              {% endfor %}
+              <span class="ms-2 fw-bold">{{ review.rating }}/5</span>
+            </div>
+            
+            {% if review.comment %}
+              <div class="review-comment mb-3">
+                <i class="fas fa-quote-left text-muted me-2"></i>
+                {{ review.comment }}
+                <i class="fas fa-quote-right text-muted ms-2"></i>
+              </div>
+            {% else %}
+              <p class="review-comment text-muted mb-3"><em><i class="fas fa-comment-slash me-2"></i>No comment provided</em></p>
+            {% endif %}
+            
+            {% if review.photo_urls and review.photo_urls|length > 0 %}
+              <div class="review-photos">
+                <h6 class="text-muted mb-3"><i class="fas fa-images me-2"></i>Uploaded Photos ({{ review.photo_urls|length }})</h6>
+                {% for photo_url in review.photo_urls %}
+                  <img src="{{ photo_url }}"
+                       alt="Review photo by {{ review.user_name }}"
+                       onclick="openImageModal('{{ photo_url }}')"
+                       loading="lazy"
+                       title="Click to view full size" />
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="no-reviews">
+          <i class="fas fa-star-half-alt mb-3" style="font-size: 3rem; opacity: 0.5;"></i>
+          <h4>No reviews available yet</h4>
+          <p>Be the first to share your experience with this service!</p>
+        </div>
+      {% endif %}
+    </div>
+
+  <!-- Image Modal -->
+  <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+    <span class="image-modal-close" onclick="closeImageModal()">&times;</span>
+    <img id="modalImage" src="" alt="Full size image" />
+  </div>
+
+  <script>
+    function openImageModal(src) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      modalImage.src = src;
+      modal.style.display = 'flex';
+    }
+
+    function closeImageModal() {
+      const modal = document.getElementById('imageModal');
+      modal.style.display = 'none';
+      const modalImage = document.getElementById('modalImage');
+      modalImage.src = '';
+    }
+
+    function previewImages(input) {
+      const previewContainer = document.getElementById('imagePreview');
+      previewContainer.innerHTML = '';
+
+      if (input.files) {
+        Array.from(input.files).forEach(file => {
+          if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              const div = document.createElement('div');
+              div.className = 'image-preview-item';
+              div.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+              previewContainer.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+      }
+    }
+
+    document.getElementById('ratingForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      fetch('/api/rate-with-images', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Thank you for your rating!');
+          location.reload();
+        } else {
+          alert('Error submitting rating: ' + data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error submitting rating. Please try again.');
+      });
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
