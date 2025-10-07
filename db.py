@@ -136,6 +136,8 @@ def insert_user(user_data):
         user_data['phone'] = user_data.get('phone', '')
         user_data['name'] = user_data.get('name', '')
         user_data['password_hash'] = user_data.get('password_hash', '')
+        user_data['status'] = 'pending'
+        user_data['role'] = 'customer'
         user_data['updated_at'] = datetime.now()
 
         result = db.users.insert_one(user_data)
@@ -174,6 +176,42 @@ def get_user_by_id(user_id):
     except Exception as e:
         print(f"Error getting user by id: {e}")
         return None
+
+
+def get_pending_users():
+    """Get all pending users"""
+    try:
+        users = list(db.users.find({"status": "pending"}))
+        return users
+    except Exception as e:
+        print(f"Error getting pending users: {e}")
+        return []
+
+
+def approve_user(user_id, role='customer'):
+    """Approve a user and set their role"""
+    try:
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"status": "approved", "role": role, "updated_at": datetime.now()}}
+        )
+        return result.modified_count > 0
+    except Exception as e:
+        print(f"Error approving user: {e}")
+        return False
+
+
+def reject_user(user_id):
+    """Reject a user"""
+    try:
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"status": "rejected", "updated_at": datetime.now()}}
+        )
+        return result.modified_count > 0
+    except Exception as e:
+        print(f"Error rejecting user: {e}")
+        return False
 
 
 # ================= UPDATED: NEW FUNCTION - Get service by name =================
