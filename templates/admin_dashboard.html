@@ -539,7 +539,7 @@
                                         <button class="btn btn-success btn-sm mb-1" onclick="completeWithAmount('{{ prebook._id }}')">
                                             <i class="fas fa-check me-1"></i>Complete
                                         </button>
-                                        <button class="btn btn-danger btn-sm mb-1" onclick="rejectBooking('{{ prebook._id }}')">
+                                        <button class="btn btn-danger btn-sm mb-1" onclick="rejectBooking('{{ prebook.booking_id }}')">
                                             <i class="fas fa-times-circle me-1"></i>Reject
                                         </button>
                                     {% endif %}

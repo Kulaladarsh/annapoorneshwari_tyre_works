@@ -1,38 +1,18 @@
-# Comprehensive UI/UX Redesign Project
+# TODO: Enhance Booking Rejection with PDF Email
 
-## Design System Creation ✅
-- [x] Create unified CSS custom properties and design tokens
-- [x] Establish consistent color palette and gradients
-- [x] Define typography system (Inter font family)
-- [x] Standardize spacing, shadows, and border-radius values
-- [x] Create modern component library patterns
+## Completed Tasks
+- [x] Updated app.py reject_booking endpoint to generate PDF rejection notice
+- [x] Enhanced email sending to include PDF attachment with rejection details
+- [x] Reviewed admin_dashboard.html template for consistency
+- [x] Refactored db.py to use lazy-loaded collection functions instead of direct db.collection access
 
-## High Priority Pages (Core Functionality)
-- [ ] index.html - Main landing page redesign
-- [ ] prebooking.html - Service booking form redesign
+## Pending Tasks
+- [ ] Test reject booking functionality end-to-end
+- [ ] Verify PDF generation and email sending
+- [ ] Check error handling for PDF generation failures
+- [ ] Test UI feedback and user experience
 
-## Medium Priority Pages (Admin/User Dashboards)
-- [ ] admin_dashboard.html - Consistency improvements
-- [ ] user_dashboard.html - Consistency improvements
-
-## Low Priority Pages (Supporting)
-- [ ] receipt.html - Professional receipt design
-- [ ] developer.html - Modern developer page
-- [ ] login_otp.html - Enhanced authentication UI
-
-## Technical Implementation
-- [ ] Extract common CSS to shared stylesheets
-- [ ] Implement responsive design patterns
-- [ ] Add smooth animations and transitions
-- [ ] Optimize for performance
-- [ ] Cross-browser compatibility testing
-
-## Quality Assurance
-- [ ] Mobile responsiveness testing
-- [ ] Functionality preservation verification
-- [ ] Performance impact assessment
-- [ ] Accessibility improvements
-
-## Current Status
-- Starting with design system implementation
-- Will proceed with high-priority pages first
+## Notes
+- The reject booking button in admin dashboard calls the updated endpoint
+- PDF includes booking ID, customer name, reason for rejection, and contact info
+- Fallback to plain email if PDF generation fails

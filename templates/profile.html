@@ -5,20 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Profile - Annapoorneshwari Tyre & Painting Works</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --secondary-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --accent-color: #ffc107;
+      --bg-light: #f8f9fa;
+      --text-dark: #333;
+      --glass-bg: rgba(255, 255, 255, 0.95);
+      --shadow-primary: 0 15px 30px rgba(102, 126, 234, 0.1);
+      --shadow-hover: 0 20px 40px rgba(102, 126, 234, 0.15);
+      --section-spacing: 2.5rem;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--primary-gradient);
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: radial-gradient(circle at 20% 80%, rgba(120, 162, 255, 0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 120, 198, 0.3) 0%, transparent 50%);
+      z-index: -1;
+      animation: backgroundShift 10s ease-in-out infinite alternate;
+    }
+
+    @keyframes backgroundShift {
+      0% { transform: translateX(-10px) translateY(-10px); }
+      100% { transform: translateX(10px) translateY(10px); }
+    }
+
+    .section-container {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      box-shadow: var(--shadow-primary);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      margin: var(--section-spacing) 0;
+    }
+
+    .btn-gradient {
+      background: var(--primary-gradient);
+      border: none;
+      color: white;
+      font-weight: 600;
+      transition: all 0.4s ease;
+      box-shadow: var(--shadow-primary);
+      border-radius: 50px;
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      color: white;
+    }
+
     .profile-photo {
       max-width: 150px;
       max-height: 150px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #4facfe;
+      border: 3px solid var(--accent-color);
     }
   </style>
 </head>
-<body class="bg-light">
+<body>
   <div class="container py-5">
     <div class="row justify-content-center">
-      <div class="col-md-7 bg-white p-4 rounded shadow">
+      <div class="col-md-7 section-container">
         <h2 class="mb-4 text-center">Your Profile</h2>
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -66,7 +132,7 @@
             <label for="area" class="form-label">Area</label>
             <input type="text" class="form-control" id="area" name="area" value="{{ user.area or '' }}" />
           </div>
-          <button type="submit" class="btn btn-primary w-100">Update Profile</button>
+          <button type="submit" class="btn btn-gradient w-100">Update Profile</button>
         </form>
         <p class="mt-3 text-center">
           <a href="{{ url_for('user_dashboard') }}">Back to Dashboard</a>

@@ -7,6 +7,11 @@ from PIL import Image
 import io
 import hashlib
 from datetime import timedelta
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -113,6 +118,37 @@ import time, random, re
 
 # Initialize admin after app and db are ready
 initialize_admin()
+
+
+def ensure_user_session(user_id):
+    """
+    Ensure user session variables are properly set.
+    If missing, retrieve from database and set them.
+    """
+    try:
+        if not user_id:
+            logger.warning("ensure_user_session called with empty user_id")
+            return False
+
+        # Check if session variables are already set
+        if session.get('user_email') and session.get('user_name'):
+            return True
+
+        # Retrieve user data from database
+        user = get_user_by_id(ObjectId(user_id))
+        if not user:
+            logger.error(f"User not found in database for user_id: {user_id}")
+            return False
+
+        # Set session variables
+        session['user_email'] = user['email']
+        session['user_name'] = user['name']
+        logger.info(f"Restored session variables for user: {user['email']}")
+        return True
+
+    except Exception as e:
+        logger.error(f"Error in ensure_user_session: {e}")
+        return False
 
 
 @app.route('/')
@@ -346,6 +382,13 @@ def user_dashboard():
         flash('Please login first', 'warning')
         return redirect(url_for('login'))
 
+    user_id = session['user_id']
+
+    # Ensure user session variables are properly set
+    if not ensure_user_session(user_id):
+        flash('Session expired. Please login again.', 'warning')
+        return redirect(url_for('login'))
+
     user_email = session.get('user_email')
     user_name = session.get('user_name')
 
@@ -381,6 +424,13 @@ def cancel_booking(booking_id):
         flash('Please login first', 'warning')
         return redirect(url_for('login'))
 
+    user_id = session['user_id']
+
+    # Ensure user session variables are properly set
+    if not ensure_user_session(user_id):
+        flash('Session expired. Please login again.', 'warning')
+        return redirect(url_for('login'))
+
     user_email = session.get('user_email')
     user_name = session.get('user_name')
 
@@ -413,6 +463,13 @@ def cancel_booking(booking_id):
 def reschedule_booking(booking_id):
     if 'user_id' not in session:
         flash('Please login first', 'warning')
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+
+    # Ensure user session variables are properly set
+    if not ensure_user_session(user_id):
+        flash('Session expired. Please login again.', 'warning')
         return redirect(url_for('login'))
 
     user_email = session.get('user_email')
@@ -864,6 +921,15 @@ def api_payment_stats():
 @app.route('/api/check-booking')
 def check_booking():
     """FIXED: Check if user has completed bookings and return booking IDs"""
+    if 'user_id' not in session:
+        return jsonify({'booked': False, 'bookings': []})
+
+    user_id = session['user_id']
+
+    # Ensure user session variables are properly set
+    if not ensure_user_session(user_id):
+        return jsonify({'booked': False, 'bookings': []})
+
     user_email = session.get('user_email')
     user_name = session.get('user_name')
 
@@ -906,6 +972,15 @@ def rate_service_with_images():
     FIXED: Enhanced rating system with comprehensive validation and booking verification
     """
     try:
+        if 'user_id' not in session:
+            return jsonify({"success": False, "error": "Please log in first"}), 401
+
+        user_id = session['user_id']
+
+        # Ensure user session variables are properly set
+        if not ensure_user_session(user_id):
+            return jsonify({"success": False, "error": "Session expired. Please login again."}), 401
+
         session_email = session.get('user_email')
         session_name = session.get('user_name')
 
@@ -1059,9 +1134,9 @@ def service_detail(service_name):
     try:
         # Get service details
         service = get_service_by_name(service_name)
-        
+
         if not service:
-            return render_template('error.html', 
+            return render_template('error.html',
                                  message=f"Service '{service_name}' not found",
                                  back_url=url_for('home')), 404
 
@@ -1073,21 +1148,32 @@ def service_detail(service_name):
         service_avg = avg_ratings.get(service_name, {"average": 0, "count": 0})
 
         # Check if current user can rate this service (has completed booking)
-        user_email = session.get('user_email')
-        user_name = session.get('user_name')
         can_rate = False
         bookings = []
-        if user_email and user_name:
-            bookings = list(prebookings_collection.find({
-                "email": user_email,
-                "name": user_name,
-                "status": "completed",
-                "$or": [
-                    {"services": service_name},  # old format: direct string match
-                    {"services.name": service_name}  # new format: dict with name field
-                ]
-            }))
-            can_rate = len(bookings) > 0
+
+        # Only check rating capability if user is logged in
+        if 'user_id' in session:
+            user_id = session['user_id']
+
+            # Ensure user session variables are properly set
+            if not ensure_user_session(user_id):
+                # Session expired, clear session and continue without rating capability
+                session.clear()
+            else:
+                user_email = session.get('user_email')
+                user_name = session.get('user_name')
+
+                if user_email and user_name:
+                    bookings = list(prebookings_collection.find({
+                        "email": user_email,
+                        "name": user_name,
+                        "status": "completed",
+                        "$or": [
+                            {"services": service_name},  # old format: direct string match
+                            {"services.name": service_name}  # new format: dict with name field
+                        ]
+                    }))
+                    can_rate = len(bookings) > 0
 
         return render_template('service_detail.html',
                              service=service,
@@ -1258,7 +1344,10 @@ def reject_booking(booking_id):
     if not booking:
         return jsonify({"success": False, "error": "Booking not found"}), 404
 
-    update_prebooking_status(booking_id, "rejected")
+    result = update_prebooking_status(booking_id, "rejected")
+    if not result or result.modified_count == 0:
+        print(f"Failed to update booking status to rejected for booking_id: {booking_id}")
+        return jsonify({"success": False, "error": "Failed to update booking status"}), 500
 
     email = booking.get("email")
     name = booking.get("name", "Customer")
@@ -1276,7 +1365,42 @@ Contact us for assistance.
 Regards,
 Annapoorneshwari Works"""
 
-    send_email(email, subject, body)
+    # Send rejection email with PDF attachment summarizing rejection details
+    try:
+        from reportlab.lib.pagesizes import letter
+        from reportlab.pdfgen import canvas
+        import io
+
+        buffer = io.BytesIO()
+        c = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+
+        c.setFont("Helvetica-Bold", 16)
+        c.drawString(72, height - 72, "Booking Rejection Notice")
+
+        c.setFont("Helvetica", 12)
+        c.drawString(72, height - 108, f"Booking ID: {booking_id}")
+        c.drawString(72, height - 130, f"Customer Name: {name}")
+        c.drawString(72, height - 152, f"Reason for Rejection:")
+        text = c.beginText(72, height - 174)
+        text.setFont("Helvetica", 12)
+        for line in reason.splitlines():
+            text.textLine(line)
+        c.drawText(text)
+
+        c.drawString(72, height - 220, "Please contact us for further assistance.")
+        c.drawString(72, height - 250, "Regards,")
+        c.drawString(72, height - 270, "Annapoorneshwari Tyre & Painting Works")
+
+        c.showPage()
+        c.save()
+        buffer.seek(0)
+
+        send_email(email, subject, body, buffer.getvalue(), f"rejection_{booking_id}.pdf")
+    except Exception as e:
+        print(f"Error generating or sending rejection PDF: {e}")
+        send_email(email, subject, body)
+
     return jsonify({"success": True})
 
 
