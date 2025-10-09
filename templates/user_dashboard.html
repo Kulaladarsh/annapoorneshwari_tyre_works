@@ -583,33 +583,33 @@
       </div>
 
       <!-- Stats Cards -->
-      <div class="stats-grid">
+      <div class="stats-grid" id="stats-grid">
         <div class="stat-card">
           <div class="stat-icon blue">
             <i class="fas fa-calendar-alt"></i>
           </div>
-          <div class="stat-value">{{ bookings|length }}</div>
+          <div class="stat-value" id="stat-total">{{ bookings|length }}</div>
           <div class="stat-label">Total Bookings</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon green">
             <i class="fas fa-check-circle"></i>
           </div>
-          <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'completed')|list|length }}</div>
+          <div class="stat-value" id="stat-completed">{{ bookings|selectattr('status', 'equalto', 'completed')|list|length }}</div>
           <div class="stat-label">Completed</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon orange">
             <i class="fas fa-clock"></i>
           </div>
-          <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'pending')|list|length }}</div>
+          <div class="stat-value" id="stat-pending">{{ bookings|selectattr('status', 'equalto', 'pending')|list|length }}</div>
           <div class="stat-label">Pending</div>
         </div>
         <div class="stat-card">
           <div class="stat-icon red">
             <i class="fas fa-times-circle"></i>
           </div>
-          <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'rejected')|list|length }}</div>
+          <div class="stat-value" id="stat-rejected">{{ bookings|selectattr('status', 'equalto', 'rejected')|list|length }}</div>
           <div class="stat-label">Rejected</div>
         </div>
       </div>
@@ -620,79 +620,81 @@
         Your Bookings
       </h3>
 
-      {% if bookings %}
-        {% for booking in bookings %}
-          <div class="booking-card">
-            <div class="booking-header">
-              <div class="booking-id">
-                <i class="fas fa-hashtag"></i>
-                {{ booking.booking_id }}
-              </div>
-              <div class="booking-status {% if booking.status == 'completed' %}status-completed{% elif booking.status == 'pending' %}status-pending{% elif booking.status == 'rejected' %}status-rejected{% endif %}">
-                <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
-                <span>{{ booking.status|capitalize }}</span>
-              </div>
-            </div>
-
-            <div class="booking-details">
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="fas fa-tools"></i>
+      <div id="bookings-container">
+        {% if bookings %}
+          {% for booking in bookings %}
+            <div class="booking-card" data-booking-id="{{ booking.booking_id }}">
+              <div class="booking-header">
+                <div class="booking-id">
+                  <i class="fas fa-hashtag"></i>
+                  {{ booking.booking_id }}
                 </div>
-                <div class="detail-content">
-                  <h6>Services</h6>
-                  <p>{{ booking.services | join(', ') }}</p>
+                <div class="booking-status {% if booking.status == 'completed' %}status-completed{% elif booking.status == 'pending' %}status-pending{% elif booking.status == 'rejected' %}status-rejected{% endif %}">
+                  <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                  <span>{{ booking.status|capitalize }}</span>
                 </div>
               </div>
 
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="fas fa-calendar"></i>
+              <div class="booking-details">
+                <div class="detail-item">
+                  <div class="detail-icon">
+                    <i class="fas fa-tools"></i>
+                  </div>
+                  <div class="detail-content">
+                    <h6>Services</h6>
+                    <p>{{ booking.services | join(', ') }}</p>
+                  </div>
                 </div>
-                <div class="detail-content">
-                  <h6>Date</h6>
-                  <p>{{ booking.preferred_date }}</p>
+
+                <div class="detail-item">
+                  <div class="detail-icon">
+                    <i class="fas fa-calendar"></i>
+                  </div>
+                  <div class="detail-content">
+                    <h6>Date</h6>
+                    <p>{{ booking.preferred_date }}</p>
+                  </div>
+                </div>
+
+                <div class="detail-item">
+                  <div class="detail-icon">
+                    <i class="fas fa-clock"></i>
+                  </div>
+                  <div class="detail-content">
+                    <h6>Time</h6>
+                    <p>{{ booking.preferred_time if booking.preferred_time else 'Not specified' }}</p>
+                  </div>
                 </div>
               </div>
 
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="fas fa-clock"></i>
-                </div>
-                <div class="detail-content">
-                  <h6>Time</h6>
-                  <p>{{ booking.preferred_time if booking.preferred_time else 'Not specified' }}</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="booking-actions">
-              {% if booking.status == 'pending' %}
-                <a href="{{ url_for('reschedule_booking', booking_id=booking.booking_id) }}" class="btn-action btn-primary">
-                  <i class="fas fa-edit"></i>
-                  Reschedule
+              <div class="booking-actions">
+                {% if booking.status == 'pending' %}
+                  <a href="{{ url_for('reschedule_booking', booking_id=booking.booking_id) }}" class="btn-action btn-primary">
+                    <i class="fas fa-edit"></i>
+                    Reschedule
+                  </a>
+                  <form action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-action btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                      <i class="fas fa-times"></i>
+                      Cancel
+                    </button>
+                  </form>
+                {% endif %}
+                <a href="{{ url_for('show_receipt', booking_id=booking.booking_id) }}" class="btn-action btn-info">
+                  <i class="fas fa-receipt"></i>
+                  View Receipt
                 </a>
-                <form action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" method="POST" style="display: inline;">
-                  <button type="submit" class="btn-action btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
-                    <i class="fas fa-times"></i>
-                    Cancel
-                  </button>
-                </form>
-              {% endif %}
-              <a href="{{ url_for('show_receipt', booking_id=booking.booking_id) }}" class="btn-action btn-info">
-                <i class="fas fa-receipt"></i>
-                View Receipt
-              </a>
+              </div>
             </div>
+          {% endfor %}
+        {% else %}
+          <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h4>No Bookings Yet</h4>
+            <p>You haven't made any bookings. Start by booking a service!</p>
           </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <i class="fas fa-calendar-times"></i>
-          <h4>No Bookings Yet</h4>
-          <p>You haven't made any bookings. Start by booking a service!</p>
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
     </main>
   </div>
 
@@ -706,11 +708,183 @@
     document.addEventListener('click', function(event) {
       const sidebar = document.getElementById('sidebar');
       const toggle = document.querySelector('.mobile-menu-toggle');
-      
+
       if (window.innerWidth <= 768) {
         if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
           sidebar.classList.remove('show');
         }
+      }
+    });
+
+    // Real-time updates for user dashboard
+    let previousBookings = [];
+    let pollingInterval;
+
+    function fetchDashboardData() {
+      fetch(window.location.href, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        updateStats(data);
+        updateBookings(data.bookings);
+        checkForRejections(data.bookings);
+      })
+      .catch(error => {
+        console.error('Error fetching dashboard data:', error);
+      });
+    }
+
+    function updateStats(data) {
+      document.getElementById('stat-total').textContent = data.total_bookings;
+      document.getElementById('stat-completed').textContent = data.completed_bookings;
+      document.getElementById('stat-pending').textContent = data.pending_bookings;
+      document.getElementById('stat-rejected').textContent = data.rejected_bookings;
+    }
+
+    function updateBookings(bookings) {
+      const container = document.getElementById('bookings-container');
+
+      if (bookings.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h4>No Bookings Yet</h4>
+            <p>You haven't made any bookings. Start by booking a service!</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      bookings.forEach(booking => {
+        const statusClass = booking.status === 'completed' ? 'status-completed' :
+                           booking.status === 'pending' ? 'status-pending' : 'status-rejected';
+        const actionsHtml = booking.status === 'pending' ?
+          `<a href="/reschedule_booking/${booking.booking_id}" class="btn-action btn-primary">
+             <i class="fas fa-edit"></i>
+             Reschedule
+           </a>
+           <form action="/cancel_booking/${booking.booking_id}" method="POST" style="display: inline;">
+             <button type="submit" class="btn-action btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
+               <i class="fas fa-times"></i>
+               Cancel
+             </button>
+           </form>` : '';
+
+        html += `
+          <div class="booking-card" data-booking-id="${booking.booking_id}">
+            <div class="booking-header">
+              <div class="booking-id">
+                <i class="fas fa-hashtag"></i>
+                ${booking.booking_id}
+              </div>
+              <div class="booking-status ${statusClass}">
+                <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                <span>${booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span>
+              </div>
+            </div>
+
+            <div class="booking-details">
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <i class="fas fa-tools"></i>
+                </div>
+                <div class="detail-content">
+                  <h6>Services</h6>
+                  <p>${booking.services.join(', ')}</p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <i class="fas fa-calendar"></i>
+                </div>
+                <div class="detail-content">
+                  <h6>Date</h6>
+                  <p>${booking.preferred_date}</p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="detail-content">
+                  <h6>Time</h6>
+                  <p>${booking.preferred_time || 'Not specified'}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="booking-actions">
+              ${actionsHtml}
+              <a href="/show_receipt/${booking.booking_id}" class="btn-action btn-info">
+                <i class="fas fa-receipt"></i>
+                View Receipt
+              </a>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function checkForRejections(currentBookings) {
+      const newRejections = currentBookings.filter(booking =>
+        booking.status === 'rejected' &&
+        !previousBookings.some(prev => prev.booking_id === booking.booking_id && prev.status === 'rejected')
+      );
+
+      if (newRejections.length > 0) {
+        showNotification('A booking has been rejected by the admin.', 'warning');
+      }
+
+      previousBookings = currentBookings;
+    }
+
+    function showNotification(message, type = 'info') {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+      notification.style.cssText = `
+        top: 20px;
+        right: 20px;
+        z-index: 1050;
+        min-width: 300px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      `;
+      notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      `;
+
+      document.body.appendChild(notification);
+
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.remove();
+        }
+      }, 5000);
+    }
+
+    // Start polling when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initial fetch to get current state
+      fetchDashboardData();
+
+      // Start polling every 30 seconds
+      pollingInterval = setInterval(fetchDashboardData, 30000);
+    });
+
+    // Stop polling when page is unloaded
+    window.addEventListener('beforeunload', function() {
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
       }
     });
   </script>

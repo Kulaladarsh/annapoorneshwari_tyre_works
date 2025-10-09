@@ -359,6 +359,19 @@ def user_dashboard():
         "name": user_name
     }).sort("created_at", -1))
 
+    # Check if this is an AJAX request for real-time updates
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # Convert ObjectIds to strings for JSON serialization
+        for booking in bookings:
+            booking['_id'] = str(booking['_id'])
+        return jsonify({
+            'total_bookings': len(bookings),
+            'completed_bookings': len([b for b in bookings if b.get('status') == 'completed']),
+            'pending_bookings': len([b for b in bookings if b.get('status') == 'pending']),
+            'rejected_bookings': len([b for b in bookings if b.get('status') == 'rejected']),
+            'bookings': bookings
+        })
+
     return render_template('user_dashboard.html', bookings=bookings, user_name=user_name, user_photo=user_photo)
 
 
