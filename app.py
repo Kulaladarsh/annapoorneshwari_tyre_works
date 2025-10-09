@@ -942,7 +942,7 @@ def check_booking():
         "status": "completed"
     }, {"booking_id": 1, "services": 1, "_id": 0}))
 
-    # Format bookings with service names
+    # Format bookings with service names, filtering out already rated services
     formatted_bookings = []
     for booking in bookings:
         services = booking.get('services', [])
@@ -954,10 +954,18 @@ def check_booking():
             else:
                 service_names = services
 
-        formatted_bookings.append({
-            'booking_id': booking.get('booking_id'),
-            'services': service_names
-        })
+        # Filter out services that have already been rated for this booking
+        filtered_services = []
+        for service_name in service_names:
+            if not check_user_rating_exists_for_booking(booking.get('booking_id'), service_name):
+                filtered_services.append(service_name)
+
+        # Only include booking if it has services that haven't been rated yet
+        if filtered_services:
+            formatted_bookings.append({
+                'booking_id': booking.get('booking_id'),
+                'services': filtered_services
+            })
 
     return jsonify({
         'booked': len(formatted_bookings) > 0,
@@ -1145,7 +1153,7 @@ def service_detail(service_name):
 
         # Calculate average
         avg_ratings = calculate_average_ratings()
-        service_avg = avg_ratings.get(service_name, {"average": 0, "count": 0})
+        service_avg = avg_ratings.get(service_name.lower().capitalize(), {"average": 0, "count": 0})
 
         # Check if current user can rate this service (has completed booking)
         can_rate = False

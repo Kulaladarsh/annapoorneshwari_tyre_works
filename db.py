@@ -33,15 +33,22 @@ payments_collection = db['payments']
 def create_indexes():
     """Create database indexes with booking_id support"""
     try:
-        # UPDATED: Drop old user-service index and create new booking-service unique index
+        # UPDATED: Drop old indexes that prevent proper rating functionality
         try:
             # Drop the old index that prevents multiple ratings per user-service
             ratings_collection.drop_index("service_name_1_user_name_1")
             print("✅ Dropped old user-service rating index")
         except Exception as e:
-            print(f"Old index drop note: {e}")
+            print(f"Old user-service index drop note: {e}")
 
-        # Create new unique index on booking_id + service_name
+        try:
+            # Drop the problematic single booking_id index that prevents multiple services per booking
+            ratings_collection.drop_index("booking_id_1")
+            print("✅ Dropped old single booking_id index")
+        except Exception as e:
+            print(f"Old booking_id index drop note: {e}")
+
+        # Create new unique index on booking_id + service_name (allows multiple services per booking)
         try:
             ratings_collection.create_index(
                 [("booking_id", 1), ("service_name", 1)],
@@ -240,29 +247,36 @@ def get_service_by_name(service_name):
 
 # ==================== RATINGS ====================
 def calculate_average_ratings():
-    """Calculate average ratings per service"""
+    """Calculate average ratings per service using canonical service names"""
     try:
-        pipeline = [
-            {
-                "$group": {
-                    "_id": "$service_name",
-                    "average": {"$avg": "$rating"},
-                    "count": {"$sum": 1}
-                }
-            },
-            {"$sort": {"_id": 1}}
-        ]
-        results = list(ratings_collection.aggregate(pipeline))
+        # Get all ratings
+        ratings = list(ratings_collection.find())
 
-        avg_ratings = {}
-        for item in results:
-            service_name = item["_id"]
+        # Group by canonical service name
+        service_ratings = {}
+        for rating in ratings:
+            service_name = rating.get("service_name", "")
             if service_name:
+                # Get canonical service name
+                canonical_service = get_service_by_name(service_name)
+                if canonical_service:
+                    canonical_name = canonical_service["name"]
+                else:
+                    canonical_name = service_name.capitalize()  # Fallback
+
+                if canonical_name not in service_ratings:
+                    service_ratings[canonical_name] = []
+                service_ratings[canonical_name].append(rating["rating"])
+
+        # Calculate averages
+        avg_ratings = {}
+        for service_name, ratings_list in service_ratings.items():
+            if ratings_list:
                 avg_ratings[service_name] = {
-                    "average": round(float(item["average"]), 1),
-                    "count": int(item["count"])
+                    "average": round(float(sum(ratings_list) / len(ratings_list)), 1),
+                    "count": len(ratings_list)
                 }
-                
+
         return avg_ratings
 
     except Exception as e:
@@ -270,10 +284,10 @@ def calculate_average_ratings():
         return {}
 
 
-# ================= UPDATED: INSERT RATING - Now with booking_id validation =================
+# ================= UPDATED: INSERT RATING - Now with booking_id validation and service name normalization =================
 def insert_rating(rating_data):
     """
-    FIXED: Insert rating with flexible validation
+    FIXED: Insert rating with flexible validation and service name normalization
     """
     try:
         # Validate required fields
@@ -283,18 +297,29 @@ def insert_rating(rating_data):
         if "service_name" not in rating_data or not rating_data["service_name"]:
             raise ValueError("Service name is required")
 
+        # NORMALIZE SERVICE NAME: Find the canonical service name from services collection
+        original_service_name = rating_data["service_name"]
+        canonical_service = get_service_by_name(original_service_name)
+
+        if canonical_service:
+            # Use the canonical service name from database
+            rating_data["service_name"] = canonical_service["name"]
+            print(f"🔄 Normalized service name: '{original_service_name}' → '{canonical_service['name']}'")
+        else:
+            print(f"⚠️  Warning: Service '{original_service_name}' not found in services collection")
+
         # FIXED: Use case-insensitive check for existing ratings
         existing = ratings_collection.find_one({
             "booking_id": rating_data["booking_id"],
             "service_name": {"$regex": f"^{rating_data['service_name']}$", "$options": "i"}
         })
-        
+
         if existing:
             raise ValueError("Rating already exists for this booking and service")
 
         # Add timestamp if not present
         rating_data["created_at"] = rating_data.get("created_at", datetime.now())
-        
+
         # Ensure photo_urls field exists
         rating_data["photo_urls"] = rating_data.get("photo_urls", [])
 
@@ -336,24 +361,33 @@ def get_ratings_by_service(service_name):
     """
     Get all ratings for a specific service (from all bookings)
     Returns ratings with photo URLs and booking info
+    Uses case-insensitive matching with canonical service names
     """
     try:
+        # First, get the canonical service name
+        canonical_service = get_service_by_name(service_name)
+        if canonical_service:
+            search_name = canonical_service["name"]
+        else:
+            search_name = service_name
+
+        # Use case-insensitive regex search to find all variations
         ratings = list(ratings_collection.find(
-            {"service_name": service_name}
+            {"service_name": {"$regex": f"^{search_name}$", "$options": "i"}}
         ).sort("created_at", -1))
-        
+
         # Format data
         for rating in ratings:
             rating['_id'] = str(rating['_id'])
             if 'created_at' in rating and rating['created_at']:
                 rating['created_at_formatted'] = rating['created_at'].strftime('%d %b %Y')
-            
+
             # Ensure photo_urls exists
             if 'photo_urls' not in rating:
                 rating['photo_urls'] = []
-        
+
         return ratings
-        
+
     except Exception as e:
         print(f"Error getting ratings by service: {e}")
         return []
