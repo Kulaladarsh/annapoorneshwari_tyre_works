@@ -1,18 +1,17 @@
-# TODO: Enhance Admin Dashboard Recent Bookings with Search and Filter
+# TODO: Add Vehicle Number Field
 
-## Backend Changes
-- [x] Update `get_prebookings()` in `db.py` to support advanced filters (search, status, date range, service type)
-- [ ] Modify `/admin/dashboard` route in `app.py` to handle query parameters and return JSON for AJAX requests
+## Tasks
+- [ ] Add vehicle_number input field to prebooking.html form
+- [ ] Update admin_dashboard.html to display vehicle_number in the Vehicle column
+- [ ] Update receipt.html to show vehicle_number in the Vehicle section
+- [ ] Test the form submission and verify data is saved and displayed correctly
 
-## Frontend Changes
-- [ ] Add search bar and filter controls above Recent Bookings table in `templates/admin_dashboard.html`
-- [ ] Implement JavaScript for dynamic table updates with AJAX and debouncing
-- [ ] Style controls to match existing dashboard theme with icons
+## Files to Edit
+- templates/prebooking.html: Add input field for vehicle number
+- templates/admin_dashboard.html: Update table display
+- templates/receipt.html: Update receipt display
 
-## Testing
-- [ ] Test search functionality for all fields (name, email, contact, booking ID, vehicle details)
-- [ ] Test filter dropdowns and date range inputs
-- [ ] Test combined search and filters
-- [ ] Test AJAX updates and debouncing
-- [ ] Test "No results found" message
-- [ ] Test responsive design and UI consistency
+## Notes
+- Vehicle number should be optional field
+- Display format: Vehicle Type, Vehicle Number, Vehicle Details
+- Ensure database automatically handles the new field (no changes needed in db.py or app.py)

@@ -217,15 +217,21 @@ def reject_user(user_id):
 # ================= UPDATED: NEW FUNCTION - Get service by name =================
 def get_service_by_name(service_name):
     """
-    Get a specific service by name
-    Fixes the "service not found" issue with case-insensitive matching
+    FIXED: Get service with case-insensitive matching
     """
     try:
-        # UPDATED: Use case-insensitive regex matching to handle case differences
         service = services_collection.find_one(
             {"name": {"$regex": f"^{service_name}$", "$options": "i"}},
             {"_id": 0, "name": 1, "price": 1, "description": 1}
         )
+        
+        if not service:
+            # Fallback: try exact match
+            service = services_collection.find_one(
+                {"name": service_name},
+                {"_id": 0, "name": 1, "price": 1, "description": 1}
+            )
+        
         return service
     except Exception as e:
         print(f"Error getting service: {e}")
@@ -267,8 +273,7 @@ def calculate_average_ratings():
 # ================= UPDATED: INSERT RATING - Now with booking_id validation =================
 def insert_rating(rating_data):
     """
-    UPDATED: Insert rating linked to booking_id
-    Prevents duplicate ratings for same booking+service
+    FIXED: Insert rating with flexible validation
     """
     try:
         # Validate required fields
@@ -278,34 +283,34 @@ def insert_rating(rating_data):
         if "service_name" not in rating_data or not rating_data["service_name"]:
             raise ValueError("Service name is required")
 
-        # UPDATED: Check if this booking+service already has a rating
+        # FIXED: Use case-insensitive check for existing ratings
         existing = ratings_collection.find_one({
             "booking_id": rating_data["booking_id"],
-            "service_name": rating_data["service_name"]
+            "service_name": {"$regex": f"^{rating_data['service_name']}$", "$options": "i"}
         })
         
         if existing:
-            raise ValueError(f"Rating already exists for this booking and service")
+            raise ValueError("Rating already exists for this booking and service")
 
         # Add timestamp if not present
         rating_data["created_at"] = rating_data.get("created_at", datetime.now())
         
-        # UPDATED: Ensure photo_urls field exists
+        # Ensure photo_urls field exists
         rating_data["photo_urls"] = rating_data.get("photo_urls", [])
 
         # Insert rating
         result = ratings_collection.insert_one(rating_data)
 
-        print(f"✅ Rating inserted: {result.inserted_id}")
+        print(f"✅ Rating inserted successfully:")
         print(f"   Booking: {rating_data['booking_id']}")
         print(f"   Service: {rating_data['service_name']}")
         print(f"   Rating: {rating_data['rating']}/5")
         print(f"   Photos: {len(rating_data['photo_urls'])}")
 
-        return result.inserted_id
+        return str(result.inserted_id)
 
     except Exception as e:
-        print(f"Error inserting rating: {e}")
+        print(f"❌ Error inserting rating: {e}")
         raise
 
 
@@ -357,13 +362,12 @@ def get_ratings_by_service(service_name):
 # ================= UPDATED: NEW FUNCTION - Check rating exists for booking =================
 def check_user_rating_exists_for_booking(booking_id, service_name):
     """
-    Check if a specific booking already has a rating for a service
-    This allows multiple ratings from same user for different bookings
+    FIXED: Check if a rating exists with case-insensitive service name matching
     """
     try:
         return ratings_collection.find_one({
             "booking_id": booking_id,
-            "service_name": service_name
+            "service_name": {"$regex": f"^{service_name}$", "$options": "i"}
         })
     except Exception as e:
         print(f"Error checking rating: {e}")

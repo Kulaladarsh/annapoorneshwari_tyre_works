@@ -474,6 +474,8 @@
                             <th><i class="fas fa-phone me-2"></i>Contact</th>
                             <th><i class="fas fa-cogs me-2"></i>Services</th>
                             <th><i class="fas fa-car me-2"></i>Vehicle</th>
+                            <th><i class="fas fa-calendar me-2"></i>Booking Date</th>
+                            <th><i class="fas fa-check-circle me-2"></i>Completed Date</th>
                             <th><i class="fas fa-rupee-sign me-2"></i>Amount</th>
                             <th><i class="fas fa-info-circle me-2"></i>Status</th>
                             <th><i class="fas fa-tools me-2"></i>Actions</th>
@@ -498,8 +500,17 @@
                             <td>
                                 <small>
                                     <div class="fw-bold">{{ prebook.vehicle_type }}</div>
+                                    {% if prebook.vehicle_number %}
+                                        <div class="text-primary">{{ prebook.vehicle_number }}</div>
+                                    {% endif %}
                                     <div class="text-muted">{{ prebook.vehicle_details }}</div>
                                 </small>
+                            </td>
+                            <td>
+                                <small>{{ prebook.created_at.strftime('%d/%m/%Y %H:%M') if prebook.created_at else 'N/A' }}</small>
+                            </td>
+                            <td>
+                                <small>{{ prebook.completed_at.strftime('%d/%m/%Y %H:%M') if prebook.completed_at else '-' }}</small>
                             </td>
                             <td>
                                 <div id="amount-display-{{ prebook._id }}">

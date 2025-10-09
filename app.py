@@ -838,34 +838,50 @@ def api_payment_stats():
         return jsonify({"success": False, "error": "Server error"}), 500
 
 
-# ================= UPDATED: CHECK BOOKING - Now returns booking_id =================
+# Also update the /api/check-booking route
 @app.route('/api/check-booking')
 def check_booking():
-    """Check if user has completed bookings and return booking IDs"""
+    """FIXED: Check if user has completed bookings and return booking IDs"""
     user_email = session.get('user_email')
     user_name = session.get('user_name')
-    
+
     if not user_email or not user_name:
         return jsonify({'booked': False, 'bookings': []})
 
     # Get all completed bookings for this user
     bookings = list(prebookings_collection.find({
         "email": user_email,
-        "name": user_name,
         "status": "completed"
     }, {"booking_id": 1, "services": 1, "_id": 0}))
 
+    # Format bookings with service names
+    formatted_bookings = []
+    for booking in bookings:
+        services = booking.get('services', [])
+        service_names = []
+
+        if services:
+            if isinstance(services[0], dict):
+                service_names = [s.get('name', '') for s in services]
+            else:
+                service_names = services
+
+        formatted_bookings.append({
+            'booking_id': booking.get('booking_id'),
+            'services': service_names
+        })
+
     return jsonify({
-        'booked': len(bookings) > 0,
-        'bookings': bookings
+        'booked': len(formatted_bookings) > 0,
+        'bookings': formatted_bookings
     })
 
 
-# ================= UPDATED: RATING WITH IMAGES - Linked to booking_id =================
+# ================= FIXED: RATING WITH IMAGES - Enhanced validation and booking verification =================
 @app.route('/api/rate-with-images', methods=['POST'])
 def rate_service_with_images():
     """
-    UPDATED: Rating now requires booking_id and stores images properly
+    FIXED: Enhanced rating system with comprehensive validation and booking verification
     """
     try:
         session_email = session.get('user_email')
@@ -877,97 +893,138 @@ def rate_service_with_images():
         # Get form data
         user_name = request.form.get('user_name', '').strip()
         service_name = request.form.get('service_name', '').strip()
-        booking_id = request.form.get('booking_id', '').strip()  # UPDATED: Required field
+        booking_id = request.form.get('booking_id', '').strip()
         rating = request.form.get('rating')
         comment = request.form.get('comment', '').strip()
 
-        # Validation
-        if not user_name or not service_name or not rating or not booking_id:
+        # Basic validation
+        if not all([user_name, service_name, booking_id, rating]):
             return jsonify({"success": False, "error": "All required fields must be filled"}), 400
 
+        # Validate rating value
         try:
             rating = int(rating)
-            if rating < 1 or rating > 5:
-                return jsonify({"success": False, "error": "Rating must be 1-5"}), 400
+            if not (1 <= rating <= 5):
+                return jsonify({"success": False, "error": "Rating must be between 1 and 5"}), 400
         except (ValueError, TypeError):
-            return jsonify({"success": False, "error": "Invalid rating"}), 400
+            return jsonify({"success": False, "error": "Invalid rating value"}), 400
 
+        # Verify user session matches
         if user_name.lower().strip() != session_name.lower().strip():
-            return jsonify({"success": False, "error": "Name mismatch"}), 403
+            return jsonify({"success": False, "error": "User session mismatch"}), 403
 
-        # UPDATED: Verify booking exists and is completed
-        completed_booking = prebookings_collection.find_one({
+        # FIXED: Comprehensive booking verification
+        # First, check if booking exists and belongs to user
+        user_booking = prebookings_collection.find_one({
             "booking_id": booking_id,
             "email": session_email,
-            "name": {"$regex": f"^{user_name}$", "$options": "i"},
-            "services": service_name,
             "status": "completed"
         })
 
-        if not completed_booking:
+        if not user_booking:
             return jsonify({
                 "success": False,
-                "error": f"No completed booking found for this service"
+                "error": "No completed booking found with this ID"
             }), 403
 
-        # UPDATED: Check if this specific booking already has a rating
+        # FIXED: Verify the service was actually part of this booking
+        booking_services = user_booking.get('services', [])
+        service_found = False
+
+        if isinstance(booking_services, list):
+            for service in booking_services:
+                if isinstance(service, dict):
+                    # New format: services as dicts with 'name' field
+                    if service.get('name') == service_name:
+                        service_found = True
+                        break
+                elif isinstance(service, str):
+                    # Old format: services as strings
+                    if service == service_name:
+                        service_found = True
+                        break
+
+        if not service_found:
+            return jsonify({
+                "success": False,
+                "error": f"Service '{service_name}' was not part of booking {booking_id}"
+            }), 403
+
+        # FIXED: Check if user already rated this specific booking-service combination
         existing_rating = check_user_rating_exists_for_booking(booking_id, service_name)
         if existing_rating:
             return jsonify({
                 "success": False,
-                "error": f"You already rated this booking"
+                "error": "You have already rated this service for this booking"
             }), 400
 
-        # UPDATED: Handle image uploads with proper storage
+        # FIXED: Enhanced image upload handling
         photo_urls = []
         if 'photos' in request.files:
             files = request.files.getlist('photos')
-            if len(files) > 5:
-                return jsonify({"success": False, "error": "Max 5 images allowed"}), 400
-                
-            for file in files:
-                if file and file.filename and allowed_file(file.filename):
-                    # Generate unique filename
-                    filename = secure_filename(file.filename)
-                    unique_filename = f"{booking_id}_{uuid.uuid4().hex[:8]}_{filename}"
-                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-                    
-                    # Save file
-                    file.save(file_path)
-                    
-                    # Store relative URL
-                    photo_urls.append(f"/static/uploads/ratings/{unique_filename}")
 
-        # UPDATED: Insert rating with booking_id and photo URLs
+            # Limit number of images
+            if len(files) > 5:
+                return jsonify({"success": False, "error": "Maximum 5 images allowed"}), 400
+
+            for file in files:
+                if file and file.filename:
+                    if not allowed_file(file.filename):
+                        return jsonify({"success": False, "error": f"Invalid file type: {file.filename}"}), 400
+
+                    # Generate secure unique filename
+                    filename = secure_filename(file.filename)
+                    unique_filename = f"{booking_id}_{service_name.replace(' ', '_')}_{uuid.uuid4().hex[:8]}_{filename}"
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+
+                    try:
+                        # Compress image before saving
+                        compressed_image = compress_image(file)
+                        if compressed_image:
+                            with open(file_path, 'wb') as f:
+                                f.write(compressed_image.getvalue())
+                        else:
+                            # Fallback to direct save if compression fails
+                            file.save(file_path)
+
+                        photo_urls.append(f"/static/uploads/ratings/{unique_filename}")
+
+                    except Exception as img_error:
+                        print(f"Image processing error: {img_error}")
+                        return jsonify({"success": False, "error": "Failed to process image"}), 500
+
+        # FIXED: Insert rating with comprehensive data
         rating_data = {
             'user_name': user_name,
             'service_name': service_name,
-            'booking_id': booking_id,  # UPDATED: Linked to specific booking
+            'booking_id': booking_id,
             'rating': rating,
             'comment': comment if comment else None,
             'user_email': session_email,
-            'photo_urls': photo_urls,  # UPDATED: Store photo URLs
-            'created_at': datetime.now()
+            'photo_urls': photo_urls,
+            'created_at': datetime.now(),
+            'ip_address': request.remote_addr,
+            'user_agent': request.headers.get('User-Agent', '')
         }
 
         rating_id = insert_rating(rating_data)
 
-        # Calculate new average
+        # Calculate updated averages
         updated_averages = calculate_average_ratings()
         service_avg = updated_averages.get(service_name, {"average": 0, "count": 0})
 
         return jsonify({
             "success": True,
             "message": "Thank you for your rating!",
-            "updated_average": service_avg["average"],
+            "rating_id": str(rating_id),
+            "updated_average": round(service_avg["average"], 1),
             "total_reviews": service_avg["count"],
             "uploaded_photos": len(photo_urls)
         })
 
     except Exception as e:
         print(f"Error in rate_service_with_images: {e}")
-        # Return detailed error message for debugging
-        return jsonify({"success": False, "error": str(e)}), 500
+        return jsonify({"success": False, "error": "Internal server error"}), 500
 
 
 # ================= UPDATED: SERVICE DETAIL ROUTE - Fixed "service not found" =================
@@ -997,15 +1054,18 @@ def service_detail(service_name):
         user_email = session.get('user_email')
         user_name = session.get('user_name')
         can_rate = False
+        bookings = []
         if user_email and user_name:
             bookings = list(prebookings_collection.find({
                 "email": user_email,
                 "name": user_name,
                 "status": "completed",
-                "services": service_name
+                "$or": [
+                    {"services": service_name},  # old format: direct string match
+                    {"services.name": service_name}  # new format: dict with name field
+                ]
             }))
-            if bookings:
-                can_rate = True
+            can_rate = len(bookings) > 0
 
         return render_template('service_detail.html',
                              service=service,
@@ -1013,7 +1073,8 @@ def service_detail(service_name):
                              ratings=ratings,
                              average_rating=service_avg['average'],
                              total_reviews=service_avg['count'],
-                             can_rate=can_rate)
+                             can_rate=can_rate,
+                             bookings=bookings)
 
     except Exception as e:
         print(f"Error in service_detail: {e}")
@@ -1121,12 +1182,14 @@ def complete_booking(booking_id):
 
         # Use existing total_amount that was set by the set amount button
         total_amount = booking.get('total_amount', 0)
+        completion_time = datetime.now()
 
         result = prebookings_collection.update_one(
             {"_id": booking_oid},
             {"$set": {
                 "status": "completed",
-                "updated_at": datetime.now()
+                "completed_at": completion_time,
+                "updated_at": completion_time
             }}
         )
 
@@ -1135,6 +1198,7 @@ def complete_booking(booking_id):
 
         # Send completion email with existing amounts
         booking['status'] = "completed"
+        booking['completed_at'] = completion_time
 
         try:
             pdf_buffer = generate_receipt_pdf(booking, "Service Completed")
@@ -1145,6 +1209,7 @@ Service completed!
 
 Booking ID: {booking.get('booking_id')}
 Total: ₹{total_amount}
+Completed on: {completion_time.strftime('%d-%m-%Y %H:%M')}
 
 You can now rate our services!
 
