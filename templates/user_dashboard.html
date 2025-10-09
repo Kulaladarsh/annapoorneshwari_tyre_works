@@ -5,113 +5,714 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>User Dashboard - Annapoorneshwari Tyre & Painting Works</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      display: flex;
+      font-family: 'Inter', sans-serif;
+      background: #f5f6fa;
       min-height: 100vh;
       overflow-x: hidden;
     }
+
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
     .sidebar {
-      width: 250px;
-      background-color: #343a40;
+      width: 280px;
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
       color: white;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      padding: 1rem;
+      padding: 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
     }
-    .sidebar a {
+
+    .sidebar-header {
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid #3b82f6;
+      object-fit: cover;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
       color: white;
-      text-decoration: none;
-      padding: 0.75rem 1rem;
-      border-radius: 5px;
-      margin-bottom: 0.5rem;
-      display: block;
-      font-weight: 500;
-      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
     }
-    .sidebar a:hover, .sidebar a.active {
-      background-color: #495057;
-      color: #ffc107;
+
+    .user-info h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
     }
-    .content {
+
+    .user-info p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .sidebar-nav {
+      padding: 1.5rem 0;
       flex-grow: 1;
-      padding: 2rem;
-      background-color: #f8f9fa;
     }
-    .booking-card {
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+      padding: 0 1rem;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1rem;
+      color: #cbd5e1;
+      text-decoration: none;
+      border-radius: 10px;
       transition: all 0.3s ease;
-      margin-bottom: 1.5rem;
+      font-weight: 500;
+      font-size: 0.95rem;
     }
-    .booking-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    }
-    .btn-logout {
-      margin-top: auto;
-      background-color: #dc3545;
-      border: none;
-      padding: 0.75rem 1rem;
-      border-radius: 5px;
+
+    .nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
       color: white;
+      transform: translateX(5px);
+    }
+
+    .nav-link.active {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .nav-link i {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-logout {
+      width: 100%;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 0.875rem;
+      border-radius: 10px;
       font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
+
     .btn-logout:hover {
-      background-color: #c82333;
+      background: #ef4444;
+      color: white;
+      border-color: #ef4444;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex-grow: 1;
+      margin-left: 280px;
+      padding: 2rem;
+      width: calc(100% - 280px);
+    }
+
+    .content-header {
+      margin-bottom: 2rem;
+    }
+
+    .content-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .content-header p {
+      color: #64748b;
+      font-size: 1rem;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .stat-icon.blue {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+    }
+
+    .stat-icon.green {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .stat-icon.orange {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+    }
+
+    .stat-icon.red {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* Bookings Section */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .booking-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+
+    .booking-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border-color: #3b82f6;
+    }
+
+    .booking-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .booking-id {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .booking-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .status-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .status-rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .booking-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: start;
+      gap: 0.75rem;
+    }
+
+    .detail-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3b82f6;
+      flex-shrink: 0;
+    }
+
+    .detail-content h6 {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 500;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .detail-content p {
+      font-size: 1rem;
+      color: #1e293b;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .booking-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      padding-top: 1.25rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .btn-action {
+      padding: 0.625rem 1.25rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+      color: white;
+    }
+
+    .btn-info {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-info:hover {
+      background: #e2e8f0;
+      transform: translateY(-2px);
+      color: #475569;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 15px;
+      border: 2px dashed #e2e8f0;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: #cbd5e1;
+      margin-bottom: 1.5rem;
+    }
+
+    .empty-state h4 {
+      font-size: 1.5rem;
+      color: #475569;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+      color: #94a3b8;
+      font-size: 1rem;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 250px;
+      }
+
+      .main-content {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: -280px;
+        transition: left 0.3s ease;
+      }
+
+      .sidebar.show {
+        left: 0;
+      }
+
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 1.5rem;
+      }
+
+      .booking-header {
+        flex-direction: column;
+      }
+
+      .booking-actions {
+        flex-direction: column;
+      }
+
+      .btn-action {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1001;
+      background: white;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #1e293b;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .main-content {
+        padding-top: 4rem;
+      }
     }
   </style>
 </head>
 <body>
-  <nav class="sidebar">
-    <h3 class="mb-4">Dashboard</h3>
-    <a href="{{ url_for('user_dashboard') }}" class="active">My Bookings</a>
-    <a href="{{ url_for('profile') }}">Edit Profile</a>
-    <a href="{{ url_for('change_password') }}">Change Password</a>
-    <form action="{{ url_for('logout') }}" method="get" style="margin-top:auto;">
-      <button type="submit" class="btn-logout w-100">Logout</button>
-    </form>
-  </nav>
-  <main class="content">
-    <h2 class="mb-4">Welcome, {{ user_name }}</h2>
-    <h3 class="mb-3">Your Bookings</h3>
-    {% if bookings %}
-      {% for booking in bookings %}
-        <div class="card booking-card p-3">
-          <div class="d-flex justify-content-between align-items-center">
-            <div>
-              <h5>Booking ID: {{ booking.booking_id }}</h5>
-              <p class="mb-1"><strong>Services:</strong> {{ booking.services | join(', ') }}</p>
-              <p class="mb-1"><strong>Date:</strong> {{ booking.preferred_date }}</p>
-              <p class="mb-1"><strong>Status:</strong> 
-                {% if booking.status == 'completed' %}
-                  <span class="badge bg-success">Completed</span>
-                {% elif booking.status == 'pending' %}
-                  <span class="badge bg-warning text-dark">Pending</span>
-                {% elif booking.status == 'rejected' %}
-                  <span class="badge bg-danger">Rejected</span>
-                {% else %}
-                  <span class="badge bg-secondary">{{ booking.status }}</span>
-                {% endif %}
-              </p>
-            </div>
-            <div>
-              {% if booking.status == 'pending' %}
-                <a href="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" class="btn btn-danger btn-sm mb-1">Cancel</a>
-                <a href="{{ url_for('reschedule_booking', booking_id=booking.booking_id) }}" class="btn btn-primary btn-sm mb-1">Reschedule</a>
-              {% endif %}
-              <a href="{{ url_for('show_receipt', booking_id=booking.booking_id) }}" class="btn btn-info btn-sm">Receipt</a>
-            </div>
+  <div class="dashboard-container">
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="user-profile">
+          <div class="user-avatar">
+            <!-- User photo or initial -->
+            <img src="{{ user_photo }}" alt="User" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+            <span style="display: none;">{{ user_name[0] if user_name else 'U' }}</span>
+          </div>
+          <div class="user-info">
+            <h4>{{ user_name }}</h4>
+            <p>{{ user_email }}</p>
           </div>
         </div>
-      {% endfor %}
-    {% else %}
-      <div class="alert alert-info text-center">You have no bookings yet.</div>
-    {% endif %}
-  </main>
+      </div>
+
+      <div class="sidebar-nav">
+        <div class="nav-item">
+          <a href="{{ url_for('user_dashboard') }}" class="nav-link active">
+            <i class="fas fa-th-large"></i>
+            <span>Dashboard</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="{{ url_for('user_dashboard') }}" class="nav-link">
+            <i class="fas fa-calendar-check"></i>
+            <span>My Bookings</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="{{ url_for('profile') }}" class="nav-link">
+            <i class="fas fa-user-circle"></i>
+            <span>Edit Profile</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="{{ url_for('change_password') }}" class="nav-link">
+            <i class="fas fa-key"></i>
+            <span>Change Password</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <form action="{{ url_for('logout') }}" method="get">
+          <button type="submit" class="btn-logout">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </button>
+        </form>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="content-header">
+        <h2>Welcome back, {{ user_name }}! 👋</h2>
+        <p>Here's what's happening with your bookings today.</p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="stat-value">{{ bookings|length }}</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'completed')|list|length }}</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon orange">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'pending')|list|length }}</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon red">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="stat-value">{{ bookings|selectattr('status', 'equalto', 'rejected')|list|length }}</div>
+          <div class="stat-label">Rejected</div>
+        </div>
+      </div>
+
+      <!-- Bookings Section -->
+      <h3 class="section-title">
+        <i class="fas fa-list"></i>
+        Your Bookings
+      </h3>
+
+      {% if bookings %}
+        {% for booking in bookings %}
+          <div class="booking-card">
+            <div class="booking-header">
+              <div class="booking-id">
+                <i class="fas fa-hashtag"></i>
+                {{ booking.booking_id }}
+              </div>
+              <div class="booking-status {% if booking.status == 'completed' %}status-completed{% elif booking.status == 'pending' %}status-pending{% elif booking.status == 'rejected' %}status-rejected{% endif %}">
+                <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
+                <span>{{ booking.status|capitalize }}</span>
+              </div>
+            </div>
+
+            <div class="booking-details">
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <i class="fas fa-tools"></i>
+                </div>
+                <div class="detail-content">
+                  <h6>Services</h6>
+                  <p>{{ booking.services | join(', ') }}</p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <i class="fas fa-calendar"></i>
+                </div>
+                <div class="detail-content">
+                  <h6>Date</h6>
+                  <p>{{ booking.preferred_date }}</p>
+                </div>
+              </div>
+
+              <div class="detail-item">
+                <div class="detail-icon">
+                  <i class="fas fa-clock"></i>
+                </div>
+                <div class="detail-content">
+                  <h6>Time</h6>
+                  <p>{{ booking.preferred_time if booking.preferred_time else 'Not specified' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="booking-actions">
+              {% if booking.status == 'pending' %}
+                <a href="{{ url_for('reschedule_booking', booking_id=booking.booking_id) }}" class="btn-action btn-primary">
+                  <i class="fas fa-edit"></i>
+                  Reschedule
+                </a>
+                <form action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" method="POST" style="display: inline;">
+                  <button type="submit" class="btn-action btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                  </button>
+                </form>
+              {% endif %}
+              <a href="{{ url_for('show_receipt', booking_id=booking.booking_id) }}" class="btn-action btn-info">
+                <i class="fas fa-receipt"></i>
+                View Receipt
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <i class="fas fa-calendar-times"></i>
+          <h4>No Bookings Yet</h4>
+          <p>You haven't made any bookings. Start by booking a service!</p>
+        </div>
+      {% endif %}
+    </main>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('show');
+    }
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.querySelector('.mobile-menu-toggle');
+      
+      if (window.innerWidth <= 768) {
+        if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
+          sidebar.classList.remove('show');
+        }
+      }
+    });
+  </script>
 </body>
 </html>

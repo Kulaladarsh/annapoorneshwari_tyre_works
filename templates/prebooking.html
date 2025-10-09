@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pre-booking Form</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -14,838 +15,95 @@
     }
 
     body {
+      font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding: 20px 0;
-    }
-
-    .main-container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 15px;
-    }
-
-    .form-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-radius: 25px;
-      padding: 40px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 40px 20px;
       position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
+      overflow-x: hidden;
     }
 
-    .form-card::before {
+    /* Animated Background */
+    body::before {
       content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-      transition: left 0.8s;
-    }
-
-    .form-card:hover::before {
-      left: 100%;
-    }
-
-    .form-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    .header-section {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .header-section h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 10px;
-    }
-
-    .header-section p {
-      color: #6c757d;
-      font-size: 1.1rem;
-      font-weight: 400;
-    }
-
-    .form-section {
-      margin-bottom: 30px;
-      padding: 25px;
-      background: rgba(248, 249, 250, 0.5);
-      border-radius: 15px;
-      border-left: 4px solid #667eea;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .form-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(248, 249, 250, 0.3), transparent);
-      transition: left 0.6s;
-    }
-
-    .form-section:hover::before {
-      left: 100%;
-    }
-
-    .form-section:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .section-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #495057;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-title i {
-      color: #667eea;
-    }
-
-    .form-control, .form-select {
-      border: 2px solid rgba(102, 126, 234, 0.2);
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.9);
-    }
-
-    .form-control:focus, .form-select:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-      background: white;
-      transform: translateY(-2px);
-    }
-
-    .form-label {
-      font-weight: 600;
-      color: #495057;
-      margin-bottom: 8px;
-      font-size: 0.95rem;
-    }
-
-    .input-group .btn {
-      border-radius: 0 12px 12px 0;
-      border: 2px solid #e9ecef;
-      border-left: none;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-
-    .input-group .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-outline-secondary:hover {
-      background: #667eea;
-      border-color: #667eea;
-      color: white;
-    }
-
-    .btn-outline-success:hover {
-      background: #28a745;
-      border-color: #28a745;
-      color: white;
-    }
-
-    .otp-status {
-      font-size: 0.9rem;
-      margin-top: 8px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-weight: 500;
-    }
-
-    .text-success {
-      background: rgba(40, 167, 69, 0.1);
-      border: 1px solid rgba(40, 167, 69, 0.3);
-    }
-
-    .text-danger {
-      background: rgba(220, 53, 69, 0.1);
-      border: 1px solid rgba(220, 53, 69, 0.3);
-    }
-
-    .payment-section {
-      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-      border: 2px solid rgba(102, 126, 234, 0.2);
-    }
-
-    .alert-info {
-      background: linear-gradient(135deg, rgba(13, 202, 240, 0.1), rgba(102, 126, 234, 0.1));
-      border: 1px solid rgba(13, 202, 240, 0.3);
-      border-radius: 12px;
-    }
-
-    .upi-qr-container {
-      text-align: center;
-      padding: 20px;
-      background: white;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      margin: 20px 0;
-    }
-
-    .upi-qr-container img {
-      max-width: 200px;
-      height: auto;
-      border: 3px solid #667eea;
-      border-radius: 12px;
-      padding: 10px;
-      background: white;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .submit-btn {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border: none;
-      border-radius: 15px;
-      padding: 15px 40px;
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: white;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .submit-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .submit-btn:hover::before {
-      left: 100%;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.7;
-      transform: none;
-      box-shadow: none;
-    }
-
-    /* Success Animation Modal */
-    .success-modal {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.2) 0%, transparent 50%);
+      animation: bgFloat 15s ease-in-out infinite;
+      z-index: 0;
     }
 
-    .success-modal.show {
-      opacity: 1;
-      visibility: visible;
+    @keyframes bgFloat {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-20px, 20px) scale(1.1); }
     }
 
-    .success-content {
-      background: white;
-      padding: 40px;
-      border-radius: 25px;
-      text-align: center;
-      max-width: 500px;
-      width: 90%;
-      transform: scale(0.7) translateY(50px);
-      transition: all 0.3s ease;
+    /* Floating Particles */
+    .particle {
+      position: fixed;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
     }
 
-    .success-modal.show .success-content {
-      transform: scale(1) translateY(0);
-    }
-
-    .success-icon {
+    .particle:nth-child(1) {
       width: 80px;
       height: 80px;
-      margin: 0 auto 20px;
-      background: linear-gradient(135deg, #28a745, #20c997);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      animation: bounceIn 0.6s ease;
+      top: 10%;
+      left: 10%;
+      animation: float 8s ease-in-out infinite;
     }
 
-    .success-icon i {
-      color: white;
-      font-size: 2.5rem;
+    .particle:nth-child(2) {
+      width: 60px;
+      height: 60px;
+      top: 70%;
+      right: 10%;
+      animation: float 10s ease-in-out infinite 2s;
     }
 
-    @keyframes bounceIn {
-      0% { transform: scale(0); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); }
+    .particle:nth-child(3) {
+      width: 100px;
+      height: 100px;
+      bottom: 10%;
+      left: 20%;
+      animation: float 12s ease-in-out infinite 4s;
     }
 
-    .success-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #28a745;
-      margin-bottom: 10px;
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+      50% { transform: translateY(-30px) rotate(180deg); opacity: 0.6; }
     }
 
-    .success-message {
-      color: #6c757d;
-      font-size: 1.1rem;
-      margin-bottom: 20px;
+    .main-container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
     }
 
-    .booking-id {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-weight: 600;
-      display: inline-block;
-      margin-bottom: 20px;
-    }
-
-    /* Enhanced Mobile Responsiveness */
-    @media (max-width: 1200px) {
-      .main-container { max-width: 95%; }
-      .form-card { padding: 35px; }
-    }
-
-    @media (max-width: 992px) {
-      .form-card { padding: 30px; }
-      .header-section h2 { font-size: 2.2rem; }
-      .form-section { padding: 22px; }
-    }
-
-    @media (max-width: 768px) {
-      body { padding: 15px 0; }
-
-      .main-container { padding: 0 10px; }
-
-      .form-card {
-        padding: 25px 20px;
-        border-radius: 20px;
-        margin: 0;
-      }
-
-      .header-section {
-        margin-bottom: 30px;
-      }
-
-      .header-section h2 {
-        font-size: 1.8rem;
-        margin-bottom: 8px;
-      }
-
-      .header-section p {
-        font-size: 1rem;
-      }
-
-      .form-section {
-        padding: 18px;
-        margin-bottom: 20px;
-        border-radius: 12px;
-      }
-
-      .section-title {
-        font-size: 1.1rem;
-        margin-bottom: 15px;
-      }
-
-      .row .col-md-6 {
-        margin-bottom: 1rem;
-      }
-
-      .row .col-md-4 {
-        margin-bottom: 1rem;
-      }
-
-      .form-control, .form-select {
-        padding: 10px 14px;
-        font-size: 0.95rem;
-        border-radius: 10px;
-      }
-
-      .form-label {
-        font-size: 0.9rem;
-        margin-bottom: 6px;
-      }
-
-      .input-group .btn {
-        padding: 10px 14px;
-        font-size: 0.9rem;
-      }
-
-      .otp-status {
-        font-size: 0.85rem;
-        padding: 6px 10px;
-        border-radius: 6px;
-      }
-
-      .alert-info {
-        padding: 12px 16px;
-        font-size: 0.9rem;
-      }
-
-      .upi-qr-container {
-        padding: 15px;
-        margin: 15px 0;
-      }
-
-      .upi-qr-container img {
-        max-width: 180px;
-      }
-
-      .submit-btn {
-        padding: 12px 30px;
-        font-size: 1.1rem;
-      }
-
-      .success-content {
-        padding: 30px 20px;
-        max-width: 90%;
-      }
-
-      .success-title {
-        font-size: 1.6rem;
-      }
-
-      .success-message {
-        font-size: 1rem;
-      }
-
-      .booking-id {
-        padding: 8px 16px;
-        font-size: 0.9rem;
-      }
-    }
-
-    @media (max-width: 576px) {
-      body { padding: 10px 0; }
-
-      .main-container { padding: 0 5px; }
-
-      .form-card {
-        padding: 20px 15px;
-        border-radius: 15px;
-      }
-
-      .header-section {
-        margin-bottom: 25px;
-      }
-
-      .header-section h2 {
-        font-size: 1.5rem;
-      }
-
-      .header-section p {
-        font-size: 0.9rem;
-      }
-
-      .form-section {
-        padding: 15px;
-        margin-bottom: 15px;
-      }
-
-      .section-title {
-        font-size: 1rem;
-        margin-bottom: 12px;
-      }
-
-      .form-control, .form-select {
-        padding: 8px 12px;
-        font-size: 0.9rem;
-      }
-
-      .form-label {
-        font-size: 0.85rem;
-      }
-
-      .input-group .btn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-      }
-
-      .otp-status {
-        font-size: 0.8rem;
-        padding: 5px 8px;
-      }
-
-      .alert-info {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-      }
-
-      .upi-qr-container {
-        padding: 12px;
-        margin: 12px 0;
-      }
-
-      .upi-qr-container img {
-        max-width: 150px;
-      }
-
-      .submit-btn {
-        padding: 10px 25px;
-        font-size: 1rem;
-      }
-
-      .success-content {
-        padding: 25px 15px;
-      }
-
-      .success-title {
-        font-size: 1.4rem;
-      }
-
-      .success-message {
-        font-size: 0.9rem;
-      }
-
-      .booking-id {
-        padding: 6px 12px;
-        font-size: 0.85rem;
-      }
-
-      .loading-spinner {
-        width: 50px;
-        height: 50px;
-      }
-    }
-
-    /* Professional Enhancements */
     .form-card {
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .form-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-      transition: left 0.8s;
-    }
-
-    .form-card:hover::before {
-      left: 100%;
-    }
-
-    .form-card:hover {
-      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      border-radius: 30px;
+      padding: 45px;
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
-    }
-
-    .form-control, .form-select {
-      transition: all 0.3s ease;
-      border: 2px solid rgba(102, 126, 234, 0.2);
-    }
-
-    .form-control:focus, .form-select:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-      transform: translateY(-1px);
-    }
-
-    .input-group .btn {
-      transition: all 0.3s ease;
-    }
-
-    .input-group .btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .btn-outline-secondary:hover {
-      background: #667eea;
-      border-color: #667eea;
-      color: white;
-    }
-
-    .btn-outline-success:hover {
-      background: #28a745;
-      border-color: #28a745;
-      color: white;
-    }
-
-    .submit-btn {
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      animation: slideUp 0.8s ease-out;
       position: relative;
       overflow: hidden;
     }
 
-    .submit-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .submit-btn:hover::before {
-      left: 100%;
-    }
-
-    .submit-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
-    }
-
-    .form-section {
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .form-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(248, 249, 250, 0.3), transparent);
-      transition: left 0.6s;
-    }
-
-    .form-section:hover::before {
-      left: 100%;
-    }
-
-    .form-section:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .upi-qr-container {
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .upi-qr-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-      transition: left 0.7s;
-    }
-
-    .upi-qr-container:hover::before {
-      left: 100%;
-    }
-
-    .upi-qr-container:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .alert {
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .alert::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-    }
-
-    .alert:hover::before {
-      left: 100%;
-    }
-
-    .alert:hover {
-      transform: translateY(-1px);
-    }
-
-    .success-modal {
-      backdrop-filter: blur(10px);
-    }
-
-    .success-content {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .success-content::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
-      transition: left 0.6s;
-    }
-
-    .success-modal.show .success-content::before {
-      left: 100%;
-    }
-
-    /* Smooth animations */
-    * {
-      scroll-behavior: smooth;
-    }
-
-    .fade-in {
-      animation: fadeInUpEnhanced 0.8s ease forwards;
-    }
-
-    @keyframes fadeInUpEnhanced {
+    @keyframes slideUp {
       from {
         opacity: 0;
-        transform: translateY(40px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    /* Enhanced dropdowns */
-    .form-select {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236c757d' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-      transition: all 0.3s ease;
-    }
-
-    .form-select:focus {
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23667eea' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-    }
-
-    /* Professional shadows */
-    .shadow-professional {
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .shadow-professional-hover:hover {
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), 0 15px 30px rgba(0, 0, 0, 0.1);
-      transform: translateY(-5px);
-    }
-
-    /* Enhanced input focus states */
-    .form-control:focus, .form-select:focus {
-      border-color: #667eea;
-      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
-    }
-
-    /* Loading overlay enhancements */
-    .loading-overlay {
-      backdrop-filter: blur(5px);
-    }
-
-    .loading-spinner {
-      animation: spin 1s linear infinite;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid white;
-    }
-
-    /* Alert enhancements */
-    .alert {
-      border: none;
-      border-radius: 12px;
-      position: relative;
-    }
-
-    .alert-info {
-      background: linear-gradient(135deg, rgba(13, 202, 240, 0.1), rgba(102, 126, 234, 0.1));
-      border-left: 4px solid #0dcaf0;
-    }
-
-    /* Button ripple effect */
-    .btn {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      background: rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    .btn:active::after {
-      width: 300px;
-      height: 300px;
-    }
-
-    /* Enhanced modal */
-    .modal-content {
-      border: none;
-      border-radius: 20px;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-    }
-
-    .fade-in {
-      animation: fadeInUp 0.6s ease forwards;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(50px);
       }
       to {
         opacity: 1;
@@ -853,69 +111,387 @@
       }
     }
 
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+      animation: gridMove 20s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(30px, 30px); }
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: white;
+      animation: bounce 2s ease-in-out infinite;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .header-section h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+      animation: fadeIn 1s ease-out 0.3s both;
+    }
+
+    .header-section p {
+      color: #6c757d;
+      font-size: 1.1rem;
+      animation: fadeIn 1s ease-out 0.5s both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-section {
+      margin-bottom: 30px;
+      padding: 28px;
+      background: linear-gradient(135deg, rgba(248, 249, 250, 0.8), rgba(240, 242, 250, 0.8));
+      border-radius: 20px;
+      border-left: 5px solid #667eea;
+      position: relative;
+      z-index: 2;
+      animation: slideIn 0.6s ease-out;
+      transition: all 0.4s ease;
+    }
+
+    .form-section:hover {
+      transform: translateX(5px);
+      box-shadow: -5px 5px 20px rgba(102, 126, 234, 0.15);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-30px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title i {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: rotateIcon 3s ease-in-out infinite;
+    }
+
+    @keyframes rotateIcon {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(5deg); }
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .form-control, .form-select {
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+      position: relative;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+      background: white;
+    }
+
+    .form-control:hover, .form-select:hover {
+      border-color: #cbd5e0;
+    }
+
+    /* Animated Submit Button */
+    .submit-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 50px;
+      padding: 18px 50px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .submit-btn:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5);
+    }
+
+    .submit-btn:active {
+      transform: translateY(-2px);
+    }
+
+    .submit-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
     /* Loading Animation */
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .btn-loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      top: 50%;
+      left: 50%;
+      margin-left: -10px;
+      margin-top: -10px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Success Animation */
+    .success-checkmark {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: #10b981;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: scaleIn 0.5s ease-out;
+    }
+
+    .success-checkmark i {
+      color: white;
+      font-size: 2.5rem;
+      animation: checkmark 0.5s ease-out 0.3s both;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0); }
+      to { transform: scale(1); }
+    }
+
+    @keyframes checkmark {
+      from { transform: scale(0) rotate(45deg); opacity: 0; }
+      to { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* Alert Notification */
+    .alert-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      min-width: 300px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+      animation: slideInRight 0.5s ease-out;
+      backdrop-filter: blur(10px);
+    }
+
+    @keyframes slideInRight {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .alert-success {
+      background: rgba(16, 185, 129, 0.95);
+      color: white;
+      border-left: 4px solid #059669;
+    }
+
+    .alert-warning {
+      background: rgba(245, 158, 11, 0.95);
+      color: white;
+      border-left: 4px solid #d97706;
+    }
+
+    .alert-danger {
+      background: rgba(239, 68, 68, 0.95);
+      color: white;
+      border-left: 4px solid #dc2626;
+    }
+
+    /* Input Focus Glow Effect */
+    @keyframes inputGlow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+      50% { box-shadow: 0 0 20px 0 rgba(102, 126, 234, 0.4); }
+    }
+
+    .form-control:focus, .form-select:focus {
+      animation: inputGlow 2s ease-in-out infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 10px;
+      }
+
+      .form-card {
+        padding: 30px 20px;
+        border-radius: 25px;
+      }
+
+      .header-section h2 {
+        font-size: 2rem;
+      }
+
+      .header-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+      }
+
+      .form-section {
+        padding: 20px;
+      }
+
+      .submit-btn {
+        padding: 16px 40px;
+        font-size: 1.1rem;
+      }
+    }
+
+    /* Loading Overlay */
     .loading-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(102, 126, 234, 0.9);
-      z-index: 9998;
-      display: flex;
-      justify-content: center;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
       align-items: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(5px);
     }
 
     .loading-overlay.show {
-      opacity: 1;
-      visibility: visible;
+      display: flex;
     }
 
     .loading-spinner {
       width: 60px;
       height: 60px;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid white;
+      border: 5px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
+      border-top-color: white;
       animation: spin 1s linear infinite;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    /* Stagger Animation for Form Sections */
+    .form-section:nth-child(1) { animation-delay: 0.1s; }
+    .form-section:nth-child(2) { animation-delay: 0.2s; }
+    .form-section:nth-child(3) { animation-delay: 0.3s; }
+    .form-section:nth-child(4) { animation-delay: 0.4s; }
   </style>
 </head>
 <body data-user-logged-in="{% if user %}true{% else %}false{% endif %}">
+  <!-- Floating Particles -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
   <!-- Loading Overlay -->
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
   </div>
 
-  <!-- Success Modal -->
-  <div class="success-modal" id="successModal">
-    <div class="success-content">
-      <div class="success-icon">
-        <i class="fas fa-check"></i>
-      </div>
-      <h3 class="success-title">Booking Successful!</h3>
-      <p class="success-message">Your pre-booking has been confirmed successfully.</p>
-      <div class="booking-id" id="bookingIdDisplay">
-        Booking ID: <span id="bookingId"></span>
-      </div>
-      <p class="text-muted">You will be redirected to your receipt shortly...</p>
-    </div>
-  </div>
-
   <div class="main-container">
-    <div class="form-card fade-in">
+    <div class="form-card">
       <div class="header-section">
-        <h2><i class="fas fa-car"></i> Pre-Book Your Service</h2>
-        <p>Fill in the details below to confirm your booking with us</p>
+        <div class="header-icon">
+          <i class="fas fa-car"></i>
+        </div>
+        <h2>Pre-Book Your Service</h2>
+        <p>Fill in the details below to confirm your booking</p>
       </div>
 
       <form id="prebookingForm">
@@ -928,44 +504,53 @@
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" name="name" placeholder="Enter your full name" value="{{ user.name if user else '' }}" required />
+              <label class="form-label" for="name">
+                <i class="fas fa-user-circle"></i> Full Name
+              </label>
+              <input type="text" id="name" class="form-control" name="name" placeholder="Enter your full name" value="{{ user.name if user else '' }}" required />
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Contact Number</label>
-              <input type="tel" class="form-control" name="contact" placeholder="e.g 8861446025" value="{{ user.phone if user else '' }}" required />
+              <label class="form-label" for="contact">
+                <i class="fas fa-phone"></i> Contact Number
+              </label>
+              <input type="tel" id="contact" class="form-control" name="contact" placeholder="e.g 8861446025" value="{{ user.phone if user else '' }}" required />
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Email Address</label>
-            <input type="email" class="form-control" name="email" placeholder="Enter your email address" value="{{ user.email if user else '' }}" required />
+            <label class="form-label" for="email">
+              <i class="fas fa-envelope"></i> Email Address
+            </label>
+            <input type="email" id="email" class="form-control" name="email" placeholder="Enter your email address" value="{{ user.email if user else '' }}" required />
           </div>
-
-
         </div>
 
         <!-- Location Section -->
         <div class="form-section">
           <div class="section-title">
             <i class="fas fa-map-marker-alt"></i>
-            Additional Personal Information
+            Location Details
           </div>
-          
+
           <div class="row">
             <div class="col-md-4 mb-3">
-              <label class="form-label">Area</label>
-              <input type="text" class="form-control" name="area" placeholder="Your area" value="{{ user.area if user else '' }}" required />
+              <label class="form-label" for="area">
+                <i class="fas fa-location-arrow"></i> Area
+              </label>
+              <input type="text" id="area" class="form-control" name="area" placeholder="Your area" value="{{ user.area if user else '' }}" required />
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label">Taluk</label>
-              <input type="text" class="form-control" name="taluk" placeholder="Your taluk" value="{{ user.taluk if user else '' }}" required />
+              <label class="form-label" for="taluk">
+                <i class="fas fa-map"></i> Taluk
+              </label>
+              <input type="text" id="taluk" class="form-control" name="taluk" placeholder="Your taluk" value="{{ user.taluk if user else '' }}" required />
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label">District</label>
-              <input type="text" class="form-control" name="district" placeholder="Your district" value="{{ user.district if user else '' }}" required />
+              <label class="form-label" for="district">
+                <i class="fas fa-map-marked-alt"></i> District
+              </label>
+              <input type="text" id="district" class="form-control" name="district" placeholder="Your district" value="{{ user.district if user else '' }}" required />
             </div>
-            
           </div>
         </div>
 
@@ -975,28 +560,34 @@
             <i class="fas fa-calendar-alt"></i>
             Booking Details
           </div>
-          
+
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Preferred Date</label>
-              <input type="date" class="form-control" name="preferred_date" required />
+              <label class="form-label" for="preferred_date">
+                <i class="fas fa-calendar-day"></i> Preferred Date
+              </label>
+              <input type="date" id="preferred_date" class="form-control" name="preferred_date" required />
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Preferred Time</label>
-              <input type="time" class="form-control" name="time" required />
+              <label class="form-label" for="time">
+                <i class="fas fa-clock"></i> Preferred Time
+              </label>
+              <input type="time" id="time" class="form-control" name="time" required />
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Select Service(s)</label>
-            <select class="form-select" name="services" multiple required>
+            <label class="form-label" for="services">
+              <i class="fas fa-tools"></i> Select Service(s)
+            </label>
+            <select class="form-select" id="services" name="services" multiple required>
               <option value="Greasing">Greasing</option>
               <option value="Painting">Painting</option>
               <option value="Puncturing">Puncturing</option>
               <option value="Tyre Issues">Tyre Issues</option>
             </select>
             <small class="text-muted">
-              <i class="fas fa-info-circle"></i> 
+              <i class="fas fa-info-circle"></i>
               Hold Ctrl (Windows) or Cmd (Mac) to select multiple services
             </small>
           </div>
@@ -1011,8 +602,10 @@
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Vehicle Type</label>
-              <select class="form-select" name="vehicle_type" required>
+              <label class="form-label" for="vehicle_type">
+                <i class="fas fa-car-side"></i> Vehicle Type
+              </label>
+              <select class="form-select" id="vehicle_type" name="vehicle_type" required>
                 <option value="">Select Vehicle Type</option>
                 <option value="2-wheeler">2-Wheeler</option>
                 <option value="4-wheeler">4-Wheeler</option>
@@ -1021,172 +614,79 @@
               </select>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Vehicle Number</label>
-              <input type="text" class="form-control" name="vehicle_number" placeholder="e.g., KA-01-AB-1234" />
+              <label class="form-label" for="vehicle_number">
+                <i class="fas fa-id-card"></i> Vehicle Number
+              </label>
+              <input type="text" id="vehicle_number" class="form-control" name="vehicle_number" placeholder="e.g., KA-01-AB-1234" />
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Vehicle Details</label>
-            <input type="text" class="form-control" name="vehicle_details" placeholder="e.g., Honda Activa, Maruti Swift, Busses" required />
+            <label class="form-label" for="vehicle_details">
+              <i class="fas fa-info-circle"></i> Vehicle Details
+            </label>
+            <input type="text" id="vehicle_details" class="form-control" name="vehicle_details" placeholder="e.g., Honda Activa, Maruti Swift" required />
           </div>
         </div>
 
-
-
         <div class="text-center">
           <button type="submit" class="btn submit-btn w-100">
-            <i class="fas fa-paper-plane me-2"></i>
-            Submit Pre-Booking
+            <span>
+              <i class="fas fa-paper-plane me-2"></i>
+              Submit Pre-Booking
+            </span>
           </button>
         </div>
       </form>
     </div>
   </div>
 
-
-
   <script>
-  let otpVerified = false;
-  let otpSent = false;
-
-  // Add fade-in animation on page load
   document.addEventListener('DOMContentLoaded', function() {
-    // Set minimum date to today
     const today = new Date().toISOString().split('T')[0];
     document.querySelector('input[name="preferred_date"]').min = today;
+
+    // Add ripple effect to buttons
+    document.querySelectorAll('.submit-btn').forEach(button => {
+      button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.classList.add('ripple');
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
   });
 
-  // Check if user is logged in (user data is pre-filled)
   const isLoggedIn = document.body.dataset.userLoggedIn === 'true';
 
-  function sendOTP() {
-    // Skip OTP for logged-in users
-    if (isLoggedIn) {
-      otpSent = true;
-      otpVerified = true;
-      return;
-    }
-
-    const email = document.querySelector('input[name="email"]').value.trim();
-    if (!email) {
-      showAlert("Please enter your email first.", "warning");
-      return;
-    }
-
-    const button = event.target;
-    const originalText = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-    button.disabled = true;
-
-    fetch('/send-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        otpSent = true;
-        document.getElementById("otpSuccess").classList.remove("d-none");
-        document.getElementById("otpError").classList.add("d-none");
-      } else {
-        otpSent = false;
-        document.getElementById("otpError").classList.remove("d-none");
-        document.getElementById("otpSuccess").classList.add("d-none");
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById("otpError").classList.remove("d-none");
-      document.getElementById("otpSuccess").classList.add("d-none");
-    })
-    .finally(() => {
-      button.innerHTML = originalText;
-      button.disabled = false;
-    });
-  }
-
-  function verifyOTP() {
-    // Skip OTP verification for logged-in users
-    if (isLoggedIn) {
-      otpSent = true;
-      otpVerified = true;
-      return;
-    }
-
-    if (!otpSent) {
-      showAlert("Please send OTP first.", "warning");
-      return;
-    }
-
-    const email = document.querySelector('input[name="email"]').value.trim();
-    const otp = document.querySelector('input[name="otp"]').value.trim();
-    if (!otp) {
-      showAlert("Please enter the OTP.", "warning");
-      return;
-    }
-
-    const button = event.target;
-    const originalText = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
-    button.disabled = true;
-
-    fetch('/verify-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, otp })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        otpVerified = true;
-        document.getElementById("otpVerified").classList.remove("d-none");
-        document.getElementById("otpInvalid").classList.add("d-none");
-      } else {
-        otpVerified = false;
-        document.getElementById("otpInvalid").classList.remove("d-none");
-        document.getElementById("otpVerified").classList.add("d-none");
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      document.getElementById("otpInvalid").classList.remove("d-none");
-      document.getElementById("otpVerified").classList.add("d-none");
-    })
-    .finally(() => {
-      button.innerHTML = originalText;
-      button.disabled = false;
-    });
-  }
-
   function showAlert(message, type) {
-    // Create temporary alert
     const alertDiv = document.createElement('div');
-    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-    alertDiv.style.top = '20px';
-    alertDiv.style.right = '20px';
-    alertDiv.style.zIndex = '10000';
+    alertDiv.className = `alert-notification alert-${type}`;
     alertDiv.innerHTML = `
-      ${message}
-      <button type="button" class="btn-close" onclick="this.parentElement.remove()"></button>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-times-circle'}" style="font-size: 1.5rem;"></i>
+        <div style="flex: 1;">
+          <strong>${type === 'success' ? 'Success!' : type === 'warning' ? 'Warning!' : 'Error!'}</strong>
+          <div>${message}</div>
+        </div>
+      </div>
     `;
     document.body.appendChild(alertDiv);
-    
-    setTimeout(() => {
-      if (alertDiv.parentElement) {
-        alertDiv.remove();
-      }
-    }, 5000);
-  }
 
-  function showSuccessModal(bookingId) {
-    document.getElementById('bookingId').textContent = bookingId;
-    document.getElementById('successModal').classList.add('show');
-    
     setTimeout(() => {
-      window.location.href = "/receipt/" + bookingId;
-    }, 3000);
+      alertDiv.style.animation = 'slideInRight 0.5s ease-out reverse';
+      setTimeout(() => alertDiv.remove(), 500);
+    }, 4000);
   }
 
   function showLoadingOverlay() {
@@ -1197,59 +697,67 @@
     document.getElementById('loadingOverlay').classList.remove('show');
   }
 
+  function showSuccessModal(bookingId) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: flex; align-items: center; justify-content: center; z-index: 10001;';
+    modal.innerHTML = `
+      <div style="background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; animation: scaleIn 0.5s ease-out;">
+        <div class="success-checkmark">
+          <i class="fas fa-check"></i>
+        </div>
+        <h3 style="color: #2d3748; margin-bottom: 15px; font-weight: 700;">Booking Successful!</h3>
+        <p style="color: #6c757d; margin-bottom: 10px;">Your booking ID is:</p>
+        <h4 style="color: #667eea; font-weight: 700; font-size: 1.8rem;">${bookingId}</h4>
+        <p style="color: #6c757d; font-size: 0.9rem; margin-top: 20px;">Redirecting to receipt...</p>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    setTimeout(() => {
+      window.location.href = "/receipt/" + bookingId;
+    }, 3000);
+  }
+
   document.getElementById("prebookingForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    // Skip OTP checks for logged-in users
-    if (!isLoggedIn) {
-      if (!otpSent) {
-        showAlert("Please send your OTP first.", "warning");
-        return;
-      }
-
-      if (!otpVerified) {
-        showAlert("Please verify your OTP before submitting.", "warning");
-        return;
-      }
-    }
+    const submitBtn = this.querySelector('.submit-btn');
+    submitBtn.classList.add('btn-loading');
+    submitBtn.disabled = true;
 
     showLoadingOverlay();
 
     const formData = new FormData(this);
     const data = Object.fromEntries(formData.entries());
 
-    // Handle multiple services selection
     const servicesSelect = document.querySelector('select[name="services"]');
     data.services = Array.from(servicesSelect.selectedOptions).map(option => option.value);
 
-  fetch("/prebook", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  })
-  .then(res => res.json())
-  .then(data => {
-    hideLoadingOverlay();
-    if (data.success) {
-      showSuccessModal(data.booking_id);
-    } else {
-      showAlert(data.error || "Booking failed. Please try again.", "danger");
-    }
-  })
-  .catch(error => {
-    hideLoadingOverlay();
-    console.error('Error:', error);
-    showAlert("Network error. Please check your connection and try again.", "danger");
-  });
-});
-
-  // Add smooth scrolling for better UX
-  document.querySelectorAll('input, select, textarea').forEach(element => {
-    element.addEventListener('focus', function() {
-      this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    fetch("/prebook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(data => {
+      hideLoadingOverlay();
+      submitBtn.classList.remove('btn-loading');
+      submitBtn.disabled = false;
+      
+      if (data.success) {
+        showSuccessModal(data.booking_id);
+      } else {
+        showAlert(data.error || "Booking failed. Please try again.", "danger");
+      }
+    })
+    .catch(error => {
+      hideLoadingOverlay();
+      submitBtn.classList.remove('btn-loading');
+      submitBtn.disabled = false;
+      console.error('Error:', error);
+      showAlert("Network error. Please check your connection and try again.", "danger");
     });
   });
-</script>
-
+  </script>
 </body>
 </html>

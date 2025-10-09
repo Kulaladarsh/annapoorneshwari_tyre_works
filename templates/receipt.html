@@ -100,6 +100,14 @@
       <span class="detail-value">{{ booking.time }}</span>
     </div>
     <div class="detail-item">
+      <span class="detail-label">Completed Date:</span>
+      <span class="detail-value">{{ booking.completed_at.strftime('%d/%m/%Y %H:%M') if booking.completed_at else '-' }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Vehicle Number:</span>
+      <span class="detail-value">{{ booking.vehicle_number if booking.vehicle_number else 'N/A' }}</span>
+    </div>
+    <div class="detail-item">
       <span class="detail-label">Status:</span>
       <span class="detail-value">
         {% if booking.status == 'completed' %}
@@ -115,6 +123,10 @@
     <div class="detail-item">
       <span class="detail-label">Vehicle Type:</span>
       <span class="detail-value">{{ booking.vehicle_type }}</span>
+    </div>
+    <div class="detail-item">
+      <span class="detail-label">Vehicle Number:</span>
+      <span class="detail-value">{{ booking.vehicle_number if booking.vehicle_number else 'N/A' }}</span>
     </div>
     <div class="detail-item">
       <span class="detail-label">Vehicle Details:</span>

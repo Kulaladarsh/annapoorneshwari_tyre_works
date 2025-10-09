@@ -349,13 +349,17 @@ def user_dashboard():
     user_email = session.get('user_email')
     user_name = session.get('user_name')
 
+    # Fetch user document to get profile photo
+    user = get_user_by_email(user_email)
+    user_photo = user.get('profile_photo') if user else None
+
     # Fetch bookings linked to this user email and name
     bookings = list(prebookings_collection.find({
         "email": user_email,
         "name": user_name
     }).sort("created_at", -1))
 
-    return render_template('user_dashboard.html', bookings=bookings, user_name=user_name)
+    return render_template('user_dashboard.html', bookings=bookings, user_name=user_name, user_photo=user_photo)
 
 
 @app.route('/user/cancel-booking/<booking_id>', methods=['POST'])
@@ -602,13 +606,18 @@ def prebook():
             try:
                 pdf_buffer = generate_receipt_pdf(booking_data, "Booking Confirmed")
                 subject = f"Booking Confirmation - {booking_id}"
+                total_amount = booking_data.get('total_amount', 0)
+                completed_at = booking_data.get('completed_at')
                 body = f"""Dear {data.get('name')},
 
 Your booking confirmed!
 
 Booking ID: {booking_id}
+Vehicle Number: {booking_data.get('vehicle_number', 'N/A')}
 Services: {', '.join(services)}
 Date: {preferred_date}
+Total Amount: ₹{total_amount if total_amount > 0 else 'To be determined'}
+Completed Time: {completed_at.strftime('%d-%m-%Y %H:%M') if completed_at else 'To be determined'}
 
 Amount will be determined and communicated by our team.
 
