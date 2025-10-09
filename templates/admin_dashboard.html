@@ -442,6 +442,7 @@
                         <option value="pending">Pending</option>
                         <option value="completed">Completed</option>
                         <option value="rejected">Rejected</option>
+                        <option value="cancelled">Cancelled</option>
                     </select>
                 </div>
                 <div class="col-lg-2">
@@ -499,11 +500,7 @@
                             </td>
                             <td>
                                 <small>
-                                    <div class="fw-bold">{{ prebook.vehicle_type }}</div>
-                                    {% if prebook.vehicle_number %}
-                                        <div class="text-primary">{{ prebook.vehicle_number }}</div>
-                                    {% endif %}
-                                    <div class="text-muted">{{ prebook.vehicle_details }}</div>
+                                    <div class="fw-bold">{{ prebook.vehicle_type }} {{ prebook.vehicle_details }}{% if prebook.vehicle_number %} {{ prebook.vehicle_number }}{% endif %}</div>
                                 </small>
                             </td>
                             <td>
@@ -527,6 +524,8 @@
                                     <span class="badge bg-success"><i class="fas fa-check me-1"></i>Completed</span>
                                 {% elif prebook.status == 'rejected' %}
                                     <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rejected</span>
+                                {% elif prebook.status == 'cancelled' %}
+                                    <span class="badge bg-secondary"><i class="fas fa-ban me-1"></i>Cancelled</span>
                                 {% else %}
                                     <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pending</span>
                                 {% endif %}
