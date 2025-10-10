@@ -14,7 +14,9 @@ import io
 
 # MongoDB connection
 uri = os.environ.get("MONGO_URI")
-client = MongoClient(uri)
+if not uri:
+    raise ValueError("MONGO_URI environment variable is not set. Please set it in your deployment environment.")
+client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 
 # Access DB & collections
 db = client["annapoorneshwari_tyre_works"]

@@ -98,7 +98,7 @@
       align-items: center;
       gap: 0.75rem;
       padding: 0.875rem 1rem;
-      color: #cbd5e1;
+      color: white;
       text-decoration: none;
       border-radius: 10px;
       transition: all 0.3s ease;
@@ -538,7 +538,7 @@
         </div>
       </div>
 
-      <div class="sidebar-nav">
+    
         <div class="nav-item">
           <a href="{{ url_for('user_dashboard') }}" class="nav-link active">
             <i class="fas fa-th-large"></i>
@@ -564,7 +564,13 @@
           </a>
         </div>
       </div>
-
+        <div class="sidebar-nav">
+        <div class="nav-item">
+          <a href="{{ url_for('home') }}" class="nav-link">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+          </a>
+        </div>
       <div class="sidebar-footer">
         <form action="{{ url_for('logout') }}" method="get">
           <button type="submit" class="btn-logout">

@@ -1,18 +1,12 @@
-# TODO: Enhance Booking Rejection with PDF Email
+a# TODO: Add Home Link to User Dashboard
 
-## Completed Tasks
-- [x] Updated app.py reject_booking endpoint to generate PDF rejection notice
-- [x] Enhanced email sending to include PDF attachment with rejection details
-- [x] Reviewed admin_dashboard.html template for consistency
-- [x] Refactored db.py to use lazy-loaded collection functions instead of direct db.collection access
+## Steps to Complete
+- [x] Edit templates/user_dashboard.html to add home link in sidebar navigation
+- [ ] Test user dashboard loads with new home link visible
+- [ ] Test clicking home link navigates to home page correctly
+- [ ] Verify no styling or functionality issues in sidebar
 
-## Pending Tasks
-- [ ] Test reject booking functionality end-to-end
-- [ ] Verify PDF generation and email sending
-- [ ] Check error handling for PDF generation failures
-- [ ] Test UI feedback and user experience
-
-## Notes
-- The reject booking button in admin dashboard calls the updated endpoint
-- PDF includes booking ID, customer name, reason for rejection, and contact info
-- Fallback to plain email if PDF generation fails
+## Progress
+- Plan approved by user.
+- Edit completed successfully.
+- Proceeding to testing.
