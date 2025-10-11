@@ -8,6 +8,7 @@ import io
 import hashlib
 from datetime import timedelta
 import logging
+from logging.handlers import RotatingFileHandler
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -15,6 +16,13 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
+
+# Validate required environment variables
+REQUIRED_ENV_VARS = ['MONGODB_URI', 'SECRET_KEY', 'EMAIL_USER', 'EMAIL_PASS']
+for var in REQUIRED_ENV_VARS:
+    if not os.environ.get(var):
+        print(f"ERROR: Missing required environment variable: {var}")
+        raise ValueError(f"Missing required environment variable: {var}")
 
 # Create app and set secret key
 app = Flask(__name__)
@@ -397,23 +405,49 @@ def user_dashboard():
     user_photo = user.get('profile_photo') if user else None
 
     # Fetch bookings linked to this user email and name
-    bookings = list(prebookings_collection.find({
-        "email": user_email,
-        "name": user_name
-    }).sort("created_at", -1))
+    try:
+        bookings = list(prebookings_collection.find({
+            "email": user_email,
+            "name": {"$regex": f"^{user_name}$", "$options": "i"}
+        }).sort("created_at", -1))
+    except Exception as e:
+        logger.error(f"Error fetching bookings: {e}")
+        bookings = []
 
     # Check if this is an AJAX request for real-time updates
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-        # Convert ObjectIds to strings for JSON serialization
-        for booking in bookings:
-            booking['_id'] = str(booking['_id'])
-        return jsonify({
-            'total_bookings': len(bookings),
-            'completed_bookings': len([b for b in bookings if b.get('status') == 'completed']),
-            'pending_bookings': len([b for b in bookings if b.get('status') == 'pending']),
-            'rejected_bookings': len([b for b in bookings if b.get('status') == 'rejected']),
-            'bookings': bookings
-        })
+        try:
+            # FIXED: Convert ObjectIds and datetime objects to strings for JSON serialization
+            serialized_bookings = []
+            for booking in bookings:
+                serialized_booking = {}
+                for key, value in booking.items():
+                    if isinstance(value, ObjectId):
+                        serialized_booking[key] = str(value)
+                    elif isinstance(value, datetime):
+                        serialized_booking[key] = value.isoformat()
+                    elif isinstance(value, list):
+                        # Handle services array (could be strings or dicts)
+                        serialized_booking[key] = value
+                    else:
+                        serialized_booking[key] = value
+                serialized_bookings.append(serialized_booking)
+
+            return jsonify({
+                'success': True,
+                'total_bookings': len(serialized_bookings),
+                'completed_bookings': len([b for b in serialized_bookings if b.get('status') == 'completed']),
+                'pending_bookings': len([b for b in serialized_bookings if b.get('status') == 'pending']),
+                'rejected_bookings': len([b for b in serialized_bookings if b.get('status') == 'rejected']),
+                'bookings': serialized_bookings
+            })
+        except Exception as e:
+            logger.error(f"Error serializing bookings for AJAX: {e}")
+            return jsonify({
+                'success': False,
+                'error': 'Failed to fetch bookings',
+                'bookings': []
+            }), 500
 
     return render_template('user_dashboard.html', bookings=bookings, user_name=user_name, user_photo=user_photo)
 
@@ -438,7 +472,7 @@ def cancel_booking(booking_id):
     booking = prebookings_collection.find_one({
         "booking_id": booking_id,
         "email": user_email,
-        "name": user_name
+        "name": {"$regex": f"^{user_name}$", "$options": "i"}
     })
 
     if not booking:
@@ -479,7 +513,7 @@ def reschedule_booking(booking_id):
     booking = prebookings_collection.find_one({
         "booking_id": booking_id,
         "email": user_email,
-        "name": user_name
+        "name": {"$regex": f"^{user_name}$", "$options": "i"}
     })
 
     if not booking:
@@ -661,6 +695,16 @@ def prebook():
 
         # Attach user_id to booking
         data['user_id'] = session['user_id']
+
+        # Ensure user email and name are attached to booking
+        if 'user_id' in session:
+            user = get_user_by_id(ObjectId(session['user_id']))
+            if user:
+                data['email'] = user.get('email')
+                data['name'] = user.get('name')
+        else:
+            data['email'] = session.get('user_email')
+            data['name'] = session.get('user_name')
 
         session['user_name'] = data.get('name').strip()
         session['user_email'] = email
@@ -1200,6 +1244,33 @@ def service_detail(service_name):
 
 
 # ================= OTHER API ROUTES =================
+@app.route('/health')
+def health_check():
+    """Health check endpoint for deployment monitoring"""
+    try:
+        # Check database connectivity
+        db_status = "connected"
+        try:
+            # Simple ping to check MongoDB connection
+            prebookings_collection.find_one({}, {"_id": 1})
+        except Exception as e:
+            db_status = f"error: {str(e)}"
+
+        return jsonify({
+            "status": "healthy" if db_status == "connected" else "unhealthy",
+            "timestamp": datetime.now().isoformat(),
+            "database": db_status,
+            "version": "1.0.0"
+        }), 200 if db_status == "connected" else 503
+
+    except Exception as e:
+        return jsonify({
+            "status": "unhealthy",
+            "timestamp": datetime.now().isoformat(),
+            "error": str(e)
+        }), 503
+
+
 @app.route('/api/average-ratings')
 def average_ratings_api():
     try:

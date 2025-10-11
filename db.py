@@ -31,6 +31,18 @@ painting_limits_collection = db['painting_limits']
 payments_collection = db['payments']
 
 
+def check_mongodb_connection():
+    """Check MongoDB connection on startup"""
+    try:
+        # Ping the database to verify connection
+        client.admin.command('ping')
+        print("✅ MongoDB connection successful")
+        return True
+    except Exception as e:
+        print(f"❌ MongoDB connection failed: {e}")
+        raise
+
+
 # ================= UPDATED: CREATE INDEXES =================
 def create_indexes():
     """Create database indexes with booking_id support"""
@@ -1194,6 +1206,9 @@ def get_total_visits():
         print(f"Error getting visits: {e}")
         return 0
 
+
+# Check MongoDB connection on startup
+check_mongodb_connection()
 
 # Initialize admin and services on import
 initialize_admin()

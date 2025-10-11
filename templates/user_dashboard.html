@@ -2,906 +2,337 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>User Dashboard - Annapoorneshwari Tyre & Painting Works</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Dashboard | Annapoorneshwari Tyre Works</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f5f6fa;
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: #0b132b;
+      color: #fff;
       min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .dashboard-container {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    /* Sidebar Styles */
-    .sidebar {
-      width: 280px;
-      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-      color: white;
-      flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      padding: 0;
-      position: fixed;
-      height: 100vh;
-      overflow-y: auto;
-      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
     }
 
-    .sidebar-header {
-      padding: 2rem 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .user-profile {
+    header {
+      background: linear-gradient(90deg, #1c2541, #3a506b);
+      padding: 1rem 1.5rem;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 1rem;
+      justify-content: space-between;
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    .user-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 3px solid #3b82f6;
-      object-fit: cover;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    header h2 {
+      font-size: 1.3rem;
+      letter-spacing: 1px;
+    }
+
+    .filters {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: white;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-    }
-
-    .user-info h4 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .user-info p {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin: 0;
-    }
-
-    .sidebar-nav {
-      padding: 1.5rem 0;
-      flex-grow: 1;
-    }
-
-    .nav-item {
-      margin-bottom: 0.5rem;
-      padding: 0 1rem;
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.875rem 1rem;
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      font-size: 0.95rem;
-    }
-
-    .nav-link:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      transform: translateX(5px);
-    }
-
-    .nav-link.active {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-    }
-
-    .nav-link i {
-      font-size: 1.1rem;
-      width: 20px;
-      text-align: center;
-    }
-
-    .sidebar-footer {
-      padding: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .btn-logout {
-      width: 100%;
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #fca5a5;
-      padding: 0.875rem;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-wrap: wrap;
       gap: 0.5rem;
-    }
-
-    .btn-logout:hover {
-      background: #ef4444;
-      color: white;
-      border-color: #ef4444;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-    }
-
-    /* Main Content */
-    .main-content {
-      flex-grow: 1;
-      margin-left: 280px;
-      padding: 2rem;
-      width: calc(100% - 280px);
-    }
-
-    .content-header {
-      margin-bottom: 2rem;
-    }
-
-    .content-header h2 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 0.5rem;
-    }
-
-    .content-header p {
-      color: #64748b;
-      font-size: 1rem;
-    }
-
-    /* Stats Cards */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 15px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e2e8f0;
-      transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
+      padding: 1rem;
+      background: #1c2541;
+      border-bottom: 1px solid #3a506b;
       justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
     }
 
-    .stat-icon.blue {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-    }
-
-    .stat-icon.green {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-    }
-
-    .stat-icon.orange {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: white;
-    }
-
-    .stat-icon.red {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: white;
-    }
-
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-      color: #64748b;
+    .filters input,
+    .filters select,
+    .filters button {
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      border: none;
       font-size: 0.9rem;
-      font-weight: 500;
+      outline: none;
     }
 
-    /* Bookings Section */
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+    .filters input,
+    .filters select {
+      background: #3a506b;
+      color: #fff;
+    }
+
+    .filters input::placeholder {
+      color: #ccc;
+    }
+
+    .filters button {
+      background: #00a8e8;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .filters button:hover {
+      background: #0092cc;
+    }
+
+    .dashboard-content {
+      flex: 1;
+      padding: 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+      animation: fadeIn 0.6s ease-in-out;
     }
 
     .booking-card {
-      background: white;
-      border-radius: 15px;
-      padding: 1.75rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e2e8f0;
-      transition: all 0.3s ease;
+      background: #1c2541;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
     }
 
     .booking-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      border-color: #3b82f6;
+      transform: scale(1.02);
     }
 
     .booking-header {
       display: flex;
       justify-content: space-between;
-      align-items: start;
-      margin-bottom: 1.25rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .booking-id {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1e293b;
-      display: flex;
       align-items: center;
-      gap: 0.5rem;
+      border-bottom: 1px solid #3a506b;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
-    .booking-status {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 0.85rem;
-    }
-
-    .status-completed {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .status-pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status-rejected {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .booking-details {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.25rem;
-    }
-
-    .detail-item {
-      display: flex;
-      align-items: start;
-      gap: 0.75rem;
-    }
-
-    .detail-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: #f1f5f9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #3b82f6;
-      flex-shrink: 0;
-    }
-
-    .detail-content h6 {
+    .status {
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
       font-size: 0.8rem;
-      color: #64748b;
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-weight: 600;
+      text-transform: capitalize;
     }
 
-    .detail-content p {
-      font-size: 1rem;
-      color: #1e293b;
-      font-weight: 600;
-      margin: 0;
+    .status.pending { background: #ffaf40; color: #000; }
+    .status.completed { background: #4caf50; }
+    .status.rejected { background: #f44336; }
+
+    .detail {
+      margin: 0.4rem 0;
+      font-size: 0.9rem;
     }
 
     .booking-actions {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.5rem;
+      margin-top: 0.8rem;
       flex-wrap: wrap;
-      padding-top: 1.25rem;
-      border-top: 1px solid #e2e8f0;
     }
 
     .btn-action {
-      padding: 0.625rem 1.25rem;
-      border-radius: 10px;
-      font-weight: 600;
-      font-size: 0.9rem;
+      background: #00a8e8;
       border: none;
+      color: white;
+      border-radius: 6px;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
+      gap: 0.3rem;
     }
 
-    .btn-primary {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-      color: white;
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: white;
-      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
-    }
-
-    .btn-danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
-      color: white;
-    }
-
-    .btn-info {
-      background: #f1f5f9;
-      color: #475569;
-      border: 1px solid #e2e8f0;
-    }
-
-    .btn-info:hover {
-      background: #e2e8f0;
-      transform: translateY(-2px);
-      color: #475569;
+    .btn-action:hover {
+      background: #0092cc;
     }
 
     .empty-state {
       text-align: center;
-      padding: 4rem 2rem;
-      background: white;
-      border-radius: 15px;
-      border: 2px dashed #e2e8f0;
+      color: #aaa;
+      margin-top: 2rem;
     }
 
     .empty-state i {
-      font-size: 4rem;
-      color: #cbd5e1;
-      margin-bottom: 1.5rem;
-    }
-
-    .empty-state h4 {
-      font-size: 1.5rem;
-      color: #475569;
+      font-size: 3rem;
+      color: #00a8e8;
       margin-bottom: 0.5rem;
     }
 
-    .empty-state p {
-      color: #94a3b8;
-      font-size: 1rem;
+    footer {
+      text-align: center;
+      background: #1c2541;
+      padding: 0.8rem;
+      color: #aaa;
+      font-size: 0.9rem;
     }
 
-    /* Mobile Responsive */
-    @media (max-width: 992px) {
-      .sidebar {
-        width: 250px;
-      }
-
-      .main-content {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-      }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 768px) {
-      .sidebar {
-        position: fixed;
-        left: -280px;
-        transition: left 0.3s ease;
-      }
-
-      .sidebar.show {
-        left: 0;
-      }
-
-      .main-content {
-        margin-left: 0;
-        width: 100%;
-        padding: 1.5rem;
-      }
-
-      .booking-header {
-        flex-direction: column;
-      }
-
-      .booking-actions {
-        flex-direction: column;
-      }
-
-      .btn-action {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Mobile Menu Toggle */
-    .mobile-menu-toggle {
-      display: none;
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      z-index: 1001;
-      background: white;
-      border: none;
-      width: 45px;
-      height: 45px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      color: #1e293b;
-    }
-
-    @media (max-width: 768px) {
-      .mobile-menu-toggle {
-        display: flex;
-      }
-
-      .main-content {
-        padding-top: 4rem;
-      }
+    /* Mobile */
+    @media(max-width:600px){
+      header h2 { font-size: 1rem; }
+      .filters { flex-direction: column; align-items: stretch; }
+      .filters input, .filters select, .filters button { width: 100%; }
+      .booking-card { font-size: 0.85rem; }
+      .booking-actions { flex-direction: column; }
+      .btn-action { justify-content: center; width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-      <i class="fas fa-bars"></i>
-    </button>
+  <header>
+    <h2><i class="fas fa-user-circle"></i> My Dashboard</h2>
+    <a href="/logout" class="btn-action" style="background:#f44336;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </header>
 
-    <!-- Sidebar -->
-    <nav class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <div class="user-profile">
-          <div class="user-avatar">
-            <!-- User photo or initial -->
-            <img src="{{ user_photo }}" alt="User" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-            <span style="display: none;">{{ user_name[0] if user_name else 'U' }}</span>
-          </div>
-          <div class="user-info">
-            <h4>{{ user_name }}</h4>
-            <p>{{ user_email }}</p>
-          </div>
-        </div>
-      </div>
-
-    
-        <div class="nav-item">
-          <a href="{{ url_for('user_dashboard') }}" class="nav-link active">
-            <i class="fas fa-th-large"></i>
-            <span>Dashboard</span>
-          </a>
-        </div>
-        <div class="nav-item">
-          <a href="{{ url_for('user_dashboard') }}" class="nav-link">
-            <i class="fas fa-calendar-check"></i>
-            <span>My Bookings</span>
-          </a>
-        </div>
-        <div class="nav-item">
-          <a href="{{ url_for('profile') }}" class="nav-link">
-            <i class="fas fa-user-circle"></i>
-            <span>Edit Profile</span>
-          </a>
-        </div>
-        <div class="nav-item">
-          <a href="{{ url_for('change_password') }}" class="nav-link">
-            <i class="fas fa-key"></i>
-            <span>Change Password</span>
-          </a>
-        </div>
-      </div>
-        <div class="sidebar-nav">
-        <div class="nav-item">
-          <a href="{{ url_for('home') }}" class="nav-link">
-            <i class="fas fa-home"></i>
-            <span>Home</span>
-          </a>
-        </div>
-      <div class="sidebar-footer">
-        <form action="{{ url_for('logout') }}" method="get">
-          <button type="submit" class="btn-logout">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-          </button>
-        </form>
-      </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      <div class="content-header">
-        <h2>Welcome back, {{ user_name }}! 👋</h2>
-        <p>Here's what's happening with your bookings today.</p>
-      </div>
-
-      <!-- Stats Cards -->
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon blue">
-            <i class="fas fa-calendar-alt"></i>
-          </div>
-          <div class="stat-value" id="stat-total">{{ bookings|length }}</div>
-          <div class="stat-label">Total Bookings</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon green">
-            <i class="fas fa-check-circle"></i>
-          </div>
-          <div class="stat-value" id="stat-completed">{{ bookings|selectattr('status', 'equalto', 'completed')|list|length }}</div>
-          <div class="stat-label">Completed</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon orange">
-            <i class="fas fa-clock"></i>
-          </div>
-          <div class="stat-value" id="stat-pending">{{ bookings|selectattr('status', 'equalto', 'pending')|list|length }}</div>
-          <div class="stat-label">Pending</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon red">
-            <i class="fas fa-times-circle"></i>
-          </div>
-          <div class="stat-value" id="stat-rejected">{{ bookings|selectattr('status', 'equalto', 'rejected')|list|length }}</div>
-          <div class="stat-label">Rejected</div>
-        </div>
-      </div>
-
-      <!-- Bookings Section -->
-      <h3 class="section-title">
-        <i class="fas fa-list"></i>
-        Your Bookings
-      </h3>
-
-      <div id="bookings-container">
-        {% if bookings %}
-          {% for booking in bookings %}
-            <div class="booking-card" data-booking-id="{{ booking.booking_id }}">
-              <div class="booking-header">
-                <div class="booking-id">
-                  <i class="fas fa-hashtag"></i>
-                  {{ booking.booking_id }}
-                </div>
-                <div class="booking-status {% if booking.status == 'completed' %}status-completed{% elif booking.status == 'pending' %}status-pending{% elif booking.status == 'rejected' %}status-rejected{% endif %}">
-                  <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
-                  <span>{{ booking.status|capitalize }}</span>
-                </div>
-              </div>
-
-              <div class="booking-details">
-                <div class="detail-item">
-                  <div class="detail-icon">
-                    <i class="fas fa-tools"></i>
-                  </div>
-                  <div class="detail-content">
-                    <h6>Services</h6>
-                    <p>{{ booking.services | map(attribute='name') | join(', ') }}</p>
-                  </div>
-                </div>
-
-                <div class="detail-item">
-                  <div class="detail-icon">
-                    <i class="fas fa-calendar"></i>
-                  </div>
-                  <div class="detail-content">
-                    <h6>Date</h6>
-                    <p>{{ booking.preferred_date }}</p>
-                  </div>
-                </div>
-
-                <div class="detail-item">
-                  <div class="detail-icon">
-                    <i class="fas fa-clock"></i>
-                  </div>
-                  <div class="detail-content">
-                    <h6>Time</h6>
-                    <p>{{ booking.time if booking.time else 'Not specified' }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="booking-actions">
-                {% if booking.status == 'pending' %}
-                  <a href="{{ url_for('reschedule_booking', booking_id=booking.booking_id) }}" class="btn-action btn-primary">
-                    <i class="fas fa-edit"></i>
-                    Reschedule
-                  </a>
-                  <form action="{{ url_for('cancel_booking', booking_id=booking.booking_id) }}" method="POST" style="display: inline;">
-                    <button type="submit" class="btn-action btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
-                      <i class="fas fa-times"></i>
-                      Cancel
-                    </button>
-                  </form>
-                {% endif %}
-                <a href="{{ url_for('show_receipt', booking_id=booking.booking_id) }}" class="btn-action btn-info">
-                  <i class="fas fa-receipt"></i>
-                  View Receipt
-                </a>
-              </div>
-            </div>
-          {% endfor %}
-        {% else %}
-          <div class="empty-state">
-            <i class="fas fa-calendar-times"></i>
-            <h4>No Bookings Yet</h4>
-            <p>You haven't made any bookings. Start by booking a service!</p>
-          </div>
-        {% endif %}
-      </div>
-    </main>
+  <div class="filters">
+    <input type="text" id="searchInput" placeholder="Search Booking ID or Service...">
+    <select id="statusFilter">
+      <option value="All">All Status</option>
+      <option value="pending">Pending</option>
+      <option value="completed">Completed</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    <select id="serviceFilter">
+      <option value="All">All Services</option>
+    </select>
+    <input type="date" id="startDate">
+    <input type="date" id="endDate">
+    <button id="applyFilters"><i class="fas fa-filter"></i> Apply</button>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <main class="dashboard-content" id="bookings-container">
+    <!-- Bookings will load dynamically -->
+  </main>
+
+  <footer>
+    &copy; 2025 Annapoorneshwari Tyre Works | All Rights Reserved
+  </footer>
+
   <script>
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('show');
-    }
-
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', function(event) {
-      const sidebar = document.getElementById('sidebar');
-      const toggle = document.querySelector('.mobile-menu-toggle');
-
-      if (window.innerWidth <= 768) {
-        if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
-          sidebar.classList.remove('show');
+    async function loadServices() {
+      try {
+        const res = await fetch('/api/services');
+        const data = await res.json();
+        const select = document.getElementById('serviceFilter');
+        if (data && data.services) {
+          data.services.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.name;
+            opt.textContent = s.name;
+            select.appendChild(opt);
+          });
         }
+      } catch (err) {
+        console.error('Error loading services:', err);
       }
-    });
-
-    // Real-time updates for user dashboard
-    let previousBookings = null;
-    let pollingInterval;
-
-    function fetchDashboardData() {
-      fetch(window.location.href, {
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        }
-      })
-      .then(response => response.json())
-      .then(data => {
-        updateStats(data);
-        updateBookings(data.bookings);
-        checkForRejections(data.bookings);
-      })
-      .catch(error => {
-        console.error('Error fetching dashboard data:', error);
-      });
     }
 
-    function updateStats(data) {
-      document.getElementById('stat-total').textContent = data.total_bookings;
-      document.getElementById('stat-completed').textContent = data.completed_bookings;
-      document.getElementById('stat-pending').textContent = data.pending_bookings;
-      document.getElementById('stat-rejected').textContent = data.rejected_bookings;
+    async function fetchFilteredBookings() {
+      const params = new URLSearchParams({
+        search: document.getElementById('searchInput').value,
+        status: document.getElementById('statusFilter').value,
+        service: document.getElementById('serviceFilter').value,
+        start_date: document.getElementById('startDate').value,
+        end_date: document.getElementById('endDate').value
+      });
+
+      const container = document.getElementById('bookings-container');
+
+      try {
+        const res = await fetch(`/user/dashboard/filter?${params.toString()}`, {
+          headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+
+        if (!res.ok) {
+          if (res.status === 401) {
+            container.innerHTML = `<div class='empty-state'><i class="fas fa-lock"></i><p>Session expired. Please <a href="/login">login</a> again.</p></div>`;
+            return;
+          } else if (res.status === 500) {
+            container.innerHTML = `<div class='empty-state'><i class="fas fa-exclamation-triangle"></i><p>Server error. Please try again later.</p></div>`;
+            return;
+          } else {
+            container.innerHTML = `<div class='empty-state'><i class="fas fa-exclamation-circle"></i><p>Error loading bookings (${res.status}).</p></div>`;
+            return;
+          }
+        }
+
+        const data = await res.json();
+
+        if (data.success === false) {
+          container.innerHTML = `<div class='empty-state'><i class="fas fa-info-circle"></i><p>${data.error || 'No bookings found'}</p></div>`;
+          return;
+        }
+
+        if (data && data.bookings) {
+          updateBookings(data.bookings);
+        } else {
+          container.innerHTML = `<div class='empty-state'><i class="fas fa-calendar-times"></i><p>No bookings found</p></div>`;
+        }
+      } catch (err) {
+        console.error('Error fetching bookings:', err);
+        container.innerHTML = `<div class='empty-state'><i class="fas fa-wifi"></i><p>Network error. Please check your connection and try again.</p></div>`;
+      }
     }
 
     function updateBookings(bookings) {
       const container = document.getElementById('bookings-container');
-
-      if (bookings.length === 0) {
+      if (!bookings.length) {
         container.innerHTML = `
           <div class="empty-state">
             <i class="fas fa-calendar-times"></i>
-            <h4>No Bookings Yet</h4>
-            <p>You haven't made any bookings. Start by booking a service!</p>
-          </div>
-        `;
+            <h4>No Bookings Found</h4>
+            <p>You haven't made any bookings yet.</p>
+          </div>`;
         return;
       }
 
-      let html = '';
-      bookings.forEach(booking => {
-        const statusClass = booking.status === 'completed' ? 'status-completed' :
-                           booking.status === 'pending' ? 'status-pending' : 'status-rejected';
-        const actionsHtml = booking.status === 'pending' ?
-          `<a href="/user/reschedule-booking/${booking.booking_id}" class="btn-action btn-primary">
-             <i class="fas fa-edit"></i>
-             Reschedule
-           </a>
-           <form action="/user/cancel-booking/${booking.booking_id}" method="POST" style="display: inline;">
-             <button type="submit" class="btn-action btn-danger" onclick="return confirm('Are you sure you want to cancel this booking?')">
-               <i class="fas fa-times"></i>
-               Cancel
-             </button>
-           </form>` : '';
-
-        // Extract service names from service objects
-        const serviceNames = booking.services.map(service => service.name);
-
-        html += `
-          <div class="booking-card" data-booking-id="${booking.booking_id}">
-            <div class="booking-header">
-              <div class="booking-id">
-                <i class="fas fa-hashtag"></i>
-                ${booking.booking_id}
-              </div>
-              <div class="booking-status ${statusClass}">
-                <i class="fas fa-circle" style="font-size: 0.5rem;"></i>
-                <span>${booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}</span>
-              </div>
-            </div>
-
-            <div class="booking-details">
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="fas fa-tools"></i>
-                </div>
-                <div class="detail-content">
-                  <h6>Services</h6>
-                  <p>${serviceNames.join(', ')}</p>
-                </div>
-              </div>
-
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="fas fa-calendar"></i>
-                </div>
-                <div class="detail-content">
-                  <h6>Date</h6>
-                  <p>${booking.preferred_date}</p>
-                </div>
-              </div>
-
-              <div class="detail-item">
-                <div class="detail-icon">
-                  <i class="fas fa-clock"></i>
-                </div>
-                <div class="detail-content">
-                  <h6>Time</h6>
-                  <p>${booking.time || 'Not specified'}</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="booking-actions">
-              ${actionsHtml}
-              <a href="/receipt/${booking.booking_id}" class="btn-action btn-info">
-                <i class="fas fa-receipt"></i>
-                View Receipt
-              </a>
-            </div>
-          </div>
-        `;
-      });
-
-      container.innerHTML = html;
-    }
-
-    function checkForRejections(currentBookings) {
-      if (previousBookings === null) {
-        // First load, just set previousBookings without notifying
-        previousBookings = currentBookings;
-        return;
-      }
-
-      const newRejections = currentBookings.filter(booking =>
-        booking.status === 'rejected' &&
-        !previousBookings.some(prev => prev.booking_id === booking.booking_id && prev.status === 'rejected')
-      );
-
-      if (newRejections.length > 0) {
-        showNotification('A booking has been rejected by the admin.', 'warning');
-      }
-
-      previousBookings = currentBookings;
-    }
-
-    function showNotification(message, type = 'info') {
-      // Create notification element
-      const notification = document.createElement('div');
-      notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
-      notification.style.cssText = `
-        top: 20px;
-        right: 20px;
-        z-index: 1050;
-        min-width: 300px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      `;
-      notification.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      `;
-
-      document.body.appendChild(notification);
-
-      // Auto remove after 5 seconds
-      setTimeout(() => {
-        if (notification.parentNode) {
-          notification.remove();
+      container.innerHTML = bookings.map(b => {
+        const statusClass = b.status || 'pending';
+        let serviceNames = [];
+        if (b.services && Array.isArray(b.services) && b.services.length > 0) {
+          if (typeof b.services[0] === 'object' && b.services[0] !== null) {
+            serviceNames = b.services.map(s => (s && s.name) ? s.name : 'Unknown').filter(name => name);
+          } else {
+            serviceNames = b.services.filter(s => s && typeof s === 'string');
+          }
         }
-      }, 5000);
+
+        return `
+        <div class="booking-card">
+          <div class="booking-header">
+            <div><i class="fas fa-hashtag"></i> ${b.booking_id}</div>
+            <div class="status ${statusClass}">${b.status}</div>
+          </div>
+          <div class="detail"><strong>Services:</strong> ${serviceNames.join(', ') || 'N/A'}</div>
+          <div class="detail"><strong>Date:</strong> ${b.preferred_date || 'N/A'}</div>
+          <div class="detail"><strong>Time:</strong> ${b.time || 'N/A'}</div>
+          <div class="detail"><strong>Amount:</strong> ₹${b.total_amount || 0}</div>
+          <div class="booking-actions">
+            <a href="/receipt/${b.booking_id}" class="btn-action"><i class="fas fa-receipt"></i> Receipt</a>
+            ${b.status === 'pending' ? `
+              <a href="/user/reschedule-booking/${b.booking_id}" class="btn-action"><i class="fas fa-edit"></i> Reschedule</a>
+              <form action="/user/cancel-booking/${b.booking_id}" method="POST" style="display:inline;">
+                <button type="submit" class="btn-action" style="background:#f44336;"><i class="fas fa-times"></i> Cancel</button>
+              </form>` : ''}
+          </div>
+        </div>`;
+      }).join('');
     }
 
-    // Start polling when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      // Initial fetch to get current state
-      fetchDashboardData();
-
-      // Start polling every 30 seconds
-      pollingInterval = setInterval(fetchDashboardData, 30000);
+    document.getElementById('applyFilters').addEventListener('click', fetchFilteredBookings);
+    window.addEventListener('load', () => {
+      loadServices();
+      fetchFilteredBookings();
     });
 
-    // Stop polling when page is unloaded
-    window.addEventListener('beforeunload', function() {
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
-      }
-    });
+    // Optional: Auto-refresh bookings every 60s
+    setInterval(fetchFilteredBookings, 60000);
   </script>
 </body>
 </html>
