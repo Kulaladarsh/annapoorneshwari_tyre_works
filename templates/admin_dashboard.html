@@ -8,8 +8,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --success-color: #198754;
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #28a745;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
             --info-color: #0dcaf0;
@@ -19,13 +20,32 @@
 
         body {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             min-height: 100vh;
         }
 
+        .navbar {
+            background: linear-gradient(135deg, rgba(102,126,234,0.95), rgba(118,75,162,0.95)) !important;
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+        }
+
         .navbar-brand {
-            font-weight: bold;
+            font-weight: 700;
             font-size: 1.3rem;
+            color: white !important;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            color: #fff !important;
+            transform: translateY(-2px);
         }
 
         .stat-card {
@@ -35,6 +55,7 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             position: relative;
+            background: white;
         }
 
         .stat-card::before {
@@ -44,7 +65,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transition: left 0.5s;
         }
 
@@ -58,90 +79,64 @@
         }
 
         .stat-card .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
             padding: 2rem 1.5rem;
         }
 
-        .stat-card i {
-            opacity: 0.9;
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
             margin-bottom: 1rem;
         }
 
-        .revenue-highlight {
-            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        }
+        .bg-primary-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .bg-success-gradient { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .bg-warning-gradient { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .bg-danger-gradient { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .bg-info-gradient { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
 
-        .chart-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            padding: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .chart-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-filter-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .filter-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
             border-radius: 1rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             padding: 1.5rem;
             margin-bottom: 2rem;
-            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .search-filter-card:hover {
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-input {
-            border-radius: 50px;
-            padding: 0.75rem 1.5rem;
+        .filter-input, .filter-select {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
             border: 2px solid #e0e0e0;
             transition: all 0.3s ease;
+            background: white;
         }
 
-        .search-input:focus {
-            border-color: #667eea;
+        .filter-input:focus, .filter-select:focus {
+            border-color: var(--primary-color);
             box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
             transform: translateY(-2px);
         }
 
-        .filter-btn {
-            border-radius: 50px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .filter-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
         .table-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
             border-radius: 1rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
             padding: 2rem;
             margin-bottom: 2rem;
+            overflow-x: auto;
         }
 
         .table {
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: none;
+            margin-bottom: 0;
         }
 
         .table thead th {
@@ -150,9 +145,7 @@
             border: none;
             font-weight: 600;
             padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            white-space: nowrap;
         }
 
         .table tbody tr {
@@ -185,11 +178,23 @@
             font-weight: 600;
             transition: all 0.3s ease;
             border: none;
+            padding: 0.5rem 1rem;
         }
 
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
         }
 
         .modal-content {
@@ -206,14 +211,8 @@
             padding: 1.5rem;
         }
 
-        .navbar {
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            background: rgba(33, 37, 41, 0.95) !important;
-        }
-
         main {
-            margin-top: 100px;
+            margin-top: 90px;
             padding: 2rem;
         }
 
@@ -221,11 +220,11 @@
             color: white;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             border-radius: 10px;
-            border-left: 5px solid #667eea;
+            border-left: 5px solid white;
         }
 
         .no-results {
@@ -238,12 +237,6 @@
             font-size: 4rem;
             margin-bottom: 1rem;
             opacity: 0.5;
-        }
-
-        .amount-display {
-            font-weight: 700;
-            color: var(--success-color);
-            font-size: 1.1rem;
         }
 
         @keyframes fadeInUp {
@@ -261,7 +254,6 @@
             animation: fadeInUp 0.6s ease forwards;
         }
 
-        /* Enhanced Mobile Responsiveness */
         @media (max-width: 768px) {
             body { padding-top: 70px; }
             
@@ -274,26 +266,18 @@
                 padding: 1.5rem 1rem;
             }
 
-            .stat-card .fa-3x {
-                font-size: 2rem !important;
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
             }
 
-            .stat-card .fs-2 {
-                font-size: 1.5rem !important;
-            }
-
-            .search-filter-card {
+            .filter-card {
                 padding: 1rem;
-            }
-
-            .filter-btn {
-                width: 100%;
-                margin-top: 0.5rem;
             }
 
             .table-container {
                 padding: 1rem;
-                overflow-x: auto;
             }
 
             .table {
@@ -305,13 +289,9 @@
                 white-space: nowrap;
             }
 
-            .btn-group-vertical {
-                flex-direction: column;
-            }
-
-            .btn-group-vertical .btn {
-                margin-bottom: 0.25rem;
-                font-size: 0.8rem;
+            .action-buttons .btn {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
             }
 
             .section-title {
@@ -323,7 +303,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
 
-    <nav class="navbar navbar-dark bg-dark fixed-top shadow">
+    <nav class="navbar navbar-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('home') }}">
                 <i class="fas fa-tools me-2"></i>Admin Dashboard
@@ -333,8 +313,8 @@
             </button>
             <div class="d-none d-lg-flex">
                 <ul class="navbar-nav flex-row">
-                    <li class="nav-item px-2"><a class="nav-link text-white" href="{{ url_for('home') }}"><i class="fas fa-home me-1"></i>Home</a></li>
-                    <li class="nav-item px-2"><a class="nav-link text-white" href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
+                    <li class="nav-item px-2"><a class="nav-link" href="{{ url_for('home') }}"><i class="fas fa-home me-1"></i>Home</a></li>
+                    <li class="nav-item px-2"><a class="nav-link" href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
                 </ul>
             </div>
         </div>
@@ -351,93 +331,93 @@
         </div>
     </div>
 
-    <main class="container">
+    <main class="container-fluid">
         <h2 class="section-title animate-in"><i class="fas fa-chart-line me-2"></i>Dashboard Overview</h2>
         
         <div class="row g-4 mb-5">
             <div class="col-lg-3 col-md-6 animate-in">
-                <div class="card stat-card text-white bg-primary h-100">
-                    <div class="card-body">
-                        <i class="fas fa-calendar-check fa-3x"></i>
-                        <h5 class="card-title fw-bold">Total Bookings</h5>
-                        <p class="card-text fs-2">{{ total_bookings|default(0) }}</p>
+                <div class="card stat-card h-100">
+                    <div class="card-body text-center">
+                        <div class="stat-icon bg-primary-gradient text-white mx-auto">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h5 class="fw-bold">Total Bookings</h5>
+                        <p class="fs-2 fw-bold text-primary mb-0">{{ total_bookings|default(0) }}</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-lg-3 col-md-6 animate-in" style="animation-delay: 0.1s;">
-                <div class="card stat-card text-white bg-success h-100">
-                    <div class="card-body">
-                        <i class="fas fa-check-circle fa-3x"></i>
-                        <h5 class="card-title fw-bold">Completed</h5>
-                        <p class="card-text fs-2">{{ completed_bookings|default(0) }}</p>
+                <div class="card stat-card h-100">
+                    <div class="card-body text-center">
+                        <div class="stat-icon bg-success-gradient text-white mx-auto">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h5 class="fw-bold">Completed</h5>
+                        <p class="fs-2 fw-bold text-success mb-0">{{ completed_bookings|default(0) }}</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-lg-3 col-md-6 animate-in" style="animation-delay: 0.2s;">
-                <div class="card stat-card text-white bg-warning h-100">
-                    <div class="card-body">
-                        <i class="fas fa-clock fa-3x"></i>
-                        <h5 class="card-title fw-bold">Pending</h5>
-                        <p class="card-text fs-2">{{ pending_bookings|default(0) }}</p>
+                <div class="card stat-card h-100">
+                    <div class="card-body text-center">
+                        <div class="stat-icon bg-warning-gradient text-white mx-auto">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="fw-bold">Pending</h5>
+                        <p class="fs-2 fw-bold" style="color: #ffc107; margin: 0;">{{ pending_bookings|default(0) }}</p>
                     </div>
                 </div>
             </div>
 
             <div class="col-lg-3 col-md-6 animate-in" style="animation-delay: 0.3s;">
-                <div class="card stat-card text-white bg-danger h-100">
-                    <div class="card-body">
-                        <i class="fas fa-times-circle fa-3x"></i>
-                        <h5 class="card-title fw-bold">Rejected</h5>
-                        <p class="card-text fs-2">{{ rejected_bookings|default(0) }}</p>
+                <div class="card stat-card h-100">
+                    <div class="card-body text-center">
+                        <div class="stat-icon bg-danger-gradient text-white mx-auto">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h5 class="fw-bold">Rejected</h5>
+                        <p class="fs-2 fw-bold text-danger mb-0">{{ rejected_bookings|default(0) }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row g-4 mb-5">
-            <div class="col-lg-4 animate-in" style="animation-delay: 0.4s;">
-                <div class="card stat-card text-white revenue-highlight h-100">
-                    <div class="card-body">
-                        <i class="fas fa-rupee-sign fa-3x"></i>
-                        <h5 class="card-title fw-bold">Total Revenue</h5>
-                        <p class="card-text fs-2">₹{{ total_service_amount|default(0) }}</p>
+            <div class="col-lg-6 animate-in" style="animation-delay: 0.4s;">
+                <div class="card stat-card h-100">
+                    <div class="card-body text-center">
+                        <div class="stat-icon bg-success-gradient text-white mx-auto">
+                            <i class="fas fa-rupee-sign"></i>
+                        </div>
+                        <h5 class="fw-bold">Total Revenue</h5>
+                        <p class="fs-2 fw-bold text-success mb-0">₹{{ total_service_amount|default(0) }}</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 animate-in" style="animation-delay: 0.5s;">
-                <div class="card stat-card text-white bg-info h-100">
-                    <div class="card-body">
-                        <i class="fas fa-star fa-3x"></i>
-                        <h5 class="card-title fw-bold">Total Ratings</h5>
-                        <p class="card-text fs-2">{{ total_ratings|default(0) }}</p>
+            <div class="col-lg-6 animate-in" style="animation-delay: 0.5s;">
+                <div class="card stat-card h-100">
+                    <div class="card-body text-center">
+                        <div class="stat-icon bg-info-gradient text-white mx-auto">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h5 class="fw-bold">Total Ratings</h5>
+                        <p class="fs-2 fw-bold text-info mb-0">{{ total_ratings|default(0) }}</p>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-4 animate-in" style="animation-delay: 0.6s;">
-                <div class="chart-card h-100">
-                    <h5 class="text-center fw-bold mb-3"><i class="fas fa-chart-bar me-2"></i>Booking Status</h5>
-                    <canvas id="bookingStatusChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <h3 class="section-title animate-in"><i class="fas fa-list me-2"></i>Recent Bookings</h3>
+        <h3 class="section-title animate-in"><i class="fas fa-list me-2"></i>Bookings Management</h3>
 
-        <!-- Search and Filter Section -->
-        <div class="search-filter-card animate-in">
+        <div class="filter-card animate-in">
             <div class="row g-3">
-                <div class="col-lg-5">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
-                            <i class="fas fa-search text-muted"></i>
-                        </span>
-                        <input type="text" id="searchInput" class="form-control search-input border-start-0" placeholder="Search by name, email, contact, vehicle...">
-                    </div>
+                <div class="col-lg-4 col-md-6">
+                    <input type="text" id="searchInput" class="form-control filter-input" placeholder="🔍 Search by name, email, contact, vehicle...">
                 </div>
-                <div class="col-lg-3">
-                    <select id="statusFilter" class="form-select search-input">
+                <div class="col-lg-2 col-md-6">
+                    <select id="statusFilter" class="form-select filter-select">
                         <option value="">All Status</option>
                         <option value="pending">Pending</option>
                         <option value="completed">Completed</option>
@@ -445,8 +425,8 @@
                         <option value="cancelled">Cancelled</option>
                     </select>
                 </div>
-                <div class="col-lg-2">
-                    <select id="serviceFilter" class="form-select search-input">
+                <div class="col-lg-2 col-md-6">
+                    <select id="serviceFilter" class="form-select filter-select">
                         <option value="">All Services</option>
                         <option value="Greasing">Greasing</option>
                         <option value="Puncturing">Puncturing</option>
@@ -454,14 +434,27 @@
                         <option value="Painting">Painting</option>
                     </select>
                 </div>
-                <div class="col-lg-2">
-                    <button class="btn btn-primary filter-btn w-100" onclick="resetFilters()">
-                        <i class="fas fa-redo me-2"></i>Reset
+                <div class="col-lg-2 col-md-6">
+                    <input type="date" id="dateFromFilter" class="form-control filter-input" placeholder="From Date">
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <input type="date" id="dateToFilter" class="form-control filter-input" placeholder="To Date">
+                </div>
+            </div>
+            <div class="row g-3 mt-2">
+                <div class="col-lg-6">
+                    <button class="btn btn-primary w-100" onclick="applyFilters()">
+                        <i class="fas fa-filter me-2"></i>Apply Filters
+                    </button>
+                </div>
+                <div class="col-lg-6">
+                    <button class="btn btn-secondary w-100" onclick="resetFilters()">
+                        <i class="fas fa-redo me-2"></i>Reset Filters
                     </button>
                 </div>
             </div>
             <div class="mt-3">
-                <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Found: <strong id="resultCount">0</strong> booking(s)</small>
+                <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Found: <strong id="resultCount">{{ prebookings|length }}</strong> booking(s)</small>
             </div>
         </div>
 
@@ -471,20 +464,19 @@
                 <table class="table table-hover align-middle" id="bookingsTable">
                     <thead>
                         <tr>
-                            <th><i class="fas fa-user me-2"></i>Name</th>
-                            <th><i class="fas fa-phone me-2"></i>Contact</th>
-                            <th><i class="fas fa-cogs me-2"></i>Services</th>
-                            <th><i class="fas fa-car me-2"></i>Vehicle</th>
-                            <th><i class="fas fa-calendar me-2"></i>Booking Date</th>
-                            <th><i class="fas fa-check-circle me-2"></i>Completed Date</th>
-                            <th><i class="fas fa-rupee-sign me-2"></i>Amount</th>
-                            <th><i class="fas fa-info-circle me-2"></i>Status</th>
-                            <th><i class="fas fa-tools me-2"></i>Actions</th>
+                            <th>Customer</th>
+                            <th>Contact</th>
+                            <th>Services</th>
+                            <th>Vehicle</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="bookingsTableBody">
                         {% for prebook in prebookings %}
-                        <tr data-booking-id="{{ prebook._id }}">
+                        <tr data-booking-id="{{ prebook._id }}" data-status="{{ prebook.status }}">
                             <td>
                                 <div class="fw-bold">{{ prebook.name }}</div>
                                 <small class="text-muted">{{ prebook.email }}</small>
@@ -494,26 +486,33 @@
                                 <small class="text-muted">{{ prebook.area }}</small>
                             </td>
                             <td>
-                                {% for service in prebook.services %}
-                                    <span class="badge bg-primary me-1 mb-1">{{ service }}</span>
-                                {% endfor %}
+                                {% if prebook.services %}
+                                    {% for service in prebook.services %}
+                                        {% if service is mapping %}
+                                            <span class="badge bg-primary me-1 mb-1">{{ service.name }}</span>
+                                        {% else %}
+                                            <span class="badge bg-primary me-1 mb-1">{{ service }}</span>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
                             </td>
                             <td>
                                 <small>
-                                    <div class="fw-bold">{{ prebook.vehicle_type }} {{ prebook.vehicle_details }}{% if prebook.vehicle_number %} {{ prebook.vehicle_number }}{% endif %}</div>
+                                    <div>{{ prebook.vehicle_type }} {{ prebook.vehicle_details }}</div>
+                                    {% if prebook.vehicle_number %}
+                                        <div class="text-muted">{{ prebook.vehicle_number }}</div>
+                                    {% endif %}
                                 </small>
                             </td>
                             <td>
-                                <small>{{ prebook.created_at.strftime('%d/%m/%Y %H:%M') if prebook.created_at else 'N/A' }}</small>
-                            </td>
-                            <td>
-                                <small>{{ prebook.completed_at.strftime('%d/%m/%Y %H:%M') if prebook.completed_at else '-' }}</small>
+                                <small>{{ prebook.preferred_date if prebook.preferred_date else 'N/A' }}</small>
                             </td>
                             <td>
                                 <div id="amount-display-{{ prebook._id }}">
                                     {% if prebook.total_amount %}
-                                        <span class="amount-display">₹{{ prebook.total_amount }}</span>
-                                        <small class="text-muted d-block">(Service: ₹{{ prebook.service_amount|default(0) }})</small>
+                                        <span class="fw-bold text-success">₹{{ prebook.total_amount }}</span>
                                     {% else %}
                                         <span class="text-muted">Not set</span>
                                     {% endif %}
@@ -521,29 +520,29 @@
                             </td>
                             <td>
                                 {% if prebook.status == 'completed' %}
-                                    <span class="badge bg-success"><i class="fas fa-check me-1"></i>Completed</span>
+                                    <span class="badge bg-success">Completed</span>
                                 {% elif prebook.status == 'rejected' %}
-                                    <span class="badge bg-danger"><i class="fas fa-times me-1"></i>Rejected</span>
+                                    <span class="badge bg-danger">Rejected</span>
                                 {% elif prebook.status == 'cancelled' %}
-                                    <span class="badge bg-secondary"><i class="fas fa-ban me-1"></i>Cancelled</span>
+                                    <span class="badge bg-secondary">Cancelled</span>
                                 {% else %}
-                                    <span class="badge bg-warning text-dark"><i class="fas fa-clock me-1"></i>Pending</span>
+                                    <span class="badge bg-warning text-dark">Pending</span>
                                 {% endif %}
                             </td>
                             <td>
-                                <div class="btn-group-vertical" role="group">
-                                    {% if prebook.status != 'completed' and prebook.status != 'rejected' %}
-                                        <button class="btn btn-primary btn-sm mb-1" onclick="showAmountModal('{{ prebook._id }}', '{{ prebook.name }}')">
+                                <div class="action-buttons">
+                                    {% if prebook.status == 'pending' %}
+                                        <button class="btn btn-primary btn-sm" onclick="showAmountModal('{{ prebook._id }}', '{{ prebook.name }}')">
                                             <i class="fas fa-rupee-sign me-1"></i>Set Amount
                                         </button>
-                                        <button class="btn btn-success btn-sm mb-1" onclick="completeWithAmount('{{ prebook._id }}')">
+                                        <button class="btn btn-success btn-sm" onclick="completeWithAmount('{{ prebook._id }}')">
                                             <i class="fas fa-check me-1"></i>Complete
                                         </button>
-                                        <button class="btn btn-danger btn-sm mb-1" onclick="rejectBooking('{{ prebook.booking_id }}')">
+                                        <button class="btn btn-danger btn-sm" onclick="rejectBooking('{{ prebook.booking_id }}')">
                                             <i class="fas fa-times-circle me-1"></i>Reject
                                         </button>
                                     {% endif %}
-                                    <a href="/receipt/{{ prebook.booking_id }}" class="btn btn-info btn-sm mb-1">
+                                    <a href="/receipt/{{ prebook.booking_id }}" class="btn btn-info btn-sm">
                                         <i class="fas fa-receipt me-1"></i>Receipt
                                     </a>
                                     <button class="btn btn-danger btn-sm" onclick="deleteItem('prebook', '{{ prebook._id }}')">
@@ -570,14 +569,13 @@
 
         <h3 class="section-title animate-in mt-5"><i class="fas fa-star me-2"></i>Customer Ratings & Reviews</h3>
 
-        <!-- Search for Ratings -->
-        <div class="search-filter-card animate-in">
+        <div class="filter-card animate-in">
             <div class="row g-3">
                 <div class="col-lg-6">
-                    <input type="text" id="ratingSearchInput" class="form-control search-input" placeholder="Search reviews by customer name, email, or service...">
+                    <input type="text" id="ratingSearchInput" class="form-control filter-input" placeholder="🔍 Search reviews by customer name, email, or service...">
                 </div>
                 <div class="col-lg-3">
-                    <select id="ratingFilter" class="form-select search-input">
+                    <select id="ratingFilter" class="form-select filter-select">
                         <option value="">All Ratings</option>
                         <option value="5">5 Stars</option>
                         <option value="4">4 Stars</option>
@@ -587,13 +585,13 @@
                     </select>
                 </div>
                 <div class="col-lg-3">
-                    <button class="btn btn-primary filter-btn w-100" onclick="resetRatingFilters()">
+                    <button class="btn btn-secondary w-100" onclick="resetRatingFilters()">
                         <i class="fas fa-redo me-2"></i>Reset
                     </button>
                 </div>
             </div>
             <div class="mt-3">
-                <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Found: <strong id="ratingResultCount">0</strong> review(s)</small>
+                <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Found: <strong id="ratingResultCount">{{ ratings|length }}</strong> review(s)</small>
             </div>
         </div>
 
@@ -603,13 +601,13 @@
                 <table class="table table-hover align-middle" id="ratingsTable">
                     <thead>
                         <tr>
-                            <th><i class="fas fa-user me-2"></i>Customer</th>
-                            <th><i class="fas fa-cog me-2"></i>Service</th>
-                            <th><i class="fas fa-star me-2"></i>Rating</th>
-                            <th><i class="fas fa-comment me-2"></i>Review</th>
-                            <th><i class="fas fa-images me-2"></i>Photos</th>
-                            <th><i class="fas fa-calendar me-2"></i>Date</th>
-                            <th><i class="fas fa-tools me-2"></i>Actions</th>
+                            <th>Customer</th>
+                            <th>Service</th>
+                            <th>Rating</th>
+                            <th>Review</th>
+                            <th>Photos</th>
+                            <th>Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="ratingsTableBody">
@@ -642,10 +640,10 @@
                             <td>
                                 {% if rating.photo_urls and rating.photo_urls|length > 0 %}
                                     <button class="btn btn-sm btn-outline-primary" data-rating-id="{{ rating._id }}" onclick="showRatingImages(this)">
-                                        <i class="fas fa-images me-1"></i>{{ rating.photo_urls|length }} photo{{ 's' if rating.photo_urls|length > 1 else '' }}
+                                        <i class="fas fa-images me-1"></i>{{ rating.photo_urls|length }}
                                     </button>
                                 {% else %}
-                                    <span class="text-muted">No photos</span>
+                                    <span class="text-muted">-</span>
                                 {% endif %}
                             </td>
                             <td><small>{{ rating.created_at.strftime('%d/%m/%Y') if rating.created_at else 'N/A' }}</small></td>
@@ -677,7 +675,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title"><i class="fas fa-rupee-sign me-2"></i>Set Individual Service Amounts</h5>
+                    <h5 class="modal-title"><i class="fas fa-rupee-sign me-2"></i>Set Service Amounts</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -720,14 +718,13 @@
         </div>
     </div>
 
-    <footer class="footer mt-5" style="background: rgba(33, 37, 41, 0.95); color: white; padding: 2rem 0; backdrop-filter: blur(10px);">
+    <footer class="mt-5" style="background: rgba(33, 37, 41, 0.95); color: white; padding: 2rem 0; backdrop-filter: blur(10px);">
         <div class="container text-center">
             <p class="mb-1">© 2025 Annapoorneshwari Tyre & Painting Works. All rights reserved.</p>
-            <small class="text-muted">Admin Panel v3.0 | Enhanced Edition</small>
+            <small class="text-muted">Admin Panel - Enhanced Edition</small>
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
@@ -737,85 +734,53 @@
         window.ratingPhotos['{{ rating._id }}'] = {{ rating.photo_urls|default([])|tojson }};
         {% endfor %}
 
-        // Chart initialization
-        const completedCount = {{ completed_bookings|default(0) }};
-        const pendingCount = {{ pending_bookings|default(0) }};
-        const rejectedCount = {{ rejected_bookings|default(0) }};
-
-        const ctx = document.getElementById('bookingStatusChart').getContext('2d');
-        const bookingStatusChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Completed', 'Pending', 'Rejected'],
-                datasets: [{
-                    label: 'Bookings',
-                    data: [completedCount, pendingCount, rejectedCount],
-                    backgroundColor: [
-                        'rgba(25, 135, 84, 0.8)',
-                        'rgba(255, 193, 7, 0.8)',
-                        'rgba(220, 53, 69, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgb(25, 135, 84)',
-                        'rgb(255, 193, 7)',
-                        'rgb(220, 53, 69)'
-                    ],
-                    borderWidth: 2,
-                    borderRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        padding: 12,
-                        titleFont: { size: 14, weight: 'bold' },
-                        bodyFont: { size: 13 }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { 
-                            precision: 0,
-                            font: { size: 12 }
-                        },
-                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 12, weight: 'bold' } }
-                    }
-                }
-            }
-        });
-
-        // Search and Filter Functions for Bookings
+        // Booking Filter Functions
         const searchInput = document.getElementById('searchInput');
         const statusFilter = document.getElementById('statusFilter');
         const serviceFilter = document.getElementById('serviceFilter');
+        const dateFromFilter = document.getElementById('dateFromFilter');
+        const dateToFilter = document.getElementById('dateToFilter');
         const bookingsTableBody = document.getElementById('bookingsTableBody');
         const noResults = document.getElementById('noResults');
         const resultCount = document.getElementById('resultCount');
 
-        function filterBookings() {
+        function applyFilters() {
             const searchTerm = searchInput.value.toLowerCase();
             const selectedStatus = statusFilter.value.toLowerCase();
             const selectedService = serviceFilter.value.toLowerCase();
+            const dateFrom = dateFromFilter.value;
+            const dateTo = dateToFilter.value;
             
             const rows = bookingsTableBody.querySelectorAll('tr');
             let visibleCount = 0;
 
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
-                const matchesSearch = text.includes(searchTerm);
+                const rowDate = row.querySelector('td:nth-child(5) small').textContent.trim();
+                
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
                 const matchesStatus = !selectedStatus || text.includes(selectedStatus);
                 const matchesService = !selectedService || text.includes(selectedService);
+                
+                let matchesDateRange = true;
+                if (dateFrom || dateTo) {
+                    const rowDateParts = rowDate.split('/');
+                    if (rowDateParts.length === 3) {
+                        const rowDateObj = new Date(rowDateParts[2], rowDateParts[1] - 1, rowDateParts[0]);
+                        
+                        if (dateFrom) {
+                            const fromDateObj = new Date(dateFrom);
+                            if (rowDateObj < fromDateObj) matchesDateRange = false;
+                        }
+                        
+                        if (dateTo) {
+                            const toDateObj = new Date(dateTo);
+                            if (rowDateObj > toDateObj) matchesDateRange = false;
+                        }
+                    }
+                }
 
-                if (matchesSearch && matchesStatus && matchesService) {
+                if (matchesSearch && matchesStatus && matchesService && matchesDateRange) {
                     row.style.display = '';
                     visibleCount++;
                 } else {
@@ -838,18 +803,20 @@
             searchInput.value = '';
             statusFilter.value = '';
             serviceFilter.value = '';
-            filterBookings();
+            dateFromFilter.value = '';
+            dateToFilter.value = '';
+            applyFilters();
         }
 
         if (searchInput) {
-            searchInput.addEventListener('input', filterBookings);
-            statusFilter.addEventListener('change', filterBookings);
-            serviceFilter.addEventListener('change', filterBookings);
-            // Initial count
-            filterBookings();
+            searchInput.addEventListener('input', applyFilters);
+            statusFilter.addEventListener('change', applyFilters);
+            serviceFilter.addEventListener('change', applyFilters);
+            dateFromFilter.addEventListener('change', applyFilters);
+            dateToFilter.addEventListener('change', applyFilters);
         }
 
-        // Search and Filter Functions for Ratings
+        // Rating Filter Functions
         const ratingSearchInput = document.getElementById('ratingSearchInput');
         const ratingFilter = document.getElementById('ratingFilter');
         const ratingsTableBody = document.getElementById('ratingsTableBody');
@@ -865,7 +832,7 @@
 
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
-                const matchesSearch = text.includes(searchTerm);
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
                 const ratingStars = row.querySelector('.fw-bold').textContent;
                 const matchesRating = !selectedRating || ratingStars.includes(selectedRating + '/5');
 
@@ -897,8 +864,6 @@
         if (ratingSearchInput) {
             ratingSearchInput.addEventListener('input', filterRatings);
             ratingFilter.addEventListener('change', filterRatings);
-            // Initial count
-            filterRatings();
         }
 
         // Modal Functions
@@ -988,8 +953,7 @@
                     alert('✅ Service amounts updated successfully!\nTotal: ₹' + data.total_amount);
                     const amountDisplay = document.getElementById('amount-display-' + bookingId);
                     if (amountDisplay) {
-                        const serviceBreakdown = updatedServices.map(s => s.name + ': ₹' + s.amount).join(', ');
-                        amountDisplay.innerHTML = '<span class="amount-display">₹' + data.total_amount + '</span><small class="text-muted d-block">' + serviceBreakdown + '</small>';
+                        amountDisplay.innerHTML = '<span class="fw-bold text-success">₹' + data.total_amount + '</span>';
                     }
                     bootstrap.Modal.getInstance(document.getElementById('amountModal')).hide();
                 } else {
@@ -1004,7 +968,7 @@
             const amountDisplay = document.getElementById('amount-display-' + bookingId);
             let totalAmount = 0;
             if (amountDisplay) {
-                const amountText = amountDisplay.querySelector('.amount-display');
+                const amountText = amountDisplay.querySelector('.fw-bold');
                 if (amountText) {
                     const amountMatch = amountText.textContent.match(/₹(\d+)/);
                     if (amountMatch) {
@@ -1110,22 +1074,6 @@
                 alert('❌ Error loading images: ' + error.message);
             }
         }
-
-        // Add smooth scroll behavior
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Loading animation on page transitions
-        window.addEventListener('beforeunload', function() {
-            document.body.style.opacity = '0.5';
-        });
     </script>
 </body>
 </html>

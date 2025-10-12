@@ -18,11 +18,14 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 # Validate required environment variables
-REQUIRED_ENV_VARS = ['MONGODB_URI', 'SECRET_KEY', 'EMAIL_USER', 'EMAIL_PASS']
-for var in REQUIRED_ENV_VARS:
-    if not os.environ.get(var):
-        print(f"ERROR: Missing required environment variable: {var}")
-        raise ValueError(f"Missing required environment variable: {var}")
+REQUIRED_ENV_VARS = ['SECRET_KEY', 'EMAIL_USER', 'EMAIL_PASS']
+missing_vars = [var for var in REQUIRED_ENV_VARS if not os.environ.get(var)]
+if missing_vars:
+    print(f"⚠️  WARNING: Missing environment variables: {', '.join(missing_vars)}")
+    print("Please set these in your .env file or deployment environment")
+    # Only raise in production if critical vars missing
+    if os.environ.get('RENDER') and missing_vars:
+        raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
 
 # Create app and set secret key
 app = Flask(__name__)
@@ -256,6 +259,7 @@ def login():
         subject = "Your OTP for Login"
         body = f"Your OTP for login is: {otp}. It will expire in 5 minutes."
 
+        print(f"OTP for {user['email']}: {otp}")  # TEMP: Print OTP for testing
         if not send_email(user['email'], subject, body):
             flash('Failed to send OTP. Please try again.', 'danger')
             return redirect(url_for('login'))
@@ -404,22 +408,110 @@ def user_dashboard():
     user = get_user_by_email(user_email)
     user_photo = user.get('profile_photo') if user else None
 
-    # Fetch bookings linked to this user email and name
+    # Fetch bookings linked to this user email and name with pagination
     try:
-        bookings = list(prebookings_collection.find({
-            "email": user_email,
-            "name": {"$regex": f"^{user_name}$", "$options": "i"}
-        }).sort("created_at", -1))
+        # Get pagination parameters
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
+
+        # Get filter parameters
+        search = request.args.get('search', '').strip()
+        status_filter = request.args.get('status', '').strip()
+        service_filter = request.args.get('service', '').strip()
+        start_date = request.args.get('start_date', '').strip()
+        end_date = request.args.get('end_date', '').strip()
+
+        # Use the new paginated function
+        from db import get_user_bookings_paginated
+        bookings_result = get_user_bookings_paginated(
+            user_email=user_email,
+            user_name=user_name,
+            page=page,
+            per_page=per_page,
+            search=search,
+            status=status_filter,
+            service=service_filter,
+            start_date=start_date,
+            end_date=end_date
+        )
+
+        bookings = bookings_result['bookings']
+
+        # Add unrated_services field to completed bookings (but don't filter them out)
+        for booking in bookings:
+            if booking.get('status') == 'completed':
+                services = booking.get('services', [])
+                unrated_services = []
+                if services:
+                    for service in services:
+                        service_name = service if isinstance(service, str) else service.get('name', '')
+                        if service_name and not check_user_rating_exists_for_booking(booking.get('booking_id'), service_name):
+                            unrated_services.append(service_name)
+                booking['unrated_services'] = unrated_services
+
+        # Use the original pagination from the database query
+        pagination_info = {
+            'total_count': bookings_result['total_count'],
+            'total_pages': bookings_result['total_pages'],
+            'current_page': bookings_result['current_page'],
+            'per_page': bookings_result['per_page'],
+            'has_next': bookings_result['has_next'],
+            'has_prev': bookings_result['has_prev']
+        }
+
     except Exception as e:
         logger.error(f"Error fetching bookings: {e}")
         bookings = []
+        pagination_info = {
+            'total_count': 0,
+            'total_pages': 0,
+            'current_page': 1,
+            'per_page': 10,
+            'has_next': False,
+            'has_prev': False
+        }
 
     # Check if this is an AJAX request for real-time updates
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         try:
+            # Get pagination parameters
+            page = int(request.args.get('page', 1))
+            per_page = int(request.args.get('per_page', 10))
+
+            # Get filter parameters
+            search = request.args.get('search', '').strip()
+            status_filter = request.args.get('status', '').strip()
+            service_filter = request.args.get('service', '').strip()
+            start_date = request.args.get('start_date', '').strip()
+            end_date = request.args.get('end_date', '').strip()
+
+            # Use the new paginated function for AJAX requests too
+            from db import get_user_bookings_paginated
+            bookings_result = get_user_bookings_paginated(
+                user_email=user_email,
+                user_name=user_name,
+                page=page,
+                per_page=per_page,
+                search=search,
+                status=status_filter,
+                service=service_filter,
+                start_date=start_date,
+                end_date=end_date
+            )
+
+            bookings_data = bookings_result['bookings']
+            pagination_info = {
+                'total_count': bookings_result['total_count'],
+                'total_pages': bookings_result['total_pages'],
+                'current_page': bookings_result['current_page'],
+                'per_page': bookings_result['per_page'],
+                'has_next': bookings_result['has_next'],
+                'has_prev': bookings_result['has_prev']
+            }
+
             # FIXED: Convert ObjectIds and datetime objects to strings for JSON serialization
             serialized_bookings = []
-            for booking in bookings:
+            for booking in bookings_data:
                 serialized_booking = {}
                 for key, value in booking.items():
                     if isinstance(value, ObjectId):
@@ -431,6 +523,20 @@ def user_dashboard():
                         serialized_booking[key] = value
                     else:
                         serialized_booking[key] = value
+
+                # Add unrated services for completed bookings
+                if booking.get('status') == 'completed':
+                    services = booking.get('services', [])
+                    unrated_services = []
+                    if services:
+                        for service in services:
+                            service_name = service if isinstance(service, str) else service.get('name', '')
+                            if service_name and not check_user_rating_exists_for_booking(booking.get('booking_id'), service_name):
+                                unrated_services.append(service_name)
+                    serialized_booking['unrated_services'] = unrated_services
+                else:
+                    serialized_booking['unrated_services'] = []
+
                 serialized_bookings.append(serialized_booking)
 
             return jsonify({
@@ -439,7 +545,8 @@ def user_dashboard():
                 'completed_bookings': len([b for b in serialized_bookings if b.get('status') == 'completed']),
                 'pending_bookings': len([b for b in serialized_bookings if b.get('status') == 'pending']),
                 'rejected_bookings': len([b for b in serialized_bookings if b.get('status') == 'rejected']),
-                'bookings': serialized_bookings
+                'bookings': serialized_bookings,
+                'pagination': pagination_info
             })
         except Exception as e:
             logger.error(f"Error serializing bookings for AJAX: {e}")
@@ -1202,6 +1309,7 @@ def service_detail(service_name):
         # Check if current user can rate this service (has completed booking)
         can_rate = False
         bookings = []
+        specific_booking_id = request.args.get('booking_id')
 
         # Only check rating capability if user is logged in
         if 'user_id' in session:
@@ -1216,16 +1324,42 @@ def service_detail(service_name):
                 user_name = session.get('user_name')
 
                 if user_email and user_name:
-                    bookings = list(prebookings_collection.find({
-                        "email": user_email,
-                        "name": user_name,
-                        "status": "completed",
-                        "$or": [
-                            {"services": service_name},  # old format: direct string match
-                            {"services.name": service_name}  # new format: dict with name field
-                        ]
-                    }))
-                    can_rate = len(bookings) > 0
+                    if specific_booking_id:
+                        # Check if this specific booking has the service and is completed and unrated
+                        booking = prebookings_collection.find_one({
+                            "booking_id": specific_booking_id,
+                            "email": user_email,
+                            "name": user_name,
+                            "status": "completed"
+                        })
+                        if booking:
+                            services = booking.get('services', [])
+                            service_found = False
+                            if isinstance(services, list):
+                                for service in services:
+                                    if isinstance(service, dict):
+                                        if service.get('name') == service_name:
+                                            service_found = True
+                                            break
+                                    elif isinstance(service, str):
+                                        if service == service_name:
+                                            service_found = True
+                                            break
+                            if service_found and not check_user_rating_exists_for_booking(specific_booking_id, service_name):
+                                can_rate = True
+                                bookings = [booking]  # Only this booking
+                    else:
+                        # General check for any completed booking with this service
+                        bookings = list(prebookings_collection.find({
+                            "email": user_email,
+                            "name": user_name,
+                            "status": "completed",
+                            "$or": [
+                                {"services": service_name},  # old format: direct string match
+                                {"services.name": service_name}  # new format: dict with name field
+                            ]
+                        }))
+                        can_rate = len(bookings) > 0
 
         return render_template('service_detail.html',
                              service=service,
@@ -1270,6 +1404,15 @@ def health_check():
             "error": str(e)
         }), 503
 
+
+@app.route('/api/services')
+def api_services():
+    try:
+        services = get_services()
+        return jsonify({'services': services})
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'services': []}), 500
 
 @app.route('/api/average-ratings')
 def average_ratings_api():
@@ -1699,4 +1842,4 @@ def login_otp():
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(host='0.0.0.0', port=port, debug=True)

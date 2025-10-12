@@ -13,7 +13,7 @@
       padding-top: 80px;
       min-height: 100vh;
     }
-    
+
     .container { max-width: 1000px; }
 
     .service-header {
@@ -166,6 +166,183 @@
     @media (max-width: 576px) {
       .review-photos img { height: 80px; }
     }
+
+    .rating-form {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .rating-form h3 {
+      color: #333;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .rating-stars {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .rating-stars input[type="radio"] {
+      display: none;
+    }
+
+    .rating-stars label {
+      font-size: 2rem;
+      color: #ddd;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .rating-stars input[type="radio"]:checked ~ label,
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label {
+      color: #ffc107;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .btn-submit {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-submit:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .file-upload {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-upload input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-upload-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      border: 2px dashed #667eea;
+      border-radius: 8px;
+      background: rgba(102, 126, 234, 0.05);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .file-upload-label:hover {
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .file-upload-label i {
+      margin-right: 0.5rem;
+      color: #667eea;
+    }
+
+    .file-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .file-preview img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+    }
+
+    .remove-file {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff4757;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
   </style>
 </head>
 <body>
@@ -173,6 +350,67 @@
     <div class="service-header">
       <h1>{{ service_name }}</h1>
     </div>
+
+    <!-- Rating Form -->
+    {% if can_rate %}
+    <div class="rating-form">
+      <h3><i class="fas fa-star me-2"></i>Rate This Service</h3>
+
+      <form id="ratingForm" enctype="multipart/form-data">
+        <input type="hidden" name="service_name" value="{{ service_name }}">
+        <input type="hidden" name="user_name" value="{{ session.get('user_name', '') }}">
+
+        <div class="form-group">
+          <label for="booking_id">Select Booking</label>
+          <select name="booking_id" id="booking_id" required>
+            <option value="">Choose a booking...</option>
+            {% for booking in bookings %}
+            <option value="{{ booking.booking_id }}">{{ booking.booking_id }} - {{ booking.preferred_date or 'N/A' }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="rating-stars">
+            <input type="radio" id="star5" name="rating" value="5" required>
+            <label for="star5"><i class="fas fa-star"></i></label>
+            <input type="radio" id="star4" name="rating" value="4">
+            <label for="star4"><i class="fas fa-star"></i></label>
+            <input type="radio" id="star3" name="rating" value="3">
+            <label for="star3"><i class="fas fa-star"></i></label>
+            <input type="radio" id="star2" name="rating" value="2">
+            <label for="star2"><i class="fas fa-star"></i></label>
+            <input type="radio" id="star1" name="rating" value="1">
+            <label for="star1"><i class="fas fa-star"></i></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="comment">Comment (Optional)</label>
+          <textarea name="comment" id="comment" rows="4" placeholder="Share your experience..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Upload Photos (Optional)</label>
+          <div class="file-upload">
+            <input type="file" id="photos" name="photos" accept="image/*" multiple>
+            <div class="file-upload-label">
+              <i class="fas fa-camera"></i>
+              <span>Click to select photos (max 5)</span>
+            </div>
+          </div>
+          <div class="file-preview" id="filePreview"></div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <i class="fas fa-paper-plane me-2"></i>Submit Rating
+        </button>
+      </form>
+
+      <div id="alertContainer"></div>
+    </div>
+    {% endif %}
 
     <!-- Display reviews -->
     {% if ratings and ratings|length > 0 %}
@@ -182,7 +420,7 @@
             <span class="review-user"><i class="fas fa-user-circle me-2"></i>{{ review.user_name }}</span>
             <span class="review-date">{{ review.created_at_formatted if review.get('created_at_formatted') else '' }}</span>
           </div>
-          
+
           <div class="review-rating mb-3">
             {% for i in range(1, 6) %}
               {% if i <= review.rating %}
@@ -192,7 +430,7 @@
               {% endif %}
             {% endfor %}
           </div>
-          
+
           {% if review.comment %}
             <div class="review-comment mb-3">
               <i class="fas fa-quote-left text-muted me-2"></i>
@@ -200,7 +438,7 @@
               <i class="fas fa-quote-right text-muted ms-2"></i>
             </div>
           {% endif %}
-          
+
           {% if review.photo_urls and review.photo_urls|length > 0 %}
             <div class="review-photos">
               {% for photo_url in review.photo_urls %}
@@ -240,6 +478,106 @@
       const modal = document.getElementById('imageModal');
       modal.style.display = 'none';
       document.getElementById('modalImage').src = '';
+    }
+
+    // Get URL parameters
+    function getUrlParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Handle booking_id from URL
+    const urlBookingId = getUrlParameter('booking_id');
+    if (urlBookingId) {
+      const bookingSelect = document.getElementById('booking_id');
+      if (bookingSelect) {
+        bookingSelect.value = urlBookingId;
+        bookingSelect.style.display = 'none';
+        const label = bookingSelect.previousElementSibling;
+        if (label) {
+          label.style.display = 'none';
+        }
+      }
+    }
+
+    // File upload preview
+    document.getElementById('photos').addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      const preview = document.getElementById('filePreview');
+      preview.innerHTML = '';
+
+      files.forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const div = document.createElement('div');
+            div.style.position = 'relative';
+            div.innerHTML = `
+              <img src="${e.target.result}" alt="Preview ${index + 1}">
+              <span class="remove-file" onclick="removeFile(${index})">&times;</span>
+            `;
+            preview.appendChild(div);
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    });
+
+    function removeFile(index) {
+      const input = document.getElementById('photos');
+      const files = Array.from(input.files);
+      files.splice(index, 1);
+
+      // Create new FileList
+      const dt = new DataTransfer();
+      files.forEach(file => dt.items.add(file));
+      input.files = dt.files;
+
+      // Update preview
+      input.dispatchEvent(new Event('change'));
+    }
+
+    // Form submission
+    document.getElementById('ratingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const submitBtn = document.getElementById('submitBtn');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
+
+      const formData = new FormData(this);
+
+      try {
+        const response = await fetch('/api/rate-with-images', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showAlert('success', result.message);
+          // Reset form
+          this.reset();
+          document.getElementById('filePreview').innerHTML = '';
+          // Reload page to show new rating
+          setTimeout(() => location.reload(), 2000);
+        } else {
+          showAlert('error', result.error);
+        }
+      } catch (error) {
+        showAlert('error', 'Network error. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+    });
+
+    function showAlert(type, message) {
+      const container = document.getElementById('alertContainer');
+      container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+      setTimeout(() => container.innerHTML = '', 5000);
     }
   </script>
 

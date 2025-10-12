@@ -12,10 +12,8 @@ from reportlab.lib import colors
 from reportlab.lib.units import inch
 import io
 
-# MongoDB connection
-uri = os.environ.get("MONGO_URI")
-if not uri:
-    raise ValueError("MONGO_URI environment variable is not set. Please set it in your deployment environment.")
+# MongoDB connection - FIXED: Try both MONGODB_URI and MONGO_URI, fallback to local default
+uri = os.environ.get("MONGODB_URI") or os.environ.get("MONGO_URI") or "mongodb://localhost:27017/annapoorneshwari_tyre_works"
 client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 
 # Access DB & collections
@@ -109,6 +107,20 @@ def create_indexes():
                 print("✅ Created email + status index")
             else:
                 print("ℹ️  email + status index already exists")
+
+            # PERFORMANCE FIX: Compound index for user dashboard queries (email, name, created_at)
+            if not any('email' in str(idx.get('key', [])) and 'name' in str(idx.get('key', [])) and 'created_at' in str(idx.get('key', [])) for idx in prebookings_existing.values()):
+                prebookings_collection.create_index([("email", 1), ("name", 1), ("created_at", -1)])
+                print("✅ Created email + name + created_at compound index for dashboard performance")
+            else:
+                print("ℹ️  email + name + created_at compound index already exists")
+
+            # PERFORMANCE FIX: Index for date range queries
+            if not any('created_at' in str(idx.get('key', [])) for idx in prebookings_existing.values()):
+                prebookings_collection.create_index([("created_at", -1)])
+                print("✅ Created created_at index for date filtering")
+            else:
+                print("ℹ️  created_at index already exists")
 
             # booking_id unique index
             if not any('booking_id' in str(idx.get('key', [])) for idx in prebookings_existing.values()):
@@ -432,6 +444,49 @@ def delete_rating_by_id(rating_id):
         return 0
 
 
+def get_unrated_services_for_booking(booking_id, user_email):
+    """
+    Get list of services that haven't been rated for a specific booking
+
+    Args:
+        booking_id: The booking ID
+        user_email: User's email for verification
+
+    Returns:
+        List of unrated service names
+    """
+    try:
+        # Get the booking
+        booking = prebookings_collection.find_one({
+            "booking_id": booking_id,
+            "email": user_email,
+            "status": "completed"
+        })
+
+        if not booking:
+            return []
+
+        services = booking.get('services', [])
+        unrated_services = []
+
+        # Extract service names
+        for service in services:
+            if isinstance(service, dict):
+                service_name = service.get('name', '')
+            else:
+                service_name = service
+
+            # Check if rating exists
+            if service_name and not check_user_rating_exists_for_booking(booking_id, service_name):
+                unrated_services.append(service_name)
+
+        return unrated_services
+
+    except Exception as e:
+        print(f"Error getting unrated services: {e}")
+        return []
+
+
 def get_user_completed_bookings(user_email, user_name):
     """Get all completed bookings for a user"""
     try:
@@ -564,6 +619,94 @@ def get_prebookings(filter_criteria=None, search=None, status=None, service=None
     except Exception as e:
         print(f"Error getting prebookings: {e}")
         return []
+
+
+def get_user_bookings_paginated(user_email, user_name, page=1, per_page=10, search=None, status=None, service=None, start_date=None, end_date=None):
+    """
+    PERFORMANCE OPTIMIZED: Get user bookings with pagination and filtering at database level
+    Uses compound index (email, name, created_at) for optimal performance
+    """
+    try:
+        # Base query for user bookings
+        query = {
+            "email": user_email,
+            "name": {"$regex": f"^{user_name}$", "$options": "i"}
+        }
+
+        # Text search across booking_id and services
+        if search:
+            search_regex = {"$regex": search, "$options": "i"}
+            query["$or"] = [
+                {"booking_id": search_regex},
+                {"services": {"$in": [search_regex]}},  # Old format: direct string match
+                {"services.name": search_regex}  # New format: dict with name field
+            ]
+
+        # Status filter
+        if status and status.lower() != 'all':
+            query["status"] = status.lower()
+
+        # Service filter
+        if service and service != 'All':
+            # Handle both old format (list of strings) and new format (list of dicts)
+            query["$or"] = query.get("$or", []) + [
+                {"services": {"$in": [service]}},  # Old format: direct string match
+                {"services.name": service}  # New format: dict with name field
+            ]
+
+        # Date range filter (on preferred_date)
+        if start_date or end_date:
+            date_filter = {}
+            if start_date:
+                try:
+                    date_filter["$gte"] = start_date
+                except ValueError:
+                    pass
+            if end_date:
+                try:
+                    date_filter["$lte"] = end_date
+                except ValueError:
+                    pass
+            if date_filter:
+                query["preferred_date"] = date_filter
+
+        # Calculate skip and limit for pagination
+        skip = (page - 1) * per_page
+        limit = per_page
+
+        # Get total count for pagination info
+        total_count = prebookings_collection.count_documents(query)
+
+        # Get paginated results
+        bookings = list(prebookings_collection.find(query)
+                       .sort("created_at", -1)
+                       .skip(skip)
+                       .limit(limit))
+
+        # Calculate pagination info
+        total_pages = (total_count + per_page - 1) // per_page  # Ceiling division
+
+        return {
+            'bookings': bookings,
+            'total_count': total_count,
+            'total_pages': total_pages,
+            'current_page': page,
+            'per_page': per_page,
+            'has_next': page < total_pages,
+            'has_prev': page > 1
+        }
+
+    except Exception as e:
+        print(f"Error getting user bookings paginated: {e}")
+        return {
+            'bookings': [],
+            'total_count': 0,
+            'total_pages': 0,
+            'current_page': 1,
+            'per_page': per_page,
+            'has_next': False,
+            'has_prev': False
+        }
 
 
 def get_prebooking_by_id(identifier):
