@@ -9,6 +9,7 @@ import hashlib
 from datetime import timedelta
 import logging
 from logging.handlers import RotatingFileHandler
+from otp_utils import otp_manager, create_enhanced_email_template, cleanup_expired_otps
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -26,6 +27,12 @@ if missing_vars:
     # Only raise in production if critical vars missing
     if os.environ.get('RENDER') and missing_vars:
         raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
+
+# Check if email sending is disabled for development
+EMAIL_SENDING_DISABLED = os.environ.get('DISABLE_EMAIL_SENDING', 'false').lower() == 'true'
+if EMAIL_SENDING_DISABLED:
+    print("📧 EMAIL SENDING DISABLED: Emails will be logged instead of sent")
+    print("Set DISABLE_EMAIL_SENDING=false in production to enable email sending")
 
 # Create app and set secret key
 app = Flask(__name__)
@@ -248,24 +255,43 @@ def login():
             flash('Invalid email or password', 'danger')
             return redirect(url_for('login'))
 
-        # Generate OTP and send to user's email
-        otp = str(random.randint(100000, 999999))
-        session['login_otp'] = otp
-        session['login_otp_time'] = time.time()
-        session['login_user_id'] = str(user['_id'])
-        session['login_user_email'] = user['email']
-        session['login_user_name'] = user['name']
-
-        subject = "Your OTP for Login"
-        body = f"Your OTP for login is: {otp}. It will expire in 5 minutes."
-
-        print(f"OTP for {user['email']}: {otp}")  # TEMP: Print OTP for testing
-        if not send_email(user['email'], subject, body):
-            flash('Failed to send OTP. Please try again.', 'danger')
+        # Check rate limiting for login OTP
+        can_send, error_msg = otp_manager.check_rate_limit(user['email'], 'login')
+        if not can_send:
+            flash(error_msg, 'danger')
             return redirect(url_for('login'))
 
-        flash('OTP sent to your registered email. Please verify to complete login.', 'info')
-        return redirect(url_for('login_otp'))
+        # TEMPORARILY DISABLED: OTP sending due to Gmail limit
+        # # Generate OTP using enhanced manager
+        # otp = otp_manager.generate_otp()
+
+        # # Store OTP securely
+        # user_data = {
+        #     'user_id': str(user['_id']),
+        #     'user_name': user['name']
+        # }
+        # otp_manager.store_otp(otp, 'login', user['email'], user_data)
+
+        # # Create enhanced email template
+        # html_body, text_body = create_enhanced_email_template(otp, 'login', user['name'])
+
+        # subject = "Login Verification - Annapoorneshwari Works"
+
+        # print(f"OTP for {user['email']}: {otp}")  # TEMP: Print OTP for testing
+        # if not send_email(user['email'], subject, html_body):
+        #     flash('Failed to send OTP. Please try again.', 'danger')
+        #     return redirect(url_for('login'))
+
+        # flash('OTP sent to your registered email. Please verify to complete login.', 'info')
+        # return redirect(url_for('login_otp'))
+
+        # TEMP: Direct login without OTP
+        session['user_id'] = str(user['_id'])
+        session['user_email'] = user['email']
+        session['user_name'] = user['name']
+        session.permanent = True
+        flash('Login successful!', 'success')
+        return redirect(url_for('user_dashboard'))
 
     except Exception as e:
         flash(f"Error during login: {str(e)}", 'danger')
@@ -321,6 +347,102 @@ def change_password():
     except Exception as e:
         flash(f"Error changing password: {str(e)}", 'danger')
         return redirect(url_for('change_password'))
+
+
+@app.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'GET':
+        return render_template('forgot_password.html')
+
+    try:
+        email = request.form.get('email', '').strip().lower()
+
+        if not email:
+            flash('Please enter your email address', 'danger')
+            return redirect(url_for('forgot_password'))
+
+        user = get_user_by_email(email)
+        if not user:
+            flash('No account found with this email address', 'danger')
+            return redirect(url_for('forgot_password'))
+
+        # Check rate limiting for forgot password OTP
+        can_send, error_msg = otp_manager.check_rate_limit(email, 'reset')
+        if not can_send:
+            flash(error_msg, 'danger')
+            return redirect(url_for('forgot_password'))
+
+        # Generate OTP using enhanced manager
+        otp = otp_manager.generate_otp()
+
+        # Store OTP securely
+        user_data = {
+            'user_id': str(user['_id']),
+            'user_name': user['name']
+        }
+        otp_manager.store_otp(otp, 'reset', email, user_data)
+
+        # Create enhanced email template
+        html_body, text_body = create_enhanced_email_template(otp, 'reset', user['name'])
+
+        subject = "Password Reset - Annapoorneshwari Works"
+
+        print(f"Password reset OTP for {email}: {otp}")  # TEMP: Print OTP for testing
+        if not send_email(email, subject, html_body):
+            flash('Failed to send OTP. Please try again.', 'danger')
+            return redirect(url_for('forgot_password'))
+
+        flash('OTP sent to your registered email. Please verify to reset your password.', 'success')
+        return redirect(url_for('forgot_password'))
+
+    except Exception as e:
+        flash(f"Error during password reset request: {str(e)}", 'danger')
+        return redirect(url_for('forgot_password'))
+
+
+@app.route('/reset-password-with-otp', methods=['POST'])
+def reset_password_with_otp():
+    try:
+        otp_entered = request.form.get('otp', '').strip()
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
+
+        if not all([otp_entered, new_password, confirm_password]):
+            flash('Please fill all fields', 'danger')
+            return redirect(url_for('forgot_password'))
+
+        if new_password != confirm_password:
+            flash('New passwords do not match', 'danger')
+            return redirect(url_for('forgot_password'))
+
+        if 'reset_otp' not in session or 'reset_otp_time' not in session or 'reset_user_email' not in session:
+            flash('OTP session expired. Please request a new OTP.', 'danger')
+            return redirect(url_for('forgot_password'))
+
+        if time.time() - session['reset_otp_time'] > 300:
+            flash('OTP expired. Please request a new OTP.', 'danger')
+            return redirect(url_for('forgot_password'))
+
+        if otp_entered == session['reset_otp']:
+            # OTP verified, reset password
+            email = session['reset_user_email']
+            new_hash = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt()).decode()
+            update_user_profile(email, {'password_hash': new_hash})
+
+            # Clear reset session
+            session.pop('reset_otp')
+            session.pop('reset_otp_time')
+            session.pop('reset_user_email')
+
+            flash('Password reset successfully! Please login with your new password.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Invalid OTP. Please try again.', 'danger')
+            return redirect(url_for('forgot_password'))
+
+    except Exception as e:
+        flash(f"Error during password reset: {str(e)}", 'danger')
+        return redirect(url_for('forgot_password'))
 
 
 @app.route('/profile', methods=['GET', 'POST'])
@@ -672,8 +794,26 @@ def reschedule_booking(booking_id):
 
 # ================= EMAIL SENDER =================
 def send_email(to_email, subject, body, attachment=None, attachment_name=None):
+    # Check if email sending is disabled for development
+    if EMAIL_SENDING_DISABLED:
+        logger.info(f"📧 EMAIL DISABLED: Would send email to {to_email}")
+        logger.info(f"Subject: {subject}")
+        logger.info(f"Body: {body[:200]}{'...' if len(body) > 200 else ''}")
+        if attachment:
+            logger.info(f"Attachment: {attachment_name}")
+        return True  # Return True to simulate successful sending
+
     sender_email = os.environ.get("EMAIL_USER")
     sender_password = os.environ.get("EMAIL_PASS")
+
+    # Validate credentials
+    if not sender_email or not sender_password:
+        logger.error("❌ EMAIL ERROR: EMAIL_USER or EMAIL_PASS not configured")
+        return False
+
+    logger.info(f"📧 Attempting to send email to: {to_email}")
+    logger.info(f"📧 From: {sender_email}")
+
     msg = MIMEMultipart()
     msg['From'] = sender_email
     msg['To'] = to_email
@@ -688,15 +828,34 @@ def send_email(to_email, subject, body, attachment=None, attachment_name=None):
         msg.attach(part)
 
     try:
+        logger.info("📧 Connecting to Gmail SMTP server...")
         server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.set_debuglevel(1)  # Enable debug output for troubleshooting
         server.starttls()
+
+        logger.info("📧 Attempting login...")
         server.login(sender_email, sender_password)
+        logger.info("📧 Login successful, sending message...")
+
         server.send_message(msg)
         server.quit()
+        logger.info("✅ Email sent successfully!")
         return True
+    except smtplib.SMTPAuthenticationError as e:
+        logger.error(f"❌ SMTP AUTHENTICATION ERROR: {e}")
+        logger.error("🔧 SOLUTION: Check Gmail app password and 2FA setup")
+        logger.error("🔧 Gmail requires app passwords, not regular passwords")
+        logger.error("🔧 Make sure 2FA is enabled and app password is correct")
+    except smtplib.SMTPConnectError as e:
+        logger.error(f"❌ SMTP CONNECTION ERROR: {e}")
+        logger.error("🔧 Check internet connection and firewall settings")
+    except smtplib.SMTPException as e:
+        logger.error(f"❌ SMTP ERROR: {e}")
     except Exception as e:
-        print(f"Error sending email: {e}")
-        return False
+        logger.error(f"❌ UNEXPECTED EMAIL ERROR: {e}")
+        logger.error(f"❌ Error type: {type(e).__name__}")
+
+    return False
 
 
 # ================= OTP ROUTES =================

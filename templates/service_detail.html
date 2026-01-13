@@ -47,6 +47,7 @@
       transition: transform 0.3s ease;
       overflow: hidden;
       position: relative;
+      border-left: 4px solid #667eea;
     }
 
     .review-card:hover {
@@ -57,54 +58,76 @@
     .review-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
       flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .review-user-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
     .review-user {
-      font-weight: 600;
-      font-size: 1.1rem;
+      font-weight: 700;
+      font-size: 1rem;
       color: #333;
+      display: flex;
+      align-items: center;
     }
 
     .review-date {
-      color: #666;
-      font-size: 0.9rem;
+      color: #888;
+      font-size: 0.85rem;
+      margin-left: 1.5rem;
     }
 
     .review-rating {
       color: #ffc107;
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    .review-rating i {
+      margin-right: 2px;
     }
 
     .review-comment {
       color: #555;
-      line-height: 1.6;
-      margin-bottom: 1rem;
+      line-height: 1.7;
+      margin: 0.75rem 0;
+      font-size: 0.95rem;
     }
 
     .review-photos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
       margin-top: 1rem;
     }
 
     .review-photos img {
       width: 100%;
-      height: 150px;
+      height: 120px;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border: 2px solid #e0e0e0;
+      border: 1px solid #e0e0e0;
     }
 
     .review-photos img:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      transform: scale(1.08);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .review-divider {
+      height: 1px;
+      background: #e0e0e0;
+      margin: 0.75rem 0;
     }
 
     .no-reviews {
@@ -161,10 +184,9 @@
     }
 
     @media (max-width: 768px) {
+      .review-photos { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
       .review-photos img { height: 100px; }
-    }
-    @media (max-width: 576px) {
-      .review-photos img { height: 80px; }
+      .review-header { gap: 0.5rem; }
     }
 
     .rating-form {
@@ -343,6 +365,63 @@
       color: #721c24;
       border: 1px solid #f5c6cb;
     }
+
+    .rating-summary {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .rating-summary h3 {
+      color: #333;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .rating-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .rating-bar-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .star-label {
+      min-width: 100px;
+      color: #ffc107;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .bar-container {
+      flex: 1;
+      height: 8px;
+      background: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .count-label {
+      min-width: 30px;
+      text-align: right;
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -351,8 +430,16 @@
       <h1>{{ service_name }}</h1>
     </div>
 
-    <!-- Rating Form -->
-    {% if can_rate %}
+    <!-- Rating Form - Only show to logged-in users who haven't rated yet -->
+    {% if can_rate and session.get('user_name') %}
+      {% set user_has_rated = false %}
+      {% for review in ratings %}
+        {% if review.user_name == session.get('user_name') and review.service_name == service_name %}
+          {% set user_has_rated = true %}
+        {% endif %}
+      {% endfor %}
+      
+      {% if not user_has_rated %}
     <div class="rating-form">
       <h3><i class="fas fa-star me-2"></i>Rate This Service</h3>
 
@@ -411,35 +498,74 @@
       <div id="alertContainer"></div>
     </div>
     {% endif %}
+    {% endif %}
 
-    <!-- Display reviews -->
+    <!-- Rating Summary Section (1-5 stars) -->
     {% if ratings and ratings|length > 0 %}
+    <div class="rating-summary">
+      <h3 class="mb-4"><i class="fas fa-chart-bar me-2"></i>Rating Distribution</h3>
+      <div class="rating-bars">
+        {% set star_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0} %}
+        {% for review in ratings %}
+          {% if not review.comment and (not review.photo_urls or review.photo_urls|length == 0) %}
+            {% set _ = star_counts.update({review.rating: star_counts[review.rating] + 1}) %}
+          {% endif %}
+        {% endfor %}
+        
+        {% for stars in range(5, 0, -1) %}
+          {% set count = star_counts[stars] %}
+          {% if count > 0 %}
+          <div class="rating-bar-item">
+            <div class="star-label">
+              {% for i in range(1, stars + 1) %}<i class="fas fa-star"></i>{% endfor %}
+            </div>
+            <div class="bar-container">
+              <div class="bar-fill" style="width: {{ (count / ratings|length * 100)|int }}%"></div>
+            </div>
+            <span class="count-label">{{ count }}</span>
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Display reviews - Flipkart Style -->
+    {% if ratings and ratings|length > 0 %}
+      <h3 class="mt-5 mb-4"><i class="fas fa-comments me-2"></i>Customer Reviews</h3>
       {% for review in ratings %}
+        {% set has_comment = review.comment and review.comment|trim != '' %}
+        {% set has_photos = review.photo_urls and review.photo_urls|length > 0 %}
+        
+        {% if has_comment or has_photos %}
         <div class="review-card">
           <div class="review-header">
-            <span class="review-user"><i class="fas fa-user-circle me-2"></i>{{ review.user_name }}</span>
-            <span class="review-date">{{ review.created_at_formatted if review.get('created_at_formatted') else '' }}</span>
+            <div class="review-user-section">
+              <span class="review-user"><i class="fas fa-user-circle me-2"></i>{{ review.user_name }}</span>
+              <span class="review-date">{{ review.created_at_formatted if review.get('created_at_formatted') else '' }}</span>
+            </div>
+            <div class="review-rating">
+              {% for i in range(1, 6) %}
+                {% if i <= review.rating %}
+                  <i class="fas fa-star"></i>
+                {% else %}
+                  <i class="far fa-star"></i>
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
 
-          <div class="review-rating mb-3">
-            {% for i in range(1, 6) %}
-              {% if i <= review.rating %}
-                <i class="fas fa-star"></i>
-              {% else %}
-                <i class="far fa-star"></i>
-              {% endif %}
-            {% endfor %}
-          </div>
-
-          {% if review.comment %}
-            <div class="review-comment mb-3">
-              <i class="fas fa-quote-left text-muted me-2"></i>
+          {% if has_comment %}
+            <div class="review-divider"></div>
+            <div class="review-comment">
               {{ review.comment }}
-              <i class="fas fa-quote-right text-muted ms-2"></i>
             </div>
           {% endif %}
 
-          {% if review.photo_urls and review.photo_urls|length > 0 %}
+          {% if has_photos %}
+            {% if has_comment %}
+            <div class="review-divider"></div>
+            {% endif %}
             <div class="review-photos">
               {% for photo_url in review.photo_urls %}
                 <img src="{{ photo_url }}"
@@ -451,6 +577,7 @@
             </div>
           {% endif %}
         </div>
+        {% endif %}
       {% endfor %}
     {% else %}
       <div class="no-reviews">

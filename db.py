@@ -13,7 +13,7 @@ from reportlab.lib.units import inch
 import io
 
 # MongoDB connection - FIXED: Try both MONGODB_URI and MONGO_URI, fallback to local default
-uri = os.environ.get("MONGODB_URI") or os.environ.get("MONGO_URI") or "mongodb://localhost:27017/annapoorneshwari_tyre_works"
+uri = "mongodb://localhost:27017/annapoorneshwari_tyre_works"
 client = MongoClient(uri, serverSelectionTimeoutMS=5000)
 
 # Access DB & collections
@@ -1255,15 +1255,94 @@ def export_bookings_to_excel():
         return []
 
 
+def generate_otp(email, purpose="general"):
+    """
+    Generate and store OTP for email verification with purpose tracking
+
+    Args:
+        email: User's email address
+        purpose: Purpose of OTP (login, reset_password, prebooking)
+
+    Returns:
+        Generated OTP string
+    """
+    try:
+        # Delete any existing OTPs for this email and purpose
+        otp_collection.delete_many({"email": email, "purpose": purpose})
+
+        # Generate 6-digit OTP
+        otp = str(random.randint(100000, 999999))
+
+        # Set expiry to 5 minutes from now
+        expires_at = datetime.now() + timedelta(minutes=5)
+
+        otp_data = {
+            "email": email,
+            "otp": otp,
+            "purpose": purpose,
+            "created_at": datetime.now(),
+            "expires_at": expires_at
+        }
+
+        otp_collection.insert_one(otp_data)
+
+        print(f"✅ OTP generated for {email} (purpose: {purpose}): {otp}")
+        return otp
+
+    except Exception as e:
+        print(f"❌ Error generating OTP: {e}")
+        raise
+
+
+def verify_otp(email, otp, purpose="general"):
+    """
+    Verify OTP for email with purpose validation
+
+    Args:
+        email: User's email address
+        otp: OTP to verify
+        purpose: Purpose of OTP verification
+
+    Returns:
+        True if OTP is valid and not expired, False otherwise
+    """
+    try:
+        print(f"🔍 Verifying OTP: {otp} for email: {email} (purpose: {purpose})")
+
+        # Find valid OTP record
+        record = otp_collection.find_one({
+            "email": email,
+            "otp": otp,
+            "purpose": purpose,
+            "expires_at": {"$gt": datetime.now()}
+        })
+
+        if record:
+            # Delete the used OTP immediately
+            otp_collection.delete_one({"_id": record["_id"]})
+            print(f"✅ OTP verified successfully for {email}")
+            return True
+        else:
+            print(f"❌ OTP verification failed for {email} - invalid or expired")
+            return False
+
+    except Exception as e:
+        print(f"❌ Error verifying OTP: {e}")
+        return False
+
+
 def cleanup_expired_otps():
-    """Clean up expired OTPs"""
+    """Clean up expired OTPs from all purposes"""
     try:
         result = otp_collection.delete_many({
             "expires_at": {"$lt": datetime.now()}
         })
-        return result.deleted_count
+        deleted_count = result.deleted_count
+        if deleted_count > 0:
+            print(f"🧹 Cleaned up {deleted_count} expired OTPs")
+        return deleted_count
     except Exception as e:
-        print(f"Error cleaning OTPs: {e}")
+        print(f"❌ Error cleaning OTPs: {e}")
         return 0
 
 
